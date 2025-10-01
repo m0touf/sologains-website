@@ -4,17 +4,25 @@ export default function Header() {
   const { user, logout } = useAuthStore();
 
   return (
-    <header className="border-b-6 border-black shadow-lg" style={{ backgroundColor: '#a84848' }}>
-      <div className="flex justify-between items-center max-w-7xl mx-auto py-3">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-white font-bold text-sm">SG</span>
-            </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">
-              Solo Gains
-            </h1>
-          </div>
+    <header className="relative border-b-3 border-black shadow-lg overflow-hidden">
+      {/* Banner Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/src/assets/banners/Banner_Background_Home.png)',
+          imageRendering: 'pixelated'
+        }}
+      ></div>
+      
+      {/* Content Overlay */}
+      <div className="relative z-10 flex justify-between items-center max-w-7xl mx-auto py-3">
+        <div className="flex items-center">
+          <img 
+            src="/src/assets/banners/Banner_Image_Home.png" 
+            alt="Solo Gains" 
+            className="h-14 object-cover w-auto"
+            style={{ imageRendering: 'pixelated' }}
+          />
         </div>
         
         <div className="flex items-center space-x-4">

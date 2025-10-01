@@ -12,31 +12,27 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
   return (
     <div className="flex-1 relative overflow-hidden">
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: 'url(/src/assets/backgrounds/Background_Image_Home_02.png)',
           imageRendering: 'pixelated'
         }}
       ></div>
-      
+
       <div className="relative z-10 h-full flex">
         {/* Left Side - Activity Buttons */}
         <div className="w-2/5 p-4 flex flex-col justify-center">
-          <div className="space-y-2 max-w-xs mx-auto">
+          <div className="space-y-4 max-w-xs mx-auto">
             {/* Gym */}
             <button
               onClick={() => onNavigate('gym')}
-              className="w-full h-40 relative overflow-hidden border-4 border-black shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-              style={{ imageRendering: 'pixelated' }}
+              className="w-full max-w-[520px] h-40 mx-auto aspect-[16/9] relative overflow-hidden rounded-2xl ring-3 ring-black shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 bg-center bg-cover"
+              style={{
+                backgroundImage: "url('/src/assets/buttons/Gym_Home_Button.png')",
+                imageRendering: 'pixelated'
+              }}
             >
-              <img 
-                src="/src/assets/buttons/Gym_Home_Button.png" 
-                alt="Gym" 
-                className="w-full h-full object-cover"
-                style={{ imageRendering: 'pixelated' }}
-              />
-              <div className="absolute inset-0 bg-black/20"></div>
               <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-2">
                 <h3 className="text-2xl font-black text-white drop-shadow-lg" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>GYM</h3>
                 <p className="text-sm font-bold text-white drop-shadow-md" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>Train your stats</p>
@@ -46,16 +42,13 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
             {/* Store */}
             <button
               onClick={() => onNavigate('store')}
-              className="w-full h-40 relative overflow-hidden border-4 border-black shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-              style={{ imageRendering: 'pixelated' }}
+              className="w-full max-w-[520px] h-40 mx-auto aspect-[16/9] relative overflow-hidden rounded-2xl ring-3 ring-black shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 bg-center bg-cover"
+              style={{
+                backgroundImage: "url('/src/assets/buttons/Store_Home_Button.png')",
+                imageRendering: 'pixelated'
+              }}
             >
-              <img 
-                src="/src/assets/buttons/Store_Home_Button.png" 
-                alt="Store" 
-                className="w-full h-full object-cover"
-                style={{ imageRendering: 'pixelated' }}
-              />
-              <div className="absolute inset-0 bg-black/20"></div>
+              {/* <div className="absolute inset-0 bg-black/20"></div> */}
               <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-2">
                 <h3 className="text-2xl font-black text-white drop-shadow-lg" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>STORE</h3>
                 <p className="text-sm font-bold text-white drop-shadow-md" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>Buy supplements</p>
@@ -65,15 +58,12 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
             {/* Adventures */}
             <button
               onClick={() => onNavigate('adventures')}
-              className="w-full h-40 relative overflow-hidden border-4 border-black shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-              style={{ imageRendering: 'pixelated' }}
+              className="w-full max-w-[520px] h-40 mx-auto aspect-[16/9] relative overflow-hidden rounded-2xl ring-3 ring-black shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 bg-center bg-cover"
+              style={{
+                backgroundImage: "url('/src/assets/buttons/Adventure_Home_Button.png')",
+                imageRendering: 'pixelated'
+              }}
             >
-              <img 
-                src="/src/assets/buttons/Adventure_Home_Button.png" 
-                alt="Adventures" 
-                className="w-full h-full object-cover"
-                style={{ imageRendering: 'pixelated' }}
-              />
               <div className="absolute inset-0 bg-black/20"></div>
               <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-2">
                 <h3 className="text-2xl font-black text-white drop-shadow-lg" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>ADVENTURES</h3>
@@ -84,15 +74,12 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
             {/* Research */}
             <button
               onClick={() => onNavigate('research')}
-              className="w-full h-40 relative overflow-hidden border-4 border-black shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-              style={{ imageRendering: 'pixelated' }}
+              className="w-full max-w-[520px] h-40 mx-auto aspect-[16/9] relative overflow-hidden rounded-2xl ring-3 ring-black shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 bg-center bg-cover"
+              style={{
+                backgroundImage: "url('/src/assets/buttons/Research_Home_Button.png')",
+                imageRendering: 'pixelated'
+              }}
             >
-              <img 
-                src="/src/assets/buttons/Research_Home_Button.png" 
-                alt="Research" 
-                className="w-full h-full object-cover"
-                style={{ imageRendering: 'pixelated' }}
-              />
               <div className="absolute inset-0 bg-black/20"></div>
               <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-2">
                 <h3 className="text-2xl font-black text-white drop-shadow-lg" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>RESEARCH</h3>
