@@ -9,7 +9,7 @@ import AdventuresScreen from "../components/AdventuresScreen";
 import ResearchScreen from "../components/ResearchScreen";
 
 export default function GamePage() {
-  const { energy, xp, stats, spendEnergy, addXp, addStats, setFromServer } = useGameStore();
+  const { energy, xp, stats, spendEnergy, addXp, addStats, setFromServer, setExercises, addProficiencyPoints } = useGameStore();
   const { token } = useAuthStore();
   const [currentScreen, setCurrentScreen] = useState<'home' | 'gym' | 'store' | 'adventures' | 'research'>('home');
 
@@ -19,33 +19,58 @@ export default function GamePage() {
     
     const loadGameState = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/save", {
+        // Load save data
+        const saveRes = await fetch("http://localhost:4000/api/save", {
           headers: { 
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           }
         });
-        if (res.ok) {
-          const save = await res.json();
+        if (saveRes.ok) {
+          const save = await saveRes.json();
           setFromServer({
             energy: save.energy,
             xp: save.xp,
+            level: save.level,
             stats: {
               strength: save.strength,
               stamina: save.stamina,
-              agility: save.agility
+              agility: save.agility,
+              level: save.level,
+              xp: save.xp
             },
-            spriteStage: save.spriteStage
+            spriteStage: save.spriteStage,
+            proficiencyPoints: save.proficiencyPoints,
+            ExerciseProficiencies: save.ExerciseProficiencies || [],
+            ResearchUpgrades: save.ResearchUpgrades || []
           });
+        }
+
+        // Load exercises
+        const exercisesRes = await fetch("http://localhost:4000/api/exercises", {
+          headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        if (exercisesRes.ok) {
+          const exercises = await exercisesRes.json();
+          setExercises(exercises);
         }
       } catch (error) {
         console.error("Failed to load game state:", error);
       }
     };
     loadGameState();
-  }, [setFromServer, token]);
+  }, [setFromServer, setExercises, token]);
 
-  const doWorkout = async (workoutType: 'strength' | 'endurance' | 'agility', reps: number = 20) => {
+  const doWorkout = async (
+    workoutType: 'strength' | 'endurance' | 'mobility', 
+    exerciseId: string, 
+    reps: number = 20,
+    intensity: 1|2|3|4|5 = 3,
+    grade: "perfect"|"good"|"okay"|"miss" = "good"
+  ) => {
     if (!token) return;
     
     try {
@@ -55,7 +80,13 @@ export default function GamePage() {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ type: workoutType, reps })
+        body: JSON.stringify({ 
+          type: workoutType, 
+          exerciseId, 
+          reps, 
+          intensity, 
+          grade 
+        })
       });
       
       if (!res.ok) {
@@ -64,10 +95,45 @@ export default function GamePage() {
         return;
       }
       
-      const data = await res.json();
-      spendEnergy(data.energySpent);
-      addXp(data.xpGained);
-      setFromServer({ stats: data.statsAfter });
+        const data = await res.json();
+        spendEnergy(data.energySpent);
+        addXp(data.xpGained);
+        if (data.ppGained > 0) {
+          addProficiencyPoints(data.ppGained);
+        }
+        setFromServer({ 
+          stats: data.statsAfter,
+          level: data.levelAfter,
+          xp: data.xpAfter,
+          proficiencyPoints: data.proficiencyPointsAfter
+        });
+      
+      // Reload full game state to get updated proficiencies
+      const saveRes = await fetch("http://localhost:4000/api/save", {
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (saveRes.ok) {
+        const save = await saveRes.json();
+        setFromServer({
+          energy: save.energy,
+          xp: save.xp,
+          level: save.level,
+          stats: {
+            strength: save.strength,
+            stamina: save.stamina,
+            agility: save.agility,
+            level: save.level,
+            xp: save.xp
+          },
+          spriteStage: save.spriteStage,
+          proficiencyPoints: save.proficiencyPoints,
+          ExerciseProficiencies: save.ExerciseProficiencies || [],
+          ResearchUpgrades: save.ResearchUpgrades || []
+        });
+      }
     } catch (error) {
       console.error("Network error:", error);
     }
@@ -109,6 +175,33 @@ export default function GamePage() {
       const data = await res.json();
       setFromServer({ energy: data.energy });
       console.log("Energy reset to 100%");
+      
+      // Reload full game state to ensure everything is in sync
+      const saveRes = await fetch("http://localhost:4000/api/save", {
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (saveRes.ok) {
+        const save = await saveRes.json();
+        setFromServer({
+          energy: save.energy,
+          xp: save.xp,
+          level: save.level,
+          stats: {
+            strength: save.strength,
+            stamina: save.stamina,
+            agility: save.agility,
+            level: save.level,
+            xp: save.xp
+          },
+          spriteStage: save.spriteStage,
+          proficiencyPoints: save.proficiencyPoints,
+          ExerciseProficiencies: save.ExerciseProficiencies || [],
+          ResearchUpgrades: save.ResearchUpgrades || []
+        });
+      }
     } catch (error) {
       console.error("Network error:", error);
     }

@@ -61,6 +61,15 @@ export const signup = async (req: Request, res: Response) => {
       await tx.save.create({
         data: {
           userId: newUser.id,
+          level: 1,
+          xp: 0,
+          energy: 100,
+          strength: 1,
+          stamina: 1,
+          agility: 1,
+          injury: 0,
+          spriteStage: 0,
+          proficiencyPoints: 0,
         },
       });
 

@@ -6,8 +6,9 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProps) {
-  const { energy, xp, stats } = useGameStore();
-  const level = Math.floor(xp / 100) + 1;
+  const { energy, xp, stats, getXpProgress, getCurrentLevel, proficiencyPoints } = useGameStore();
+  const level = getCurrentLevel();
+  const xpProgress = getXpProgress();
 
   return (
     <div className="flex-1 relative overflow-hidden">
@@ -125,11 +126,42 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                 <span className="text-gray-600 font-bold" style={{ fontFamily: 'monospace' }}>LEVEL {level}</span>
                 <span className="text-blue-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{xp} XP</span>
               </div>
+              
+              {/* XP Progress Bar */}
+              <div className="mt-2">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-bold text-gray-600" style={{ fontFamily: 'monospace' }}>
+                    XP TO NEXT LEVEL
+                  </span>
+                  <span className="text-xs font-black text-gray-800" style={{ fontFamily: 'monospace' }}>
+                    {xpProgress.current}/{xpProgress.needed}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-300 border-2 border-black rounded-full h-3">
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500"
+                    style={{ width: `${xpProgress.progress}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              {/* Proficiency Points */}
+              <div className="mt-3 pt-3 border-t border-gray-400">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-gray-600" style={{ fontFamily: 'monospace' }}>
+                    PROFICIENCY POINTS
+                  </span>
+                  <span className="text-sm font-black text-yellow-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                    {proficiencyPoints}
+                  </span>
+                </div>
+              </div>
+              
               <div className="flex justify-between items-center mt-2">
                 <span className="text-gray-600 font-bold" style={{ fontFamily: 'monospace' }}>ENERGY</span>
                 <span className="text-green-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{energy}/100</span>
               </div>
-              <div className="mt-3">
+              <div className="mt-1">
                 <button
                   onClick={onResetEnergy}
                   className="w-full py-2 px-4 bg-red-600 hover:bg-red-500 text-white border-4 border-black transition-all duration-200 text-sm font-black hover:shadow-md"
