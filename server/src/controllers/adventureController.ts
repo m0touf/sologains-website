@@ -11,15 +11,14 @@ export const getDailyAdventures = async (req: AuthenticatedRequest, res: Respons
     console.log('getDailyAdventures called for user:', req.user?.userId);
     const userId = req.user!.userId;
     
-    // Get user's current stats
+    // Get user's current stats and rotation seed
     const save = await prisma.save.findUnique({ where: { userId } });
     if (!save) {
       return res.status(404).json({ error: 'Save not found' });
     }
-
-    // Get today's date for daily cycling
-    const today = new Date();
-    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+    
+    // Use user's adventure rotation seed for consistent rotation
+    const rotationSeed = save.adventureRotationSeed || 54321;
     
     // Get all adventures grouped by difficulty
     const allAdventures = await prisma.adventure.findMany({
@@ -48,8 +47,8 @@ export const getDailyAdventures = async (req: AuthenticatedRequest, res: Respons
       const availableAdventures = adventuresByDifficulty[difficulty];
       if (availableAdventures.length === 0) continue;
 
-      // Use day offset to cycle through adventures of this difficulty
-      const offset = (dayOfYear * count) % availableAdventures.length;
+      // Use rotation seed to cycle through adventures of this difficulty
+      const offset = (rotationSeed * count) % availableAdventures.length;
       
       for (let i = 0; i < count; i++) {
         const index = (offset + i) % availableAdventures.length;

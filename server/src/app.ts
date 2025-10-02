@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth";
 import gameRoutes from "./routes/game";
+import storeRoutes from "./routes/store";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors({
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", gameRoutes);
+app.use("/api/store", storeRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

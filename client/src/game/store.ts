@@ -190,7 +190,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
     } catch (error) {
       console.error("Network error:", error);
-      alert(`Network error: ${error.message}`);
+      alert(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   },
   setAdventures: (adventures) => set({ adventures }),
@@ -220,7 +220,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       const data = await response.json();
       
       // Update game state with results
-      set((state) => ({
+      set(() => ({
         energy: data.energyAfter,
         xp: data.xpAfter,
         stats: data.statsAfter,
@@ -230,7 +230,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       return data;
     } catch (error) {
       console.error("Adventure attempt error:", error);
-      alert(`Network error: ${error.message}`);
+      alert(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   },
 }));

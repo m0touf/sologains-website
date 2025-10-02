@@ -75,11 +75,11 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
 
   const getDifficultyIcon = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return '🌅';
-      case 'medium': return '⛰️';
-      case 'hard': return '🌲';
-      case 'legendary': return '🔮';
-      default: return '🗺️';
+      case 'easy': return 'EASY';
+      case 'medium': return 'MED';
+      case 'hard': return 'HARD';
+      case 'legendary': return 'LEG';
+      default: return '???';
     }
   };
 
@@ -103,7 +103,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     return (
       <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100">
         <div className="text-center">
-          <div className="text-2xl mb-4">🗺️</div>
+          <div className="text-2xl mb-4 font-black text-gray-700" style={{ fontFamily: 'monospace' }}>LOADING</div>
           <div className="text-gray-700 font-bold">Loading adventures...</div>
           <div className="text-gray-600 text-sm mt-2">Check console for debug info</div>
         </div>
@@ -115,7 +115,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     return (
       <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100">
         <div className="text-center">
-          <div className="text-2xl mb-4">🗺️</div>
+          <div className="text-2xl mb-4 font-black text-gray-700" style={{ fontFamily: 'monospace' }}>NO DATA</div>
           <div className="text-gray-700 font-bold">No adventures available</div>
           <div className="text-gray-600 text-sm mt-2">Check console for debug info</div>
         </div>

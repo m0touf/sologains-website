@@ -9,7 +9,7 @@ import AdventuresScreen from "../components/AdventuresScreen";
 import ResearchScreen from "../components/ResearchScreen";
 
 export default function GamePage() {
-  const { energy, xp, stats, spendEnergy, addXp, addStats, setFromServer, setExercises, addProficiencyPoints } = useGameStore();
+  const { spendEnergy, addXp, setFromServer, setExercises, addProficiencyPoints } = useGameStore();
   const { token } = useAuthStore();
   const [currentScreen, setCurrentScreen] = useState<'home' | 'gym' | 'store' | 'adventures' | 'research'>('home');
 
@@ -110,7 +110,7 @@ export default function GamePage() {
 
         // Show stat gain information
         const statGainMessage = Object.entries(data.statGains)
-          .filter(([_, amount]) => amount > 0)
+          .filter(([_, amount]) => (amount as number) > 0)
           .map(([stat, amount]) => `+${amount} ${stat}`)
           .join(', ');
         
@@ -183,7 +183,7 @@ export default function GamePage() {
           strength: data.statsAfter.strength,
           stamina: data.statsAfter.stamina,
           agility: data.statsAfter.agility,
-          level: stats.level,
+          level: data.statsAfter.level,
           xp: data.statsAfter.xp
         }
       });
@@ -193,19 +193,11 @@ export default function GamePage() {
       
     } catch (error) {
       console.error("Network error:", error);
-      alert(`Network error: ${error.message}`);
+      alert(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
-  const handleStartQuest = (quest: string) => {
-    // TODO: Implement quest logic
-    console.log(`Started quest: ${quest}`);
-  };
 
-  const handleStartResearch = (researchId: string) => {
-    // TODO: Implement research logic
-    console.log(`Started research: ${researchId}`);
-  };
 
   const resetEnergy = async () => {
     if (!token) return;
@@ -260,6 +252,7 @@ export default function GamePage() {
     }
   };
 
+
   const renderCurrentScreen = () => {
     switch (currentScreen) {
       case 'home':
@@ -271,7 +264,7 @@ export default function GamePage() {
       case 'adventures':
         return <AdventuresScreen onBack={() => setCurrentScreen('home')} />;
       case 'research':
-        return <ResearchScreen onBack={() => setCurrentScreen('home')} onStartResearch={handleStartResearch} />;
+        return <ResearchScreen onBack={() => setCurrentScreen('home')} />;
       default:
         return <HomeScreen onNavigate={setCurrentScreen} onResetEnergy={resetEnergy} />;
     }

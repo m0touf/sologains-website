@@ -22,11 +22,17 @@ model Save {
   xp                   Int     @default(0)
   energy               Int     @default(100)
   lastEnergyResetDate  DateTime?
+  lastDailyReset       DateTime?
   strength             Int     @default(1)
   stamina              Int     @default(1)
   agility              Int     @default(1)
   proficiencyPoints    Int     @default(0)
   cash                 Int     @default(0)
+  maxEnergy            Int     @default(100)
+  shopRotationSeed     Int?
+  lastShopRotation     DateTime?
+  adventureRotationSeed Int?
+  lastAdventureRotation DateTime?
   updatedAt            DateTime @updatedAt
   ExerciseProficiencies ExerciseProficiency[]
   ResearchUpgrades     ResearchUpgrade[]
@@ -115,6 +121,8 @@ model Adventure {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   AdventureAttempts AdventureAttempt[]
+
+  @@unique([name, difficulty])
 }
 
 model AdventureAttempt {
@@ -132,4 +140,20 @@ model AdventureAttempt {
   Adventure   Adventure @relation(fields: [adventureId], references: [id], onDelete: Cascade)
   
   @@index([userId, attemptedAt])
+}
+
+model ShopItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  category    String   // 'energy_boosters', 'supplements', 'special_items'
+  cost        Int
+  icon        String
+  type        String   // 'energy_restore', 'stat_boost', 'max_energy', 'xp_boost', 'full_restore', 'proficiency_boost'
+  effectValue Int      // How much energy/stats/etc it provides
+  statType    String?  // For stat boosts: 'strength', 'stamina', 'agility'
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  
+  @@index([category, isActive])
 }

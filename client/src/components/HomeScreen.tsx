@@ -1,4 +1,5 @@
 import { useGameStore } from '../game/store';
+import { useAuthStore } from '../stores/authStore';
 
 interface HomeScreenProps {
   onNavigate: (section: 'gym' | 'store' | 'adventures' | 'research') => void;
@@ -104,6 +105,21 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
             </div>
           </div>
 
+          {/* Current Date Display */}
+          <div className="bg-gray-800/90 backdrop-blur-sm p-3 ring-2 ring-black shadow-lg max-w-md w-full rounded-lg mb-4" style={{ imageRendering: 'pixelated' }}>
+            <div className="text-center">
+              <div className="text-white font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>CURRENT DATE</div>
+              <div className="text-yellow-400 font-black text-lg" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                {new Date().toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Character Stats - Moved under character */}
           <div className="bg-amber-50/95 backdrop-blur-sm p-6 ring-3 ring-black shadow-lg max-w-md w-full rounded-lg" style={{ imageRendering: 'pixelated' }}>
             <h2 className="text-xl font-black text-gray-800 mb-4 text-center" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>YOUR CHARACTER</h2>
@@ -173,7 +189,7 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                 <span className="text-gray-600 font-bold" style={{ fontFamily: 'monospace' }}>ENERGY</span>
                 <span className="text-green-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{energy}/100</span>
               </div>
-              <div className="mt-1">
+              <div className="mt-1 space-y-2">
                 <button
                   onClick={onResetEnergy}
                   className="w-full py-2 px-4 bg-red-600 hover:bg-red-500 text-white border-4 border-black transition-all duration-200 text-sm font-black hover:shadow-md"
@@ -181,6 +197,51 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                 >
                   Admin: Reset Energy
                 </button>
+          <button
+            onClick={async () => {
+              console.log("Button clicked!");
+              const { token } = useAuthStore.getState();
+              console.log("Token:", token ? "Found" : "Not found");
+              console.log("Auth state:", useAuthStore.getState());
+              
+              if (!token) {
+                console.log("No authentication token found. Please log in again.");
+                return;
+              }
+
+              const tomorrow = new Date();
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              const dateStr = tomorrow.toISOString().slice(0, 10);
+              console.log("Setting date to:", dateStr);
+              
+              try {
+                const response = await fetch("http://localhost:4000/api/store/test-date", {
+                  method: 'POST',
+                  headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ date: dateStr })
+                });
+
+                console.log("Response status:", response.status);
+                
+                if (response.ok) {
+                  const result = await response.json();
+                  console.log("✅ Success: Set test date to tomorrow (" + dateStr + "). Refresh the page to trigger daily reset!");
+                } else {
+                  const error = await response.json();
+                  console.log("❌ Error:", error);
+                }
+              } catch (error) {
+                console.error("❌ Network error:", error);
+              }
+            }}
+            className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-500 text-white border-4 border-black transition-all duration-200 text-sm font-black hover:shadow-md"
+            style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000', backgroundColor: '#7c3aed' }}
+          >
+            TEST: Set Tomorrow
+          </button>
               </div>
             </div>
           </div>

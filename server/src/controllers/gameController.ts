@@ -96,6 +96,46 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     if (!save) {
       return res.status(404).json({ error: 'Save not found. Please contact support.' });
     }
+
+    // Check if we need to reset daily limits (automatic daily reset)
+    const today = new Date();
+    const todayKey = today.toISOString().slice(0, 10);
+    const lastDailyResetDate = save.lastDailyReset ? new Date(save.lastDailyReset).toISOString().slice(0, 10) : null;
+    
+    // If it's a new day, automatically reset daily limits and rotate content
+    if (todayKey !== lastDailyResetDate) {
+      console.log(`New day detected! Resetting daily limits for user ${userId}`);
+      console.log(`Today: ${todayKey}, Last reset: ${lastDailyResetDate}`);
+      
+      // Reset daily stat gains for all exercises
+      await prisma.exerciseProficiency.updateMany({
+        where: { userId },
+        data: {
+          dailyStatGains: 0,
+          dailyEnergy: 0,
+          lastDailyReset: today
+        }
+      });
+
+      // Generate new rotation seeds for shop and adventures
+      const newShopRotationSeed = Math.floor(Math.random() * 1000000);
+      const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);
+
+      // Update save data with new rotation seeds and reset energy
+      await prisma.save.update({
+        where: { userId },
+        data: {
+          energy: save.maxEnergy || 100,
+          lastDailyReset: today,
+          shopRotationSeed: newShopRotationSeed,
+          lastShopRotation: today,
+          adventureRotationSeed: newAdventureRotationSeed,
+          lastAdventureRotation: today
+        }
+      });
+
+      console.log(`Daily reset completed for user ${userId}`);
+    }
     
     console.log('getSave response:', {
       userId,
@@ -103,7 +143,24 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       researchUpgradesCount: save.ResearchUpgrades?.length || 0
     });
     
-    res.json(save);
+    // Fetch updated save data after potential reset
+    const updatedSave = await prisma.save.findUnique({ 
+      where: { userId },
+      include: {
+        ExerciseProficiencies: {
+          include: {
+            Exercise: true
+          }
+        },
+        ResearchUpgrades: {
+          include: {
+            Exercise: true
+          }
+        }
+      }
+    });
+    
+    res.json(updatedSave);
   } catch (error) {
     console.error('Get save error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -369,8 +426,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         });
   } catch (error) {
     console.error('Workout error:', error);
-    console.error('Error stack:', error.stack);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    res.status(500).json({ error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' });
   }
 };
 

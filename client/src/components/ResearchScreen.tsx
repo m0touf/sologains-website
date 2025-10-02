@@ -28,14 +28,6 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
     }
   };
 
-  const getCategoryBg = (category: string) => {
-    switch (category) {
-      case 'strength': return 'bg-red-100 border-red-300';
-      case 'endurance': return 'bg-blue-100 border-blue-300';
-      case 'mobility': return 'bg-green-100 border-green-300';
-      default: return 'bg-gray-100 border-gray-300';
-    }
-  };
 
   const getTierName = (tier: number) => {
     switch (tier) {
