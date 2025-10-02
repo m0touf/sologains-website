@@ -6,7 +6,7 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProps) {
-  const { energy, xp, stats, getXpProgress, getCurrentLevel, proficiencyPoints } = useGameStore();
+  const { energy, xp, stats, getXpProgress, getCurrentLevel, proficiencyPoints, cash } = useGameStore();
   const level = getCurrentLevel();
   const xpProgress = getXpProgress();
 
@@ -153,6 +153,18 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   </span>
                   <span className="text-sm font-black text-yellow-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
                     {proficiencyPoints}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Cash */}
+              <div className="mt-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-gray-600" style={{ fontFamily: 'monospace' }}>
+                    CASH
+                  </span>
+                  <span className="text-sm font-black text-green-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                    ${cash}
                   </span>
                 </div>
               </div>

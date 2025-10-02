@@ -8,7 +8,7 @@ interface GymScreenProps {
 
 
 export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
-  const { energy, stats, xp, exercises, getProficiency, getXpProgress, getCurrentLevel, proficiencyPoints } = useGameStore();
+  const { energy, stats, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, cash } = useGameStore();
   const [selectedCategory, setSelectedCategory] = useState<'strength' | 'endurance' | 'mobility'>('strength');
   
   const level = getCurrentLevel();
@@ -28,8 +28,15 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
 
   const renderExerciseCard = (exercise: any) => {
     const proficiency = getProficiency(exercise.id);
+    const dailyStatGains = getDailyStatGains(exercise.id);
     const proficiencyColor = getProficiencyColor(proficiency);
     const isMaxProficiency = proficiency >= 1000;
+    const isDailyLimitReached = dailyStatGains >= 5;
+    
+    // Get the stat gain amount and type
+    const statGainAmount = exercise.statGainAmount || 1;
+    const statType = exercise.statType;
+    const statGainText = `+${statGainAmount} ${statType.toUpperCase()}`;
     
     return (
       <button
@@ -85,9 +92,19 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
             </div>
             
             {/* Exercise Stats */}
-            <div className="flex justify-between text-xs font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-              <span>{exercise.baseReps} REPS</span>
-              <span>{exercise.baseEnergy} ENERGY</span>
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                <span className={isDailyLimitReached ? 'text-red-400' : 'text-green-400'}>{statGainText}</span>
+                <span>{exercise.baseEnergy} ENERGY</span>
+              </div>
+              
+              {/* Daily Limit Display */}
+              <div className="flex justify-between text-xs font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                <span className={isDailyLimitReached ? 'text-red-400' : 'text-yellow-400'}>
+                  DAILY: {dailyStatGains}/5
+                </span>
+                <span className="text-gray-300">LIMIT</span>
+              </div>
             </div>
           </div>
         </div>
@@ -228,6 +245,18 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
                     </span>
                     <span className="text-sm font-black text-yellow-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
                       {proficiencyPoints}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Cash */}
+                <div className="mt-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-gray-700" style={{ fontFamily: 'monospace' }}>
+                      CASH
+                    </span>
+                    <span className="text-sm font-black text-green-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                      ${cash}
                     </span>
                   </div>
                 </div>

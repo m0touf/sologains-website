@@ -39,8 +39,8 @@ export default function GamePage() {
               level: save.level,
               xp: save.xp
             },
-            spriteStage: save.spriteStage,
             proficiencyPoints: save.proficiencyPoints,
+            cash: save.cash,
             ExerciseProficiencies: save.ExerciseProficiencies || [],
             ResearchUpgrades: save.ResearchUpgrades || []
           });
@@ -107,6 +107,20 @@ export default function GamePage() {
           xp: data.xpAfter,
           proficiencyPoints: data.proficiencyPointsAfter
         });
+
+        // Show stat gain information
+        const statGainMessage = Object.entries(data.statGains)
+          .filter(([_, amount]) => amount > 0)
+          .map(([stat, amount]) => `+${amount} ${stat}`)
+          .join(', ');
+        
+        if (statGainMessage) {
+          console.log(`Stat gains: ${statGainMessage}`);
+        }
+        
+        if (data.dailyStatGainsUsed >= data.maxDailyStatGains) {
+          console.log(`Daily stat gain limit reached for this exercise (${data.dailyStatGainsUsed}/${data.maxDailyStatGains})`);
+        }
       
       // Reload full game state to get updated proficiencies
       const saveRes = await fetch("http://localhost:4000/api/save", {
@@ -128,8 +142,8 @@ export default function GamePage() {
             level: save.level,
             xp: save.xp
           },
-          spriteStage: save.spriteStage,
           proficiencyPoints: save.proficiencyPoints,
+          cash: save.cash,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -139,9 +153,48 @@ export default function GamePage() {
     }
   };
 
-  const handlePurchase = (item: string, cost: number) => {
-    // TODO: Implement purchase logic
-    console.log(`Purchased ${item} for ${cost} coins`);
+  const handlePurchase = async (item: string, cost: number) => {
+    if (!token) return;
+    
+    try {
+      const res = await fetch("http://localhost:4000/api/purchase-item", {
+        method: "POST",
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ itemName: item })
+      });
+      
+      if (!res.ok) {
+        const error = await res.json();
+        console.error("Purchase failed:", error);
+        alert(`Purchase failed: ${error.error}`);
+        return;
+      }
+      
+      const data = await res.json();
+      
+      // Update game state with purchase results
+      setFromServer({
+        cash: data.cashAfter,
+        energy: data.statsAfter.energy,
+        stats: {
+          strength: data.statsAfter.strength,
+          stamina: data.statsAfter.stamina,
+          agility: data.statsAfter.agility,
+          level: stats.level,
+          xp: data.statsAfter.xp
+        }
+      });
+      
+      // Show success message
+      alert(`Successfully purchased ${item} for $${cost}!`);
+      
+    } catch (error) {
+      console.error("Network error:", error);
+      alert(`Network error: ${error.message}`);
+    }
   };
 
   const handleStartQuest = (quest: string) => {
@@ -196,8 +249,8 @@ export default function GamePage() {
             level: save.level,
             xp: save.xp
           },
-          spriteStage: save.spriteStage,
           proficiencyPoints: save.proficiencyPoints,
+          cash: save.cash,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -216,7 +269,7 @@ export default function GamePage() {
       case 'store':
         return <StoreScreen onBack={() => setCurrentScreen('home')} onPurchase={handlePurchase} />;
       case 'adventures':
-        return <AdventuresScreen onBack={() => setCurrentScreen('home')} onStartQuest={handleStartQuest} />;
+        return <AdventuresScreen onBack={() => setCurrentScreen('home')} />;
       case 'research':
         return <ResearchScreen onBack={() => setCurrentScreen('home')} onStartResearch={handleStartResearch} />;
       default:

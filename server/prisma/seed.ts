@@ -16,6 +16,7 @@ async function main() {
       baseEnergy: 10,
       baseXp: 10,
       statType: 'strength',
+      statGainAmount: 1,
       imagePath: '/src/assets/exercises/strength/Dumbellcurls_Gym_Button.png',
     },
     {
@@ -26,6 +27,7 @@ async function main() {
       baseEnergy: 15,
       baseXp: 15,
       statType: 'strength',
+      statGainAmount: 2,
       imagePath: '/src/assets/exercises/strength/Benchpress_Gym_Button.png',
     },
     {
@@ -36,6 +38,7 @@ async function main() {
       baseEnergy: 18,
       baseXp: 12,
       statType: 'strength',
+      statGainAmount: 3,
       imagePath: '/src/assets/exercises/strength/Pullups_Gym_Button.png',
     },
     {
@@ -46,6 +49,7 @@ async function main() {
       baseEnergy: 12,
       baseXp: 12,
       statType: 'strength',
+      statGainAmount: 2,
       imagePath: '/src/assets/exercises/strength/Squats_Gym_Button.png',
     },
     {
@@ -56,6 +60,7 @@ async function main() {
       baseEnergy: 8,
       baseXp: 8,
       statType: 'strength',
+      statGainAmount: 1,
       imagePath: '/src/assets/exercises/strength/Abcrunches_Gym_Button.png',
     },
     {
@@ -66,6 +71,7 @@ async function main() {
       baseEnergy: 14,
       baseXp: 14,
       statType: 'strength',
+      statGainAmount: 2,
       imagePath: '/src/assets/exercises/strength/Shoulderp_Gym_Button.png',
     },
     // Endurance exercises
@@ -77,6 +83,7 @@ async function main() {
       baseEnergy: 15,
       baseXp: 15,
       statType: 'stamina',
+      statGainAmount: 2,
     },
     {
       id: 'cycling',
@@ -86,6 +93,7 @@ async function main() {
       baseEnergy: 12,
       baseXp: 12,
       statType: 'stamina',
+      statGainAmount: 1,
     },
     {
       id: 'swimming',
@@ -95,6 +103,7 @@ async function main() {
       baseEnergy: 18,
       baseXp: 18,
       statType: 'stamina',
+      statGainAmount: 3,
     },
     {
       id: 'jump_rope',
@@ -104,6 +113,7 @@ async function main() {
       baseEnergy: 10,
       baseXp: 10,
       statType: 'stamina',
+      statGainAmount: 1,
     },
     {
       id: 'boxing',
@@ -113,6 +123,7 @@ async function main() {
       baseEnergy: 16,
       baseXp: 16,
       statType: 'stamina',
+      statGainAmount: 2,
     },
     {
       id: 'basketball',
@@ -122,6 +133,7 @@ async function main() {
       baseEnergy: 13,
       baseXp: 13,
       statType: 'stamina',
+      statGainAmount: 2,
     },
     // Mobility exercises
     {
@@ -132,6 +144,7 @@ async function main() {
       baseEnergy: 8,
       baseXp: 8,
       statType: 'agility',
+      statGainAmount: 1,
     },
     {
       id: 'shoulder_roll',
@@ -141,6 +154,7 @@ async function main() {
       baseEnergy: 6,
       baseXp: 6,
       statType: 'agility',
+      statGainAmount: 1,
     },
     {
       id: 'cat_cow',
@@ -150,6 +164,7 @@ async function main() {
       baseEnergy: 8,
       baseXp: 8,
       statType: 'agility',
+      statGainAmount: 1,
     },
     {
       id: 'pigeon_pose',
@@ -159,6 +174,7 @@ async function main() {
       baseEnergy: 10,
       baseXp: 10,
       statType: 'agility',
+      statGainAmount: 2,
     },
     {
       id: 'downward_dog',
@@ -168,6 +184,7 @@ async function main() {
       baseEnergy: 7,
       baseXp: 7,
       statType: 'agility',
+      statGainAmount: 1,
     },
     {
       id: 'spinal_twist',
@@ -177,6 +194,7 @@ async function main() {
       baseEnergy: 6,
       baseXp: 6,
       statType: 'agility',
+      statGainAmount: 1,
     },
   ];
 

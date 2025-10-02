@@ -11,6 +11,7 @@ type Exercise = {
   baseEnergy: number;
   baseXp: number;
   statType: string;
+  statGainAmount: number;
   imagePath?: string;
 };
 type ExerciseProficiency = {
@@ -18,6 +19,7 @@ type ExerciseProficiency = {
   exerciseId: string;
   proficiency: number; // 0-1000 (new system)
   dailyEnergy: number;
+  dailyStatGains: number; // number of stat gains today (max 5)
   lastDailyReset: string;
   totalReps: number;
   Exercise: Exercise;
@@ -32,19 +34,35 @@ type ResearchUpgrade = {
   Exercise: Exercise;
 };
 
+type Adventure = {
+  id: string;
+  name: string;
+  description: string;
+  difficulty: string;
+  energyCost: number;
+  xpReward: number;
+  statReward: { strength: number; stamina: number; agility: number };
+  cashReward: number;
+  strengthReq: number;
+  staminaReq: number;
+  canAttempt: boolean;
+  userStats: { strength: number; stamina: number; agility: number };
+};
+
 type Save = {
   energy: number; 
   xp: number;
   level: number;
   stats: Stats; 
-  spriteStage: number;
   proficiencyPoints: number;
+  cash: number;
   ExerciseProficiencies: ExerciseProficiency[];
   ResearchUpgrades: ResearchUpgrade[];
 };
 
 type GameState = Save & {
   exercises: Exercise[];
+  adventures: Adventure[];
   spendEnergy: (amt: number) => void;
   addXp: (xp: number) => void;
   addStats: (stats: Partial<Stats>) => void;
@@ -52,10 +70,13 @@ type GameState = Save & {
   setFromServer: (s: Partial<Save>) => void;
   setExercises: (exercises: Exercise[]) => void;
   getProficiency: (exerciseId: string) => number;
+  getDailyStatGains: (exerciseId: string) => number;
   getXpProgress: () => { current: number; needed: number; progress: number };
   getCurrentLevel: () => number;
   getResearchTier: (exerciseId: string) => number;
   upgradeExercise: (exerciseId: string, tier: number) => Promise<void>;
+  setAdventures: (adventures: Adventure[]) => void;
+  attemptAdventure: (adventureId: string) => Promise<any>;
 };
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -63,11 +84,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   xp: 0, 
   level: 1,
   stats: { strength: 1, stamina: 1, agility: 1, level: 1, xp: 0 }, 
-  spriteStage: 0,
   proficiencyPoints: 0,
+  cash: 0,
   ExerciseProficiencies: [],
   ResearchUpgrades: [],
   exercises: [],
+  adventures: [],
   
   spendEnergy: (amt) => set((s) => ({ energy: Math.max(0, s.energy - amt) })),
   addXp: (xp) => set((s) => ({ xp: s.xp + xp })),
@@ -84,6 +106,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     const proficiency = state.ExerciseProficiencies.find(p => p.exerciseId === exerciseId);
     return proficiency?.proficiency || 0;
+  },
+  getDailyStatGains: (exerciseId) => {
+    const state = get();
+    const proficiency = state.ExerciseProficiencies.find(p => p.exerciseId === exerciseId);
+    return proficiency?.dailyStatGains || 0;
   },
   getXpProgress: () => {
     const state = get();
@@ -163,6 +190,46 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
     } catch (error) {
       console.error("Network error:", error);
+      alert(`Network error: ${error.message}`);
+    }
+  },
+  setAdventures: (adventures) => set({ adventures }),
+  attemptAdventure: async (adventureId) => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) {
+        alert("You must be logged in to attempt adventures");
+        return;
+      }
+
+      const response = await fetch("http://localhost:4000/api/attempt-adventure", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ adventureId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(`Adventure failed: ${error.error}`);
+        return;
+      }
+
+      const data = await response.json();
+      
+      // Update game state with results
+      set((state) => ({
+        energy: data.energyAfter,
+        xp: data.xpAfter,
+        stats: data.statsAfter,
+        cash: data.cashAfter,
+      }));
+
+      return data;
+    } catch (error) {
+      console.error("Adventure attempt error:", error);
       alert(`Network error: ${error.message}`);
     }
   },

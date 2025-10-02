@@ -112,7 +112,9 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
 
 export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    console.log('=== WORKOUT START ===');
     const userId = req.user!.userId;
+    console.log('User ID:', userId);
     console.log('Workout request body:', req.body);
     const parse = workoutSchema.safeParse(req.body);
     
@@ -183,38 +185,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(400).json({ error: 'Not enough energy' });
     }
 
-    // Calculate stat gains based on exercise stat type
+    // Calculate stat gains based on exercise stat type and daily limits
     const statGains = { strength: 0, stamina: 0, agility: 0 };
-    let statGainAmount = Math.ceil(reps / 20); // 1 stat point per 20 reps
-    
-    // Apply Tier 2: Output Boost - 5% more stat gain
-    if (researchUpgrade && researchUpgrade.tier >= 2) {
-      statGainAmount = Math.round(statGainAmount * 1.05);
-    }
-    
-    switch (exercise.statType) {
-      case 'strength':
-        statGains.strength = statGainAmount;
-        break;
-      case 'stamina':
-        statGains.stamina = statGainAmount;
-        break;
-      case 'agility':
-        statGains.agility = statGainAmount;
-        break;
-    }
-
-        const newEnergy = energy - energySpent;
-        const newXp = save.xp + xpGained;
-        const newLevel = levelFromXp(newXp);
-        const newStrength = save.strength + statGains.strength;
-        const newStamina = save.stamina + statGains.stamina;
-        const newAgility = save.agility + statGains.agility;
-        
-        // Calculate proficiency points gained from level up
-        const oldLevel = save.level;
-        const ppGained = newLevel > oldLevel ? calculatePPGained(newLevel) : 0;
-        const newProficiencyPoints = save.proficiencyPoints + ppGained;
 
     // Get intensity and grade from request (with defaults)
     const intensity = (parse.data.intensity || 3) as 1|2|3|4|5;
@@ -232,11 +204,59 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
 
     const currentProficiency = existingProficiency?.proficiency || 0;
     const currentDailyEnergy = existingProficiency?.dailyEnergy || 0;
+    const currentDailyStatGains = existingProficiency?.dailyStatGains || 0;
     
-    // Calculate base proficiency gain
+    // Check if we need to reset daily tracking
+    const lastReset = existingProficiency?.lastDailyReset ? new Date(existingProficiency.lastDailyReset) : null;
+    const lastResetKey = lastReset ? lastReset.toISOString().slice(0, 10) : null;
+    const shouldResetDaily = todayKey !== lastResetKey;
+    
+    // Check if user has exceeded daily stat gain limit (5 per exercise)
+    const maxDailyStatGains = 5;
+    
+    if (currentDailyStatGains >= maxDailyStatGains) {
+      console.log(`Daily stat gain limit reached for ${exercise.name} (${currentDailyStatGains}/${maxDailyStatGains})`);
+      // No stat gains, but still allow proficiency and XP gains
+    } else {
+      // Use exercise's stat gain amount instead of calculating from reps
+      let statGainAmount = exercise.statGainAmount;
+      
+      // Apply Tier 2: Output Boost - 5% more stat gain
+      if (researchUpgrade && researchUpgrade.tier >= 2) {
+        statGainAmount = Math.round(statGainAmount * 1.05);
+      }
+      
+      switch (exercise.statType) {
+        case 'strength':
+          statGains.strength = statGainAmount;
+          break;
+        case 'stamina':
+          statGains.stamina = statGainAmount;
+          break;
+        case 'agility':
+          statGains.agility = statGainAmount;
+          break;
+      }
+    }
+    
+    // Calculate final stats after stat gains are determined
+    const newEnergy = energy - energySpent;
+    const newXp = save.xp + xpGained;
+    const newLevel = levelFromXp(newXp);
+    const newStrength = save.strength + statGains.strength;
+    const newStamina = save.stamina + statGains.stamina;
+    const newAgility = save.agility + statGains.agility;
+    
+    // Calculate proficiency points gained from level up
+    const oldLevel = save.level;
+    const ppGained = newLevel > oldLevel ? calculatePPGained(newLevel) : 0;
+    const newProficiencyPoints = save.proficiencyPoints + ppGained;
+    
+    // Calculate base proficiency gain (use reset daily values if needed)
+    const dailyEnergyForCalc = shouldResetDaily ? 0 : currentDailyEnergy;
     let proficiencyResult = gainProficiency(
       currentProficiency,
-      currentDailyEnergy,
+      dailyEnergyForCalc,
       energySpent,
       intensity,
       grade
@@ -247,6 +267,11 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       proficiencyResult.deltaGained = Math.round(proficiencyResult.deltaGained * 1.05);
       proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.deltaGained);
     }
+
+    // Calculate new daily stat gains for response
+    const newDailyStatGains = shouldResetDaily ? 
+      (statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0) :
+      (currentDailyStatGains + (statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0));
 
     await prisma.$transaction(async (tx) => {
           // Update save
@@ -283,10 +308,14 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         exerciseId: exercise.id,
         currentProficiency,
         currentDailyEnergy,
+        currentDailyStatGains,
+        shouldResetDaily,
         intensity,
         grade,
         deltaGained: proficiencyResult.deltaGained,
-        newProficiency: proficiencyResult.newProficiency
+        newProficiency: proficiencyResult.newProficiency,
+        statGains,
+        newDailyStatGains
       });
 
       if (existingProficiency) {
@@ -294,25 +323,30 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           where: { id: existingProficiency.id },
           data: {
             proficiency: proficiencyResult.newProficiency,
-            dailyEnergy: proficiencyResult.newDailyEnergy,
+            dailyEnergy: shouldResetDaily ? energySpent : proficiencyResult.newDailyEnergy,
+            dailyStatGains: newDailyStatGains,
+            lastDailyReset: shouldResetDaily ? now : existingProficiency.lastDailyReset,
             totalReps: existingProficiency.totalReps + reps,
           }
         });
-        console.log(`Updated proficiency from ${currentProficiency} to ${proficiencyResult.newProficiency}`);
+        console.log(`Updated proficiency from ${currentProficiency} to ${proficiencyResult.newProficiency}, daily stat gains: ${newDailyStatGains}`);
       } else {
         await tx.exerciseProficiency.create({
           data: {
             userId,
             exerciseId: exercise.id,
             proficiency: proficiencyResult.newProficiency,
-            dailyEnergy: proficiencyResult.newDailyEnergy,
+            dailyEnergy: energySpent,
+            dailyStatGains: statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0,
+            lastDailyReset: now,
             totalReps: reps,
           }
         });
-        console.log(`Created new proficiency: ${proficiencyResult.newProficiency}`);
+        console.log(`Created new proficiency: ${proficiencyResult.newProficiency}, daily stat gains: ${statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0}`);
       }
     });
 
+        console.log('=== WORKOUT SUCCESS ===');
         res.json({ 
           energySpent, 
           xpGained, 
@@ -323,6 +357,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           ppGained,
           proficiencyPointsAfter: newProficiencyPoints,
           statGains,
+          dailyStatGainsUsed: newDailyStatGains,
+          maxDailyStatGains: 5,
           statsAfter: {
             strength: newStrength,
             stamina: newStamina,
@@ -333,7 +369,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         });
   } catch (error) {
     console.error('Workout error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 };
 

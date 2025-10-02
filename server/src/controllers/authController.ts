@@ -50,14 +50,7 @@ export const signup = async (req: Request, res: Response) => {
         },
       });
 
-      // Create profile and save
-      await tx.profile.create({
-        data: {
-          userId: newUser.id,
-          displayName: username,
-        },
-      });
-
+      // Create save
       await tx.save.create({
         data: {
           userId: newUser.id,
@@ -67,9 +60,8 @@ export const signup = async (req: Request, res: Response) => {
           strength: 1,
           stamina: 1,
           agility: 1,
-          injury: 0,
-          spriteStage: 0,
           proficiencyPoints: 0,
+          cash: 500,
         },
       });
 
