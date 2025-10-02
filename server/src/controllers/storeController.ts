@@ -153,13 +153,16 @@ export const purchaseItem = async (req: Request, res: Response) => {
       success: true,
       message: `Purchased ${shopItem.name}`,
       cashAfter: newCash,
-      energy: newEnergy,
-      stats: {
+      energyAfter: newEnergy,
+      maxEnergyAfter: newMaxEnergy,
+      statsAfter: {
         strength: newStrength,
         stamina: newStamina,
-        agility: newAgility
+        agility: newAgility,
+        level: save.level,
+        xp: save.xp
       },
-      maxEnergy: newMaxEnergy
+      proficiencyPointsAfter: save.proficiencyPoints
     });
 
   } catch (error) {

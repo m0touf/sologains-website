@@ -127,49 +127,6 @@ export default function GamePage() {
     }
   };
 
-  const handlePurchase = async (item: string, cost: number) => {
-    if (!token) return;
-    
-    try {
-      const res = await fetch("http://localhost:4000/api/purchase-item", {
-        method: "POST",
-        headers: { 
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ itemName: item })
-      });
-      
-      if (!res.ok) {
-        const error = await res.json();
-        console.error("Purchase failed:", error);
-        alert(`Purchase failed: ${error.error}`);
-        return;
-      }
-      
-      const data = await res.json();
-      
-      // Update game state with purchase results
-      setFromServer({
-        cash: data.cashAfter,
-        energy: data.statsAfter.energy,
-        stats: {
-          strength: data.statsAfter.strength,
-          stamina: data.statsAfter.stamina,
-          agility: data.statsAfter.agility,
-          level: data.statsAfter.level,
-          xp: data.statsAfter.xp
-        }
-      });
-      
-      // Show success message
-      alert(`Successfully purchased ${item} for $${cost}!`);
-      
-    } catch (error) {
-      console.error("Network error:", error);
-      alert(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  };
 
 
 
@@ -212,7 +169,7 @@ export default function GamePage() {
       case 'gym':
         return <GymScreen onBack={() => setCurrentScreen('home')} onWorkout={doWorkout} />;
       case 'store':
-        return <StoreScreen onBack={() => setCurrentScreen('home')} onPurchase={handlePurchase} />;
+        return <StoreScreen onBack={() => setCurrentScreen('home')} />;
       case 'adventures':
         return <AdventuresScreen onBack={() => setCurrentScreen('home')} />;
       case 'research':

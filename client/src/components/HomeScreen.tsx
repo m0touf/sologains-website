@@ -11,6 +11,18 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
   const level = getCurrentLevel();
   const xpProgress = getXpProgress();
 
+  // Safety check for stats
+  if (!stats) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100">
+        <div className="text-center">
+          <div className="text-2xl mb-4 font-black text-gray-700" style={{ fontFamily: 'monospace' }}>LOADING</div>
+          <div className="text-gray-700 font-bold">Loading character data...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 relative overflow-hidden">
       {/* Background Image */}
