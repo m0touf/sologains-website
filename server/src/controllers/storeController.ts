@@ -116,6 +116,9 @@ export const purchaseItem = async (req: Request, res: Response) => {
     let newStamina = save.stamina;
     let newAgility = save.agility;
     let newMaxEnergy = save.maxEnergy || 100;
+    let newXp = save.xp;
+    let newXpBoostRemaining = save.xpBoostRemaining || 0;
+    let newLuckBoostPercent = save.luckBoostPercent || 0;
 
     switch (shopItem.type) {
       case 'energy_restore':
@@ -128,12 +131,43 @@ export const purchaseItem = async (req: Request, res: Response) => {
         break;
       case 'max_energy':
         newMaxEnergy += shopItem.effectValue;
-        newEnergy = newMaxEnergy; // Fill energy when increasing max
+        newEnergy += shopItem.effectValue; // Add the same amount to current energy
         break;
       case 'full_restore':
         newEnergy = newMaxEnergy;
         break;
-      // Note: Other effects like xp_boost, proficiency_boost, etc. would need more complex implementation
+      case 'xp_boost':
+        // Add XP boost for next 5 workouts
+        newXpBoostRemaining += shopItem.effectValue;
+        break;
+      case 'proficiency_boost':
+        // This would need user to select which exercise to boost
+        // For now, we'll skip this implementation
+        // TODO: Implement exercise selection system
+        break;
+      case 'daily_reset':
+        // Reset daily stat gain limits for all exercises
+        await prisma.exerciseProficiency.updateMany({
+          where: { userId },
+          data: {
+            dailyStatGains: 0,
+            dailyEnergy: 0,
+            lastDailyReset: new Date().toISOString().split('T')[0] // Today's date
+          }
+        });
+        break;
+      case 'luck_boost':
+        // Add luck boost percentage
+        newLuckBoostPercent += shopItem.effectValue;
+        break;
+      case 'master_package':
+        // All stats +2, energy +20, XP +100
+        newStrength += 2;
+        newStamina += 2;
+        newAgility += 2;
+        newEnergy = Math.min(newMaxEnergy, newEnergy + 20);
+        newXp += 100;
+        break;
     }
 
     // Update save data
@@ -145,7 +179,10 @@ export const purchaseItem = async (req: Request, res: Response) => {
         strength: newStrength,
         stamina: newStamina,
         agility: newAgility,
-        maxEnergy: newMaxEnergy
+        maxEnergy: newMaxEnergy,
+        xp: newXp,
+        xpBoostRemaining: newXpBoostRemaining,
+        luckBoostPercent: newLuckBoostPercent
       }
     });
 
@@ -160,7 +197,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
         stamina: newStamina,
         agility: newAgility,
         level: save.level,
-        xp: save.xp
+        xp: newXp
       },
       proficiencyPointsAfter: save.proficiencyPoints
     });

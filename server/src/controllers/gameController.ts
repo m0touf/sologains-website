@@ -248,6 +248,12 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       }
     }
 
+    // Apply XP boost if available
+    if (save.xpBoostRemaining && save.xpBoostRemaining > 0) {
+      xpGained = Math.round(xpGained * 2); // Double XP
+      console.log(`XP Boost applied! XP gained: ${xpGained}`);
+    }
+
     // Check if user has enough energy
     if (energy < energySpent) {
       return res.status(400).json({ error: 'Not enough energy' });
@@ -353,6 +359,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
               stamina: newStamina,
               agility: newAgility,
               proficiencyPoints: newProficiencyPoints,
+              xpBoostRemaining: save.xpBoostRemaining && save.xpBoostRemaining > 0 ? save.xpBoostRemaining - 1 : 0,
               lastEnergyResetDate: new Date(),
             },
           });

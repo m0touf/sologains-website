@@ -10,11 +10,12 @@ interface AdventuresScreenProps {
 }
 
 export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
-  const { energy, adventures, setAdventures, attemptAdventure } = useGameStore();
+  const { energy, adventures, setAdventures, setFromServer } = useGameStore();
   const [loading, setLoading] = useState(true);
   const [attempting, setAttempting] = useState<string | null>(null);
   const [dailyAttempts, setDailyAttempts] = useState(0);
   const [inProgressAdventures, setInProgressAdventures] = useState<any[]>([]);
+  const [completedAdventures, setCompletedAdventures] = useState<string[]>([]);
 
   // Load daily adventures on component mount
   useEffect(() => {
@@ -54,10 +55,15 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     return inProgressAdventures.find(adv => adv.adventureId === adventureId);
   };
 
+  // Check if adventure is completed
+  const isAdventureCompleted = (adventureId: string) => {
+    return completedAdventures.includes(adventureId);
+  };
+
   const handleAttemptAdventure = async (adventureId: string) => {
     setAttempting(adventureId);
     try {
-      const result = await attemptAdventure(adventureId);
+      const result = await apiClient.attemptAdventure(adventureId);
       if (result) {
         if (result.adventureStarted) {
           // Refresh daily attempts and in-progress adventures
@@ -108,29 +114,74 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
 
       const result = await apiClient.checkAdventureCompletions();
       if (result.completedAdventures.length > 0) {
-        // Refresh game state and in-progress adventures
-        window.location.reload();
+        // Track completed adventures
+        const newCompletedAdventures = result.completedAdventures.map(adv => adv.adventureId).filter(Boolean);
+        setCompletedAdventures(prev => [...prev, ...newCompletedAdventures]);
+        
+        // Refresh game state with updated data
+        const save = await apiClient.getSave();
+        setFromServer({
+          energy: save.energy,
+          xp: save.xp,
+          level: save.level,
+          stats: {
+            strength: save.strength,
+            stamina: save.stamina,
+            agility: save.agility,
+            level: save.level,
+            xp: save.xp
+          },
+          proficiencyPoints: save.proficiencyPoints,
+          cash: save.cash,
+          ExerciseProficiencies: save.ExerciseProficiencies || [],
+          ResearchUpgrades: save.ResearchUpgrades || []
+        });
+        
+        // Refresh in-progress adventures and daily attempts
+        loadInProgressAdventures();
+        loadCurrentSave();
       }
     } catch (error) {
       console.error('Error checking completed adventures:', error);
     }
   };
 
-  // Check for completed adventures every 30 seconds and load in-progress adventures
-  useEffect(() => {
-    const interval = setInterval(() => {
+    // Check for completed adventures every 30 seconds and load in-progress adventures
+    useEffect(() => {
+      const interval = setInterval(() => {
+        checkCompletedAdventures();
+        loadInProgressAdventures();
+        loadCurrentSave(); // Also refresh daily attempts
+      }, 30000);
+      
+      // Check immediately on load
       checkCompletedAdventures();
       loadInProgressAdventures();
-      loadCurrentSave(); // Also refresh daily attempts
-    }, 30000);
-    
-    // Check immediately on load
-    checkCompletedAdventures();
-    loadInProgressAdventures();
-    loadCurrentSave();
-    
-    return () => clearInterval(interval);
-  }, []);
+      loadCurrentSave();
+      
+      return () => clearInterval(interval);
+    }, []);
+
+    // Load completed adventures from adventure history on page load
+    useEffect(() => {
+      const loadCompletedAdventures = async () => {
+        try {
+          const token = useAuthStore.getState().token;
+          if (!token) return;
+
+          const history = await apiClient.getAdventureHistory();
+          const completed = history
+            .filter((attempt: any) => attempt.status === "completed")
+            .map((attempt: any) => attempt.adventureId);
+          
+          setCompletedAdventures(completed);
+        } catch (error) {
+          console.error('Error loading completed adventures:', error);
+        }
+      };
+
+      loadCompletedAdventures();
+    }, []);
 
   if (loading) {
     return (
@@ -217,11 +268,13 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                 <div
                   key={adventure.id}
                   className={`p-6 rounded-xl border-2 border-black shadow-xl transition-all duration-300 flex flex-col transform hover:scale-105 hover:shadow-2xl ${
-                    isAdventureInProgress(adventure.id)
-                      ? `${getDifficultyBg(adventure.difficulty)} cursor-default`
-                      : adventure.canAttempt && energy >= adventure.energyCost && dailyAttempts < 2 && inProgressAdventures.length === 0
-                        ? `${getDifficultyBg(adventure.difficulty)} cursor-pointer hover:brightness-110`
-                        : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
+                    isAdventureCompleted(adventure.id)
+                      ? 'bg-green-300 border-green-500 opacity-80 cursor-not-allowed'
+                      : isAdventureInProgress(adventure.id)
+                        ? `${getDifficultyBg(adventure.difficulty)} cursor-default`
+                        : adventure.canAttempt && energy >= adventure.energyCost && dailyAttempts < 2 && inProgressAdventures.length === 0
+                          ? `${getDifficultyBg(adventure.difficulty)} cursor-pointer hover:brightness-110`
+                          : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
                   }`}
                   style={{ imageRendering: 'pixelated' }}
                 >
@@ -270,7 +323,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                       </div>
                     </div>
                   </div>
-                    
+                  
                   {/* Requirements */}
                   {(adventure.strengthReq > 0 || adventure.staminaReq > 0) && (
                     <div className="mb-4">
@@ -318,29 +371,31 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                   
                   {/* Only show button if adventure is not in progress */}
                   {!isAdventureInProgress(adventure.id) && (
-                    <button
+                  <button
                       onClick={() => handleAttemptAdventure(adventure.id)}
-                      disabled={!adventure.canAttempt || energy < adventure.energyCost || attempting === adventure.id || dailyAttempts >= 2 || inProgressAdventures.length > 0}
+                      disabled={!adventure.canAttempt || energy < adventure.energyCost || attempting === adventure.id || dailyAttempts >= 2 || inProgressAdventures.length > 0 || isAdventureCompleted(adventure.id)}
                       className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black mt-auto transform hover:scale-105 ${
-                        adventure.canAttempt && energy >= adventure.energyCost && attempting !== adventure.id && dailyAttempts < 2 && inProgressAdventures.length === 0
-                          ? 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white hover:shadow-xl hover:ring-purple-300'
+                        adventure.canAttempt && energy >= adventure.energyCost && attempting !== adventure.id && dailyAttempts < 2 && inProgressAdventures.length === 0 && !isAdventureCompleted(adventure.id)
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white hover:shadow-xl hover:ring-blue-300'
                           : 'bg-gray-500 text-gray-300 cursor-not-allowed opacity-60'
                       }`}
                       style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
                     >
                       {attempting === adventure.id 
                         ? 'ATTEMPTING...' 
-                        : inProgressAdventures.length > 0
-                          ? 'ADVENTURE IN PROGRESS'
-                          : dailyAttempts >= 2
-                            ? 'DAILY LIMIT REACHED'
-                            : !adventure.canAttempt 
-                              ? 'REQUIREMENTS NOT MET'
-                              : energy < adventure.energyCost 
-                                ? 'NOT ENOUGH ENERGY'
-                                : 'ATTEMPT ADVENTURE'
+                        : isAdventureCompleted(adventure.id)
+                          ? 'COMPLETED'
+                          : inProgressAdventures.length > 0
+                            ? 'ADVENTURE IN PROGRESS'
+                            : dailyAttempts >= 2
+                              ? 'DAILY LIMIT REACHED'
+                              : !adventure.canAttempt 
+                                ? 'REQUIREMENTS NOT MET'
+                                : energy < adventure.energyCost 
+                                  ? 'NOT ENOUGH ENERGY'
+                                  : 'ATTEMPT ADVENTURE'
                       }
-                    </button>
+                  </button>
                   )}
                 </div>
               ))}

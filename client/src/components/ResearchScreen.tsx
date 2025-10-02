@@ -67,7 +67,7 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
       
       <div className="relative z-10 h-full flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b-4 border-black bg-gradient-to-r from-amber-200 to-orange-200">
+        <div className="p-6 border-b-2 border-black bg-gradient-to-r from-amber-200 to-orange-200">
           <div className="flex items-center justify-between">
             <button
               onClick={onBack}

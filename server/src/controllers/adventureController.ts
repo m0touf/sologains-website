@@ -325,6 +325,7 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
 
       if (updatedSave) {
         results.push({
+          adventureId: attempt.adventureId,
           adventureName: attempt.Adventure.name,
           success: attempt.success,
           xpGained: attempt.xpGained,
