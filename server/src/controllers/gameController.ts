@@ -254,6 +254,17 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       console.log(`XP Boost applied! XP gained: ${xpGained}`);
     }
 
+    // Apply luck boost for bonus rewards
+    let bonusReward = false;
+    if (save.luckBoostPercent && save.luckBoostPercent > 0) {
+      const luckChance = save.luckBoostPercent / 100; // Convert percentage to decimal
+      if (Math.random() < luckChance) {
+        bonusReward = true;
+        xpGained = Math.round(xpGained * 1.5); // 50% bonus XP
+        console.log(`Luck Boost triggered! Bonus XP gained: ${xpGained}`);
+      }
+    }
+
     // Check if user has enough energy
     if (energy < energySpent) {
       return res.status(400).json({ error: 'Not enough energy' });
@@ -342,6 +353,13 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.deltaGained);
     }
 
+    // Apply proficiency boost if available
+    if (save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0) {
+      proficiencyResult.deltaGained = Math.round(proficiencyResult.deltaGained * 2); // Double proficiency gain
+      proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.deltaGained);
+      console.log(`Proficiency Boost applied! Proficiency gained: ${proficiencyResult.deltaGained}`);
+    }
+
     // Calculate new daily stat gains for response
     const newDailyStatGains = shouldResetDaily ? 
       (statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0) :
@@ -360,6 +378,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
               agility: newAgility,
               proficiencyPoints: newProficiencyPoints,
               xpBoostRemaining: save.xpBoostRemaining && save.xpBoostRemaining > 0 ? save.xpBoostRemaining - 1 : 0,
+              proficiencyBoostRemaining: save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0 ? save.proficiencyBoostRemaining - 1 : 0,
               lastEnergyResetDate: new Date(),
             },
           });
@@ -440,7 +459,11 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             agility: newAgility,
             level: newLevel,
             xp: newXp
-          }
+          },
+          xpBoostRemaining: save.xpBoostRemaining && save.xpBoostRemaining > 0 ? save.xpBoostRemaining - 1 : 0,
+          proficiencyBoostRemaining: save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0 ? save.proficiencyBoostRemaining - 1 : 0,
+          bonusReward: bonusReward,
+          luckBoostPercent: save.luckBoostPercent || 0
         });
   } catch (error) {
     console.error('Workout error:', error);

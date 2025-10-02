@@ -289,12 +289,27 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
         const save = await tx.save.findUnique({ where: { userId } });
         if (!save) return null;
 
+        // Apply luck boost for bonus rewards
+        let bonusReward = false;
+        let xpGained = attempt.xpGained;
+        let cashGained = attempt.cashGained;
+        
+        if (save.luckBoostPercent && save.luckBoostPercent > 0) {
+          const luckChance = save.luckBoostPercent / 100; // Convert percentage to decimal
+          if (Math.random() < luckChance) {
+            bonusReward = true;
+            xpGained = Math.round(xpGained * 1.5); // 50% bonus XP
+            cashGained = Math.round(cashGained * 1.3); // 30% bonus cash
+            console.log(`Adventure Luck Boost triggered! Bonus XP: ${xpGained}, Bonus Cash: ${cashGained}`);
+          }
+        }
+
         // Calculate new stats
-        const newXp = save.xp + attempt.xpGained;
+        const newXp = save.xp + xpGained;
         const newStrength = save.strength + statGains.strength;
         const newStamina = save.stamina + statGains.stamina;
         const newAgility = save.agility + statGains.agility;
-        const newCash = save.cash + attempt.cashGained;
+        const newCash = save.cash + cashGained;
 
         // Calculate new level
         const newLevel = calculateLevel(newXp);
@@ -328,9 +343,10 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
           adventureId: attempt.adventureId,
           adventureName: attempt.Adventure.name,
           success: attempt.success,
-          xpGained: attempt.xpGained,
+          xpGained: xpGained,
           statGains,
-          cashGained: attempt.cashGained,
+          cashGained: cashGained,
+          bonusReward: bonusReward,
           statsAfter: {
             strength: updatedSave.strength,
             stamina: updatedSave.stamina,

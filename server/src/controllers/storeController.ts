@@ -118,6 +118,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
     let newMaxEnergy = save.maxEnergy || 100;
     let newXp = save.xp;
     let newXpBoostRemaining = save.xpBoostRemaining || 0;
+    let newProficiencyBoostRemaining = save.proficiencyBoostRemaining || 0;
     let newLuckBoostPercent = save.luckBoostPercent || 0;
 
     switch (shopItem.type) {
@@ -141,9 +142,8 @@ export const purchaseItem = async (req: Request, res: Response) => {
         newXpBoostRemaining += shopItem.effectValue;
         break;
       case 'proficiency_boost':
-        // This would need user to select which exercise to boost
-        // For now, we'll skip this implementation
-        // TODO: Implement exercise selection system
+        // Add proficiency boost for next X workouts
+        newProficiencyBoostRemaining += shopItem.effectValue;
         break;
       case 'daily_reset':
         // Reset daily stat gain limits for all exercises
@@ -182,6 +182,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
         maxEnergy: newMaxEnergy,
         xp: newXp,
         xpBoostRemaining: newXpBoostRemaining,
+        proficiencyBoostRemaining: newProficiencyBoostRemaining,
         luckBoostPercent: newLuckBoostPercent
       }
     });
@@ -199,7 +200,10 @@ export const purchaseItem = async (req: Request, res: Response) => {
         level: save.level,
         xp: newXp
       },
-      proficiencyPointsAfter: save.proficiencyPoints
+      proficiencyPointsAfter: save.proficiencyPoints,
+      xpBoostRemaining: newXpBoostRemaining,
+      proficiencyBoostRemaining: newProficiencyBoostRemaining,
+      luckBoostPercent: newLuckBoostPercent
     });
 
   } catch (error) {

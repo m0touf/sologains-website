@@ -36,6 +36,7 @@ model Save {
   dailyAdventureAttempts Int   @default(0) // how many adventures attempted today
   lastAdventureReset   DateTime? // when daily adventure count was last reset
   xpBoostRemaining    Int     @default(0) // remaining XP boost workouts
+  proficiencyBoostRemaining Int @default(0) // remaining proficiency boost workouts
   luckBoostPercent    Int     @default(0) // luck boost percentage
   updatedAt            DateTime @updatedAt
   ExerciseProficiencies ExerciseProficiency[]

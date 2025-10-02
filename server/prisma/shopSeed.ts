@@ -39,14 +39,15 @@ const shopItems = [
   { name: 'Legendary Stamina', description: '+5 permanent stamina', category: 'supplements', cost: 200, icon: 'LEG+5', type: 'stat_boost', effectValue: 5, statType: 'stamina' },
   { name: 'Mythical Agility', description: '+5 permanent agility', category: 'supplements', cost: 200, icon: 'MYTH+5', type: 'stat_boost', effectValue: 5, statType: 'agility' },
 
-  // Special Items (8 items) - Premium items for advanced players
-  { name: 'Energy Capsule', description: 'Increase max energy by 10', category: 'special_items', cost: 150, icon: 'ENERGY', type: 'max_energy', effectValue: 10, statType: null },
-  { name: 'Training Manual', description: 'Double XP for next 5 workouts', category: 'special_items', cost: 100, icon: 'BOOK', type: 'xp_boost', effectValue: 5, statType: null },
-  { name: 'Recovery Kit', description: 'Instant energy reset', category: 'special_items', cost: 80, icon: 'KIT', type: 'full_restore', effectValue: 100, statType: null },
-  { name: 'Proficiency Booster', description: '+50 proficiency in any exercise', category: 'special_items', cost: 120, icon: 'PROF+', type: 'proficiency_boost', effectValue: 50, statType: null },
-  { name: 'Daily Reset Token', description: 'Reset daily stat gain limits', category: 'special_items', cost: 60, icon: 'RESET', type: 'daily_reset', effectValue: 1, statType: null },
-  { name: 'Luck Charm', description: '+10% chance for bonus rewards', category: 'special_items', cost: 90, icon: 'LUCK', type: 'luck_boost', effectValue: 10, statType: null },
-  { name: 'Master Package', description: 'All stats +2, energy +20, XP +100', category: 'special_items', cost: 300, icon: 'MASTER', type: 'master_package', effectValue: 1, statType: null },
+  // Special Items (8 items) - Gym-based performance enhancers
+  { name: 'Anabolic Steroids', description: 'Double XP gain for next 5 workouts', category: 'special_items', cost: 120, icon: 'STEROID', type: 'xp_boost', effectValue: 5, statType: null },
+  { name: 'Growth Hormone', description: 'Double proficiency gain for next 5 workouts', category: 'special_items', cost: 150, icon: 'HGH', type: 'proficiency_boost', effectValue: 5, statType: null },
+  { name: 'Creatine Loading', description: 'Increase max energy by 15', category: 'special_items', cost: 100, icon: 'CREATINE', type: 'max_energy', effectValue: 15, statType: null },
+  { name: 'Beta-Alanine', description: 'Instant energy reset', category: 'special_items', cost: 80, icon: 'BETA', type: 'full_restore', effectValue: 100, statType: null },
+  { name: 'Peptide Stack', description: 'Reset daily stat gain limits', category: 'special_items', cost: 90, icon: 'PEPTIDE', type: 'daily_reset', effectValue: 1, statType: null },
+  { name: 'Testosterone Booster', description: '+15% chance for bonus rewards', category: 'special_items', cost: 110, icon: 'TESTO', type: 'luck_boost', effectValue: 15, statType: null },
+  { name: 'Pre-Workout Stack', description: 'All stats +3, energy +25, XP +150', category: 'special_items', cost: 250, icon: 'STACK', type: 'master_package', effectValue: 1, statType: null },
+  { name: 'Recovery Protocol', description: 'Triple XP gain for next 3 workouts', category: 'special_items', cost: 180, icon: 'RECOVERY', type: 'xp_boost', effectValue: 3, statType: null },
 ];
 
 async function seedShopItems() {
