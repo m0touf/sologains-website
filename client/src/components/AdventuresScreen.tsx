@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../game/store';
 import { useAuthStore } from '../stores/authStore';
+import { apiClient } from '../lib/api';
+import { getTimeRemaining, getDifficultyColor, getDifficultyBg, getDifficultyIcon } from '../lib/utils';
+import { showUserError } from '../lib/errorHandler';
 
 interface AdventuresScreenProps {
   onBack: () => void;
@@ -10,6 +13,8 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   const { energy, adventures, setAdventures, attemptAdventure } = useGameStore();
   const [loading, setLoading] = useState(true);
   const [attempting, setAttempting] = useState<string | null>(null);
+  const [dailyAttempts, setDailyAttempts] = useState(0);
+  const [inProgressAdventures, setInProgressAdventures] = useState<any[]>([]);
 
   // Load daily adventures on component mount
   useEffect(() => {
@@ -24,27 +29,12 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
         }
 
         console.log('Loading adventures...');
-        console.log('Using token:', token.substring(0, 20) + '...');
-        const response = await fetch("http://localhost:4000/api/adventures", {
-          headers: { 
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        });
-        
-        console.log('Adventures response status:', response.status);
-        console.log('Adventures response headers:', response.headers);
-        if (response.ok) {
-          const dailyAdventures = await response.json();
-          console.log('Loaded adventures:', dailyAdventures.length);
-          console.log('Sample adventure:', dailyAdventures[0]);
-          setAdventures(dailyAdventures);
-        } else {
-          const error = await response.text();
-          console.error('Adventures API error:', error);
-        }
+        const dailyAdventures = await apiClient.getDailyAdventures();
+        console.log('Loaded adventures:', dailyAdventures.length);
+        console.log('Sample adventure:', dailyAdventures[0]);
+        setAdventures(dailyAdventures);
       } catch (error) {
-        console.error("Failed to load adventures:", error);
+        console.error("Failed to load adventures:", showUserError(error, "Loading adventures"));
       } finally {
         setLoading(false);
       }
@@ -53,34 +43,15 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     loadAdventures();
   }, [setAdventures]);
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'text-green-400';
-      case 'medium': return 'text-blue-400';
-      case 'hard': return 'text-orange-400';
-      case 'legendary': return 'text-purple-400';
-      default: return 'text-zinc-400';
-    }
+
+  // Check if adventure is in progress
+  const isAdventureInProgress = (adventureId: string) => {
+    return inProgressAdventures.some(adv => adv.adventureId === adventureId);
   };
 
-  const getDifficultyBg = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'bg-green-500/20 border-green-500/30';
-      case 'medium': return 'bg-blue-500/20 border-blue-500/30';
-      case 'hard': return 'bg-orange-500/20 border-orange-500/30';
-      case 'legendary': return 'bg-purple-500/20 border-purple-500/30';
-      default: return 'bg-zinc-500/20 border-zinc-500/30';
-    }
-  };
-
-  const getDifficultyIcon = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'EASY';
-      case 'medium': return 'MED';
-      case 'hard': return 'HARD';
-      case 'legendary': return 'LEG';
-      default: return '???';
-    }
+  // Get in-progress adventure data
+  const getInProgressAdventure = (adventureId: string) => {
+    return inProgressAdventures.find(adv => adv.adventureId === adventureId);
   };
 
   const handleAttemptAdventure = async (adventureId: string) => {
@@ -88,16 +59,78 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     try {
       const result = await attemptAdventure(adventureId);
       if (result) {
-        if (result.success) {
-          alert(`Adventure successful! Gained ${result.xpGained} XP, $${result.cashGained} cash, and stats!`);
-        } else {
-          alert(`Adventure failed, but you gained ${result.xpGained} XP for trying!`);
+        if (result.adventureStarted) {
+          // Refresh daily attempts and in-progress adventures
+          loadCurrentSave();
+          loadInProgressAdventures();
         }
       }
     } finally {
       setAttempting(null);
     }
   };
+
+  // Load current save data to get daily attempts
+  const loadCurrentSave = async () => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) return;
+
+      const save = await apiClient.getSave();
+      setDailyAttempts(save.dailyAdventureAttempts || 0);
+    } catch (error) {
+      console.error('Error loading save data:', error);
+    }
+  };
+
+  // Load in-progress adventures
+  const loadInProgressAdventures = async () => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) return;
+
+      const attempts = await apiClient.getAdventureHistory();
+      const inProgress = attempts.filter((attempt: any) => 
+        attempt.status === "in_progress" && 
+        new Date(attempt.completedAt) > new Date()
+      );
+      setInProgressAdventures(inProgress);
+    } catch (error) {
+      console.error('Error loading in-progress adventures:', error);
+    }
+  };
+
+  // Check for completed adventures
+  const checkCompletedAdventures = async () => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) return;
+
+      const result = await apiClient.checkAdventureCompletions();
+      if (result.completedAdventures.length > 0) {
+        // Refresh game state and in-progress adventures
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error checking completed adventures:', error);
+    }
+  };
+
+  // Check for completed adventures every 30 seconds and load in-progress adventures
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkCompletedAdventures();
+      loadInProgressAdventures();
+      loadCurrentSave(); // Also refresh daily attempts
+    }, 30000);
+    
+    // Check immediately on load
+    checkCompletedAdventures();
+    loadInProgressAdventures();
+    loadCurrentSave();
+    
+    return () => clearInterval(interval);
+  }, []);
 
   if (loading) {
     return (
@@ -148,98 +181,167 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
 
         {/* Adventures */}
         <div className="flex-1 p-6 overflow-y-auto">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-6">
-              <h2 className="text-2xl font-black text-gray-800 mb-2" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
-                DAILY ADVENTURES
-              </h2>
-              <p className="text-gray-700" style={{ fontFamily: 'monospace' }}>
-                Complete adventures to earn XP and stats. Higher difficulty adventures require more skill but give better rewards!
-              </p>
+          <div className="max-w-7xl mx-auto">
+            {/* Header Section */}
+            <div className="mb-8">
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-black text-gray-800 mb-3" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
+                  DAILY ADVENTURES
+                </h2>
+                <p className="text-gray-600 text-lg max-w-2xl mx-auto" style={{ fontFamily: 'monospace' }}>
+                  Complete adventures to earn XP and stats. Higher difficulty adventures require more skill but give better rewards!
+                </p>
+              </div>
+              
+              {/* Daily Attempts Counter */}
+              <div className="bg-gradient-to-r from-red-900 to-red-800 backdrop-blur-sm p-4 ring-2 ring-red-600 shadow-xl rounded-xl max-w-sm mx-auto">
+                <div className="text-center">
+                  <div className="text-white font-black text-sm mb-1" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                    DAILY ADVENTURES
+                  </div>
+                  <div className="text-red-200 font-black text-xl" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                    {dailyAttempts}/2 attempts used today
+                  </div>
+                  <div className="w-full bg-red-700 rounded-full h-2 mt-2">
+                    <div 
+                      className="bg-red-300 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${(dailyAttempts / 2) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {adventures.map((adventure) => (
                 <div
                   key={adventure.id}
-                  className={`p-6 rounded-lg border-2 border-black shadow-lg transition-all duration-300 ${
-                    adventure.canAttempt && energy >= adventure.energyCost
-                      ? `${getDifficultyBg(adventure.difficulty)} hover:scale-105 cursor-pointer`
-                      : 'bg-gray-300 border-gray-500 opacity-50'
+                  className={`p-6 rounded-xl border-2 border-black shadow-xl transition-all duration-300 flex flex-col transform hover:scale-105 hover:shadow-2xl ${
+                    isAdventureInProgress(adventure.id)
+                      ? `${getDifficultyBg(adventure.difficulty)} cursor-default`
+                      : adventure.canAttempt && energy >= adventure.energyCost && dailyAttempts < 2 && inProgressAdventures.length === 0
+                        ? `${getDifficultyBg(adventure.difficulty)} cursor-pointer hover:brightness-110`
+                        : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
                   }`}
                   style={{ imageRendering: 'pixelated' }}
                 >
+                  {/* Header */}
                   <div className="flex items-start justify-between mb-4">
-                    <div className="text-4xl">{getDifficultyIcon(adventure.difficulty)}</div>
-                    <div className={`text-sm font-black px-2 py-1 rounded ring-2 ring-black ${getDifficultyBg(adventure.difficulty)} ${getDifficultyColor(adventure.difficulty)}`} style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                    <div className="text-3xl opacity-80">{getDifficultyIcon(adventure.difficulty)}</div>
+                    <div className={`text-xs font-black px-3 py-1 rounded-full ring-2 ring-black ${getDifficultyBg(adventure.difficulty)} ${getDifficultyColor(adventure.difficulty)}`} style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
                       {adventure.difficulty.toUpperCase()}
                     </div>
                   </div>
                   
-                  <h3 className="text-lg font-black text-gray-800 mb-2" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-                    {adventure.name}
-                  </h3>
-                  <p className="text-sm text-gray-700 mb-4" style={{ fontFamily: 'monospace' }}>
-                    {adventure.description}
-                  </p>
-                  
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>ENERGY COST:</span>
-                      <span className="text-red-600 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                        {adventure.energyCost}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>XP REWARD:</span>
-                      <span className="text-blue-600 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                        {adventure.xpReward}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>CASH REWARD:</span>
-                      <span className="text-yellow-600 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                        ${adventure.cashReward}
-                      </span>
-                    </div>
-                    {(adventure.strengthReq > 0 || adventure.staminaReq > 0) && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>REQUIREMENTS:</span>
-                        <div className="flex space-x-2">
-                          {adventure.strengthReq > 0 && (
-                            <span className="text-red-600 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                              STR {adventure.strengthReq}
-                            </span>
-                          )}
-                          {adventure.staminaReq > 0 && (
-                            <span className="text-green-600 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                              STA {adventure.staminaReq}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                  {/* Title and Description */}
+                  <div className="mb-4">
+                    <h3 className="text-lg font-black text-gray-800 mb-2 leading-tight" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
+                      {adventure.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed" style={{ fontFamily: 'monospace' }}>
+                      {adventure.description}
+                    </p>
                   </div>
                   
-                  <button
-                    onClick={() => handleAttemptAdventure(adventure.id)}
-                    disabled={!adventure.canAttempt || energy < adventure.energyCost || attempting === adventure.id}
-                    className={`w-full py-2 px-4 rounded-lg font-black transition-all duration-200 ring-2 ring-black ${
-                      adventure.canAttempt && energy >= adventure.energyCost && attempting !== adventure.id
-                        ? 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white hover:shadow-lg'
-                        : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                    }`}
-                    style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
-                  >
-                    {attempting === adventure.id 
-                      ? 'ATTEMPTING...' 
-                      : !adventure.canAttempt 
-                        ? 'REQUIREMENTS NOT MET'
-                        : energy < adventure.energyCost 
-                          ? 'NOT ENOUGH ENERGY'
-                          : 'ATTEMPT ADVENTURE'
-                    }
-                  </button>
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 ring-1 ring-black/20">
+                      <div className="text-xs text-gray-600 font-bold mb-1" style={{ fontFamily: 'monospace' }}>ENERGY</div>
+                      <div className="text-red-600 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                        {adventure.energyCost}
+                      </div>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 ring-1 ring-black/20">
+                      <div className="text-xs text-gray-600 font-bold mb-1" style={{ fontFamily: 'monospace' }}>DURATION</div>
+                      <div className="text-purple-600 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                        {adventure.durationMinutes}m
+                      </div>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 ring-1 ring-black/20">
+                      <div className="text-xs text-gray-600 font-bold mb-1" style={{ fontFamily: 'monospace' }}>XP REWARD</div>
+                      <div className="text-blue-600 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                        {adventure.xpReward}
+                      </div>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 ring-1 ring-black/20">
+                      <div className="text-xs text-gray-600 font-bold mb-1" style={{ fontFamily: 'monospace' }}>CASH</div>
+                      <div className="text-yellow-600 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                        ${adventure.cashReward}
+                      </div>
+                    </div>
+                  </div>
+                    
+                  {/* Requirements */}
+                  {(adventure.strengthReq > 0 || adventure.staminaReq > 0) && (
+                    <div className="mb-4">
+                      <div className="text-xs text-gray-600 font-bold mb-2" style={{ fontFamily: 'monospace' }}>REQUIREMENTS</div>
+                      <div className="flex space-x-2">
+                        {adventure.strengthReq > 0 && (
+                          <div className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-black ring-1 ring-red-300" style={{ fontFamily: 'monospace' }}>
+                            STR {adventure.strengthReq}
+                          </div>
+                        )}
+                        {adventure.staminaReq > 0 && (
+                          <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-black ring-1 ring-green-300" style={{ fontFamily: 'monospace' }}>
+                            STA {adventure.staminaReq}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Progress bar for in-progress adventures */}
+                  {isAdventureInProgress(adventure.id) && (() => {
+                    const inProgressAdv = getInProgressAdventure(adventure.id);
+                    const timeRemaining = getTimeRemaining(inProgressAdv.completedAt);
+                    const totalDuration = adventure.durationMinutes * 60 * 1000; // Convert to milliseconds
+                    const elapsed = totalDuration - timeRemaining.timeLeft;
+                    const progressPercentage = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
+                    
+                    return (
+                      <div className="mb-4">
+                        <div className="flex justify-between text-xs mb-2">
+                          <span className="text-gray-600 font-bold" style={{ fontFamily: 'monospace' }}>IN PROGRESS</span>
+                          <span className="text-blue-600 font-black" style={{ fontFamily: 'monospace' }}>
+                            {timeRemaining.hours}h {timeRemaining.minutes}m left
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-300 rounded-full h-3 ring-1 ring-gray-400 overflow-hidden">
+                          <div 
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-1000 shadow-sm"
+                            style={{ width: `${progressPercentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                  
+                  {/* Only show button if adventure is not in progress */}
+                  {!isAdventureInProgress(adventure.id) && (
+                    <button
+                      onClick={() => handleAttemptAdventure(adventure.id)}
+                      disabled={!adventure.canAttempt || energy < adventure.energyCost || attempting === adventure.id || dailyAttempts >= 2 || inProgressAdventures.length > 0}
+                      className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black mt-auto transform hover:scale-105 ${
+                        adventure.canAttempt && energy >= adventure.energyCost && attempting !== adventure.id && dailyAttempts < 2 && inProgressAdventures.length === 0
+                          ? 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white hover:shadow-xl hover:ring-purple-300'
+                          : 'bg-gray-500 text-gray-300 cursor-not-allowed opacity-60'
+                      }`}
+                      style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
+                    >
+                      {attempting === adventure.id 
+                        ? 'ATTEMPTING...' 
+                        : inProgressAdventures.length > 0
+                          ? 'ADVENTURE IN PROGRESS'
+                          : dailyAttempts >= 2
+                            ? 'DAILY LIMIT REACHED'
+                            : !adventure.canAttempt 
+                              ? 'REQUIREMENTS NOT MET'
+                              : energy < adventure.energyCost 
+                                ? 'NOT ENOUGH ENERGY'
+                                : 'ATTEMPT ADVENTURE'
+                      }
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

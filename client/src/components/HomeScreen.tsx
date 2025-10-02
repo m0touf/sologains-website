@@ -227,7 +227,6 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                 console.log("Response status:", response.status);
                 
                 if (response.ok) {
-                  const result = await response.json();
                   console.log("✅ Success: Set test date to tomorrow (" + dateStr + "). Refresh the page to trigger daily reset!");
                 } else {
                   const error = await response.json();

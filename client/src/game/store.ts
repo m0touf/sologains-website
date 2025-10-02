@@ -219,12 +219,9 @@ export const useGameStore = create<GameState>((set, get) => ({
 
       const data = await response.json();
       
-      // Update game state with results
+      // Update game state with results (only energy is spent immediately)
       set(() => ({
         energy: data.energyAfter,
-        xp: data.xpAfter,
-        stats: data.statsAfter,
-        cash: data.cashAfter,
       }));
 
       return data;

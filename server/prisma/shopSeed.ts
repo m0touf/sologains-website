@@ -46,7 +46,6 @@ const shopItems = [
   { name: 'Proficiency Booster', description: '+50 proficiency in any exercise', category: 'special_items', cost: 120, icon: 'PROF+', type: 'proficiency_boost', effectValue: 50, statType: null },
   { name: 'Daily Reset Token', description: 'Reset daily stat gain limits', category: 'special_items', cost: 60, icon: 'RESET', type: 'daily_reset', effectValue: 1, statType: null },
   { name: 'Luck Charm', description: '+10% chance for bonus rewards', category: 'special_items', cost: 90, icon: 'LUCK', type: 'luck_boost', effectValue: 10, statType: null },
-  { name: 'Time Accelerator', description: 'Skip to next day instantly', category: 'special_items', cost: 200, icon: 'TIME', type: 'time_skip', effectValue: 1, statType: null },
   { name: 'Master Package', description: 'All stats +2, energy +20, XP +100', category: 'special_items', cost: 300, icon: 'MASTER', type: 'master_package', effectValue: 1, statType: null },
 ];
 

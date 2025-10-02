@@ -33,6 +33,8 @@ model Save {
   lastShopRotation     DateTime?
   adventureRotationSeed Int?
   lastAdventureRotation DateTime?
+  dailyAdventureAttempts Int   @default(0) // how many adventures attempted today
+  lastAdventureReset   DateTime? // when daily adventure count was last reset
   updatedAt            DateTime @updatedAt
   ExerciseProficiencies ExerciseProficiency[]
   ResearchUpgrades     ResearchUpgrade[]
@@ -117,6 +119,7 @@ model Adventure {
   cashReward  Int      @default(0) // cash reward for completing adventure
   strengthReq Int      @default(0) // minimum strength required
   staminaReq  Int      @default(0) // minimum stamina required
+  durationMinutes Int  @default(120) // how long the adventure takes in minutes
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -135,6 +138,8 @@ model AdventureAttempt {
   statGains   Json
   cashGained  Int      @default(0)
   attemptedAt DateTime @default(now())
+  completedAt DateTime? // when the adventure was completed (null if still in progress)
+  status      String   @default("in_progress") // "in_progress", "completed", "failed"
   
   Save        Save     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   Adventure   Adventure @relation(fields: [adventureId], references: [id], onDelete: Cascade)

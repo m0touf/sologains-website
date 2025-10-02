@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useGameStore } from "../game/store";
 import { useAuthStore } from "../stores/authStore";
+import { apiClient } from "../lib/api";
+import type { ScreenType } from "../lib/constants";
 import Header from "../components/Header";
 import HomeScreen from "../components/HomeScreen";
 import GymScreen from "../components/GymScreen";
@@ -11,7 +13,7 @@ import ResearchScreen from "../components/ResearchScreen";
 export default function GamePage() {
   const { spendEnergy, addXp, setFromServer, setExercises, addProficiencyPoints } = useGameStore();
   const { token } = useAuthStore();
-  const [currentScreen, setCurrentScreen] = useState<'home' | 'gym' | 'store' | 'adventures' | 'research'>('home');
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
 
   // Load initial game state from server
   useEffect(() => {
@@ -19,44 +21,30 @@ export default function GamePage() {
     
     const loadGameState = async () => {
       try {
-        // Load save data
-        const saveRes = await fetch("http://localhost:4000/api/save", {
-          headers: { 
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        });
-        if (saveRes.ok) {
-          const save = await saveRes.json();
-          setFromServer({
-            energy: save.energy,
-            xp: save.xp,
-            level: save.level,
-            stats: {
-              strength: save.strength,
-              stamina: save.stamina,
-              agility: save.agility,
-              level: save.level,
-              xp: save.xp
-            },
-            proficiencyPoints: save.proficiencyPoints,
-            cash: save.cash,
-            ExerciseProficiencies: save.ExerciseProficiencies || [],
-            ResearchUpgrades: save.ResearchUpgrades || []
-          });
-        }
+        // Load save data and exercises in parallel
+        const [save, exercises] = await Promise.all([
+          apiClient.getSave(),
+          apiClient.getExercises()
+        ]);
 
-        // Load exercises
-        const exercisesRes = await fetch("http://localhost:4000/api/exercises", {
-          headers: { 
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
+        setFromServer({
+          energy: save.energy,
+          xp: save.xp,
+          level: save.level,
+          stats: {
+            strength: save.strength,
+            stamina: save.stamina,
+            agility: save.agility,
+            level: save.level,
+            xp: save.xp
+          },
+          proficiencyPoints: save.proficiencyPoints,
+          cash: save.cash,
+          ExerciseProficiencies: save.ExerciseProficiencies || [],
+          ResearchUpgrades: save.ResearchUpgrades || []
         });
-        if (exercisesRes.ok) {
-          const exercises = await exercisesRes.json();
-          setExercises(exercises);
-        }
+
+        setExercises(exercises);
       } catch (error) {
         console.error("Failed to load game state:", error);
       }
@@ -74,39 +62,25 @@ export default function GamePage() {
     if (!token) return;
     
     try {
-      const res = await fetch("http://localhost:4000/api/workout", {
-        method: "POST",
-        headers: { 
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ 
-          type: workoutType, 
-          exerciseId, 
-          reps, 
-          intensity, 
-          grade 
-        })
+      const data = await apiClient.doWorkout({
+        type: workoutType,
+        exerciseId,
+        reps,
+        intensity,
+        grade
       });
       
-      if (!res.ok) {
-        const error = await res.json();
-        console.error("Workout failed:", error);
-        return;
+      spendEnergy(data.energySpent);
+      addXp(data.xpGained);
+      if (data.ppGained > 0) {
+        addProficiencyPoints(data.ppGained);
       }
-      
-        const data = await res.json();
-        spendEnergy(data.energySpent);
-        addXp(data.xpGained);
-        if (data.ppGained > 0) {
-          addProficiencyPoints(data.ppGained);
-        }
-        setFromServer({ 
-          stats: data.statsAfter,
-          level: data.levelAfter,
-          xp: data.xpAfter,
-          proficiencyPoints: data.proficiencyPointsAfter
-        });
+      setFromServer({ 
+        stats: data.statsAfter,
+        level: data.levelAfter,
+        xp: data.xpAfter,
+        proficiencyPoints: data.proficiencyPointsAfter
+      });
 
         // Show stat gain information
         const statGainMessage = Object.entries(data.statGains)
@@ -203,50 +177,28 @@ export default function GamePage() {
     if (!token) return;
     
     try {
-      const res = await fetch("http://localhost:4000/api/reset-energy", {
-        method: "POST",
-        headers: { 
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-      
-      if (!res.ok) {
-        const error = await res.json();
-        console.error("Energy reset failed:", error);
-        return;
-      }
-      
-      const data = await res.json();
+      const data = await apiClient.resetEnergy();
       setFromServer({ energy: data.energy });
       console.log("Energy reset to 100%");
       
       // Reload full game state to ensure everything is in sync
-      const saveRes = await fetch("http://localhost:4000/api/save", {
-        headers: { 
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-      if (saveRes.ok) {
-        const save = await saveRes.json();
-        setFromServer({
-          energy: save.energy,
-          xp: save.xp,
+      const save = await apiClient.getSave();
+      setFromServer({
+        energy: save.energy,
+        xp: save.xp,
+        level: save.level,
+        stats: {
+          strength: save.strength,
+          stamina: save.stamina,
+          agility: save.agility,
           level: save.level,
-          stats: {
-            strength: save.strength,
-            stamina: save.stamina,
-            agility: save.agility,
-            level: save.level,
-            xp: save.xp
-          },
-          proficiencyPoints: save.proficiencyPoints,
-          cash: save.cash,
-          ExerciseProficiencies: save.ExerciseProficiencies || [],
-          ResearchUpgrades: save.ResearchUpgrades || []
-        });
-      }
+          xp: save.xp
+        },
+        proficiencyPoints: save.proficiencyPoints,
+        cash: save.cash,
+        ExerciseProficiencies: save.ExerciseProficiencies || [],
+        ResearchUpgrades: save.ResearchUpgrades || []
+      });
     } catch (error) {
       console.error("Network error:", error);
     }

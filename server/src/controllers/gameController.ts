@@ -102,10 +102,15 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     const todayKey = today.toISOString().slice(0, 10);
     const lastDailyResetDate = save.lastDailyReset ? new Date(save.lastDailyReset).toISOString().slice(0, 10) : null;
     
+    console.log(`Daily reset check for user ${userId}:`);
+    console.log(`  Today: ${todayKey}`);
+    console.log(`  Last reset: ${lastDailyResetDate}`);
+    console.log(`  Should reset: ${todayKey !== lastDailyResetDate}`);
+    
     // If it's a new day, automatically reset daily limits and rotate content
     if (todayKey !== lastDailyResetDate) {
-      console.log(`New day detected! Resetting daily limits for user ${userId}`);
-      console.log(`Today: ${todayKey}, Last reset: ${lastDailyResetDate}`);
+      console.log(`🔄 NEW DAY DETECTED! Resetting daily limits for user ${userId}`);
+      console.log(`  Today: ${todayKey}, Last reset: ${lastDailyResetDate}`);
       
       // Reset daily stat gains for all exercises
       await prisma.exerciseProficiency.updateMany({
@@ -121,20 +126,26 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       const newShopRotationSeed = Math.floor(Math.random() * 1000000);
       const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);
 
-      // Update save data with new rotation seeds and reset energy
-      await prisma.save.update({
-        where: { userId },
-        data: {
-          energy: save.maxEnergy || 100,
-          lastDailyReset: today,
-          shopRotationSeed: newShopRotationSeed,
-          lastShopRotation: today,
-          adventureRotationSeed: newAdventureRotationSeed,
-          lastAdventureRotation: today
-        }
-      });
+        // Update save data with new rotation seeds and reset energy
+        await prisma.save.update({
+          where: { userId },
+          data: {
+            energy: save.maxEnergy || 100,
+            lastDailyReset: today,
+            shopRotationSeed: newShopRotationSeed,
+            lastShopRotation: today,
+            adventureRotationSeed: newAdventureRotationSeed,
+            lastAdventureRotation: today,
+            dailyAdventureAttempts: 0,
+            lastAdventureReset: today
+          }
+        });
 
-      console.log(`Daily reset completed for user ${userId}`);
+      console.log(`✅ Daily reset completed for user ${userId}`);
+      console.log(`  - Energy reset to ${save.maxEnergy || 100}`);
+      console.log(`  - Daily adventure attempts reset to 0`);
+      console.log(`  - Shop rotation seed: ${newShopRotationSeed}`);
+      console.log(`  - Adventure rotation seed: ${newAdventureRotationSeed}`);
     }
     
     console.log('getSave response:', {
