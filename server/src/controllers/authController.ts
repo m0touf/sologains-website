@@ -59,7 +59,7 @@ export const signup = async (req: Request, res: Response) => {
           energy: 100,
           strength: 1,
           stamina: 1,
-          agility: 1,
+          mobility: 1,
           proficiencyPoints: 0,
           cash: 500,
         },

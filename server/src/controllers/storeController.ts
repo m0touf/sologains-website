@@ -34,24 +34,56 @@ export const getShopItems = async (req: Request, res: Response) => {
     // Use user's shop rotation seed for consistent rotation
     const seed = save.shopRotationSeed || 12345;
     
+    // Get today's date for filtering purchased special items
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+    
     // Get all shop items grouped by category
     const allItems = await prisma.shopItem.findMany({
       where: { isActive: true },
+      include: {
+        DailyPurchases: {
+          where: {
+            userId,
+            purchaseDate: today
+          }
+        }
+      },
       orderBy: { id: 'asc' }
     });
 
-    // Group items by category
+    // Define daily limits for each category
+    const dailyLimits = {
+      energy_boosters: 3,
+      supplements: 3,
+      special_items: 1
+    };
+
+    // Add quantity information to each item
+    const itemsWithQuantity = allItems.map(item => {
+      const purchasedToday = item.DailyPurchases.length;
+      const maxQuantity = dailyLimits[item.category as keyof typeof dailyLimits] || 1;
+      const remainingQuantity = Math.max(0, maxQuantity - purchasedToday);
+      
+      return {
+        ...item,
+        quantityPurchased: purchasedToday,
+        quantityMax: maxQuantity,
+        quantityRemaining: remainingQuantity
+      };
+    });
+
+    // Group items by category (don't filter out - show all with quantity info)
     const itemsByCategory = {
-      energy_boosters: allItems.filter(item => item.category === 'energy_boosters'),
-      supplements: allItems.filter(item => item.category === 'supplements'),
-      special_items: allItems.filter(item => item.category === 'special_items')
+      energy_boosters: itemsWithQuantity.filter(item => item.category === 'energy_boosters'),
+      supplements: itemsWithQuantity.filter(item => item.category === 'supplements'),
+      special_items: itemsWithQuantity.filter(item => item.category === 'special_items')
     };
 
     // Rotate items daily using the seed
     const rotatedItems = {
-      energy_boosters: rotateItems(itemsByCategory.energy_boosters, seed, 3), // Show 3 of 8
-      supplements: rotateItems(itemsByCategory.supplements, seed, 3), // Show 3 of 15
-      special_items: rotateItems(itemsByCategory.special_items, seed, 3) // Show 3 of 8
+      energy_boosters: rotateItems(itemsByCategory.energy_boosters, seed, 3), // Show 3 of available
+      supplements: rotateItems(itemsByCategory.supplements, seed, 3), // Show 3 of available
+      special_items: rotateItems(itemsByCategory.special_items, seed, 3) // Show 3 of available
     };
 
     res.json(rotatedItems);
@@ -109,17 +141,44 @@ export const purchaseItem = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Insufficient funds' });
     }
 
+    // Check daily purchase limits for all categories
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+    const dailyLimits = {
+      energy_boosters: 3,
+      supplements: 3,
+      special_items: 1
+    };
+
+    // Count how many times this specific item has been purchased today
+    const itemPurchasesToday = await prisma.dailyPurchase.count({
+      where: {
+        userId,
+        shopItemId: itemId,
+        purchaseDate: today
+      }
+    });
+
+    const maxQuantity = dailyLimits[shopItem.category as keyof typeof dailyLimits] || 1;
+    
+    if (itemPurchasesToday >= maxQuantity) {
+      return res.status(400).json({ 
+        error: `You have already purchased the maximum amount (${maxQuantity}/${maxQuantity}) of this item today` 
+      });
+    }
+
     // Apply item effects
     let newCash = save.cash - shopItem.cost;
     let newEnergy = save.energy;
     let newStrength = save.strength;
     let newStamina = save.stamina;
-    let newAgility = save.agility;
+    let newMobility = save.mobility;
     let newMaxEnergy = save.maxEnergy || 100;
     let newXp = save.xp;
     let newXpBoostRemaining = save.xpBoostRemaining || 0;
     let newProficiencyBoostRemaining = save.proficiencyBoostRemaining || 0;
     let newLuckBoostPercent = save.luckBoostPercent || 0;
+    let newProficiencyPoints = save.proficiencyPoints;
+    let newPermanentEnergy = save.permanentEnergy || 0;
 
     switch (shopItem.type) {
       case 'energy_restore':
@@ -128,10 +187,15 @@ export const purchaseItem = async (req: Request, res: Response) => {
       case 'stat_boost':
         if (shopItem.statType === 'strength') newStrength += shopItem.effectValue;
         if (shopItem.statType === 'stamina') newStamina += shopItem.effectValue;
-        if (shopItem.statType === 'agility') newAgility += shopItem.effectValue;
+        if (shopItem.statType === 'mobility') newMobility += shopItem.effectValue;
         break;
       case 'max_energy':
         newMaxEnergy += shopItem.effectValue;
+        newEnergy += shopItem.effectValue; // Add the same amount to current energy
+        break;
+      case 'permanent_energy':
+        newPermanentEnergy += shopItem.effectValue;
+        newMaxEnergy += shopItem.effectValue; // Increase max energy permanently
         newEnergy += shopItem.effectValue; // Add the same amount to current energy
         break;
       case 'full_restore':
@@ -161,30 +225,45 @@ export const purchaseItem = async (req: Request, res: Response) => {
         newLuckBoostPercent += shopItem.effectValue;
         break;
       case 'master_package':
-        // All stats +2, energy +20, XP +100
-        newStrength += 2;
-        newStamina += 2;
-        newAgility += 2;
-        newEnergy = Math.min(newMaxEnergy, newEnergy + 20);
-        newXp += 100;
+        // All stats +3, energy +25, XP +150, proficiency points +50
+        newStrength += 3;
+        newStamina += 3;
+        newMobility += 3;
+        newEnergy = Math.min(newMaxEnergy, newEnergy + 25);
+        newXp += 150;
+        newProficiencyPoints += 50;
         break;
     }
 
-    // Update save data
-    await prisma.save.update({
-      where: { userId },
-      data: {
-        cash: newCash,
-        energy: newEnergy,
-        strength: newStrength,
-        stamina: newStamina,
-        agility: newAgility,
-        maxEnergy: newMaxEnergy,
-        xp: newXp,
-        xpBoostRemaining: newXpBoostRemaining,
-        proficiencyBoostRemaining: newProficiencyBoostRemaining,
-        luckBoostPercent: newLuckBoostPercent
-      }
+    // Update save data and record purchase in a transaction
+    await prisma.$transaction(async (tx) => {
+      // Update save data
+      await tx.save.update({
+        where: { userId },
+        data: {
+          cash: newCash,
+          energy: newEnergy,
+          strength: newStrength,
+          stamina: newStamina,
+          mobility: newMobility,
+          maxEnergy: newMaxEnergy,
+          xp: newXp,
+          proficiencyPoints: newProficiencyPoints,
+          permanentEnergy: newPermanentEnergy,
+          xpBoostRemaining: newXpBoostRemaining,
+          proficiencyBoostRemaining: newProficiencyBoostRemaining,
+          luckBoostPercent: newLuckBoostPercent
+        }
+      });
+
+      // Record daily purchase for all items
+      await tx.dailyPurchase.create({
+        data: {
+          userId,
+          shopItemId: itemId,
+          purchaseDate: today
+        }
+      });
     });
 
     res.json({
@@ -196,11 +275,12 @@ export const purchaseItem = async (req: Request, res: Response) => {
       statsAfter: {
         strength: newStrength,
         stamina: newStamina,
-        agility: newAgility,
+        mobility: newMobility,
         level: save.level,
         xp: newXp
       },
-      proficiencyPointsAfter: save.proficiencyPoints,
+      proficiencyPointsAfter: newProficiencyPoints,
+      permanentEnergyAfter: newPermanentEnergy,
       xpBoostRemaining: newXpBoostRemaining,
       proficiencyBoostRemaining: newProficiencyBoostRemaining,
       luckBoostPercent: newLuckBoostPercent
@@ -247,6 +327,11 @@ export const simulateNewDay = async (req: Request, res: Response) => {
         dailyEnergy: 0,
         lastDailyReset: new Date()
       }
+    });
+
+    // Clear daily purchases (special items become available again)
+    await prisma.dailyPurchase.deleteMany({
+      where: { userId }
     });
 
     // Generate new rotation seed for shop and adventures

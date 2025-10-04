@@ -14,6 +14,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  DailyPurchases DailyPurchase[]
 }
 
 model Save {
@@ -25,10 +26,11 @@ model Save {
   lastDailyReset       DateTime?
   strength             Int     @default(1)
   stamina              Int     @default(1)
-  agility              Int     @default(1)
+  mobility             Int     @default(1)
   proficiencyPoints    Int     @default(0)
   cash                 Int     @default(0)
   maxEnergy            Int     @default(100)
+  permanentEnergy      Int     @default(0) // permanent energy stat that increases max energy
   shopRotationSeed     Int?
   lastShopRotation     DateTime?
   adventureRotationSeed Int?
@@ -65,7 +67,7 @@ model Exercise {
   baseReps        Int
   baseEnergy      Int
   baseXp          Int
-  statType        String   // 'strength', 'stamina', 'agility'
+  statType        String   // 'strength', 'stamina', 'mobility'
   statGainAmount  Int      @default(1) // how many stat points this exercise gives
   imagePath       String?
   isActive        Boolean  @default(true)
@@ -118,7 +120,7 @@ model Adventure {
   difficulty  String   // 'easy', 'medium', 'hard', 'legendary'
   energyCost  Int
   xpReward    Int
-  statReward  Json     // { strength: 0, stamina: 0, agility: 0 }
+  statReward  Json     // { strength: 0, stamina: 0, mobility: 0 }
   cashReward  Int      @default(0) // cash reward for completing adventure
   strengthReq Int      @default(0) // minimum strength required
   staminaReq  Int      @default(0) // minimum stamina required
@@ -159,9 +161,24 @@ model ShopItem {
   icon        String
   type        String   // 'energy_restore', 'stat_boost', 'max_energy', 'xp_boost', 'full_restore', 'proficiency_boost'
   effectValue Int      // How much energy/stats/etc it provides
-  statType    String?  // For stat boosts: 'strength', 'stamina', 'agility'
+  statType    String?  // For stat boosts: 'strength', 'stamina', 'mobility'
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
+  DailyPurchases DailyPurchase[]
   
   @@index([category, isActive])
+}
+
+model DailyPurchase {
+  id          String   @id @default(cuid())
+  userId      String
+  shopItemId  String
+  purchasedAt DateTime @default(now())
+  purchaseDate String  // YYYY-MM-DD format for easy daily filtering
+  
+  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ShopItem    ShopItem @relation(fields: [shopItemId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, purchaseDate])
+  @@index([userId, shopItemId, purchaseDate])
 }

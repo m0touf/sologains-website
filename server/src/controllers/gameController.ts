@@ -130,7 +130,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
         await prisma.save.update({
           where: { userId },
           data: {
-            energy: save.maxEnergy || 100,
+            energy: (save.maxEnergy || 100) + (save.permanentEnergy || 0),
             lastDailyReset: today,
             shopRotationSeed: newShopRotationSeed,
             lastShopRotation: today,
@@ -271,7 +271,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     // Calculate stat gains based on exercise stat type and daily limits
-    const statGains = { strength: 0, stamina: 0, agility: 0 };
+    const statGains = { strength: 0, stamina: 0, mobility: 0 };
 
     // Get intensity and grade from request (with defaults)
     const intensity = (parse.data.intensity || 3) as 1|2|3|4|5;
@@ -318,8 +318,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         case 'stamina':
           statGains.stamina = statGainAmount;
           break;
-        case 'agility':
-          statGains.agility = statGainAmount;
+        case 'mobility':
+          statGains.mobility = statGainAmount;
           break;
       }
     }
@@ -330,7 +330,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     const newLevel = levelFromXp(newXp);
     const newStrength = save.strength + statGains.strength;
     const newStamina = save.stamina + statGains.stamina;
-    const newAgility = save.agility + statGains.agility;
+    const newMobility = save.mobility + statGains.mobility;
     
     // Calculate proficiency points gained from level up
     const oldLevel = save.level;
@@ -362,8 +362,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
 
     // Calculate new daily stat gains for response
     const newDailyStatGains = shouldResetDaily ? 
-      (statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0) :
-      (currentDailyStatGains + (statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0));
+      (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0) :
+      (currentDailyStatGains + (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0));
 
     await prisma.$transaction(async (tx) => {
           // Update save
@@ -375,7 +375,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
               level: newLevel,
               strength: newStrength,
               stamina: newStamina,
-              agility: newAgility,
+              mobility: newMobility,
               proficiencyPoints: newProficiencyPoints,
               xpBoostRemaining: save.xpBoostRemaining && save.xpBoostRemaining > 0 ? save.xpBoostRemaining - 1 : 0,
               proficiencyBoostRemaining: save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0 ? save.proficiencyBoostRemaining - 1 : 0,
@@ -431,12 +431,12 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             exerciseId: exercise.id,
             proficiency: proficiencyResult.newProficiency,
             dailyEnergy: energySpent,
-            dailyStatGains: statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0,
+            dailyStatGains: statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0,
             lastDailyReset: now,
             totalReps: reps,
           }
         });
-        console.log(`Created new proficiency: ${proficiencyResult.newProficiency}, daily stat gains: ${statGains.strength + statGains.stamina + statGains.agility > 0 ? 1 : 0}`);
+        console.log(`Created new proficiency: ${proficiencyResult.newProficiency}, daily stat gains: ${statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0}`);
       }
     });
 
@@ -456,7 +456,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           statsAfter: {
             strength: newStrength,
             stamina: newStamina,
-            agility: newAgility,
+            mobility: newMobility,
             level: newLevel,
             xp: newXp
           },

@@ -82,7 +82,7 @@ export const getDailyAdventures = async (req: AuthenticatedRequest, res: Respons
           userStats: {
             strength: save.strength,
             stamina: save.stamina,
-            agility: save.agility
+            mobility: save.mobility
           }
         });
       }
@@ -199,7 +199,7 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
 
     // Calculate rewards (only given when adventure completes)
     const xpGained = success ? adventure.xpReward : Math.floor(adventure.xpReward * 0.3);
-    const statGains = success ? adventure.statReward as { strength: number, stamina: number, agility: number } : { strength: 0, stamina: 0, agility: 0 };
+    const statGains = success ? adventure.statReward as { strength: number, stamina: number, mobility: number } : { strength: 0, stamina: 0, mobility: 0 };
     const cashGained = success ? adventure.cashReward : 0;
 
     // Update user stats immediately (energy is spent now)
@@ -281,7 +281,7 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
     // Process each completed adventure
     const results = [];
     for (const attempt of completedAdventures) {
-      const statGains = attempt.statGains as { strength: number, stamina: number, agility: number };
+      const statGains = attempt.statGains as { strength: number, stamina: number, mobility: number };
       
       // Update user stats with rewards
       const updatedSave = await prisma.$transaction(async (tx) => {
@@ -308,7 +308,7 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
         const newXp = save.xp + xpGained;
         const newStrength = save.strength + statGains.strength;
         const newStamina = save.stamina + statGains.stamina;
-        const newAgility = save.agility + statGains.agility;
+        const newMobility = save.mobility + statGains.mobility;
         const newCash = save.cash + cashGained;
 
         // Calculate new level
@@ -322,7 +322,7 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
             level: newLevel,
             strength: newStrength,
             stamina: newStamina,
-            agility: newAgility,
+            mobility: newMobility,
             cash: newCash,
           }
         });
@@ -350,7 +350,7 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
           statsAfter: {
             strength: updatedSave.strength,
             stamina: updatedSave.stamina,
-            agility: updatedSave.agility,
+            mobility: updatedSave.mobility,
             level: updatedSave.level,
             xp: updatedSave.xp
           },

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { levelFromXp, xpProgressInLevel } from "../utils/xpCurve";
 import { useAuthStore } from "../stores/authStore";
 
-type Stats = { strength: number; stamina: number; agility: number; level: number; xp: number };
+type Stats = { strength: number; stamina: number; mobility: number; level: number; xp: number };
 type Exercise = {
   id: string;
   name: string;
@@ -41,12 +41,12 @@ type Adventure = {
   difficulty: string;
   energyCost: number;
   xpReward: number;
-  statReward: { strength: number; stamina: number; agility: number };
+  statReward: { strength: number; stamina: number; mobility: number };
   cashReward: number;
   strengthReq: number;
   staminaReq: number;
   canAttempt: boolean;
-  userStats: { strength: number; stamina: number; agility: number };
+  userStats: { strength: number; stamina: number; mobility: number };
 };
 
 type Save = {
@@ -56,6 +56,8 @@ type Save = {
   stats: Stats; 
   proficiencyPoints: number;
   cash: number;
+  permanentEnergy: number;
+  maxEnergy?: number;
   ExerciseProficiencies: ExerciseProficiency[];
   ResearchUpgrades: ResearchUpgrade[];
 };
@@ -83,9 +85,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   energy: 0, 
   xp: 0, 
   level: 1,
-  stats: { strength: 1, stamina: 1, agility: 1, level: 1, xp: 0 }, 
+  stats: { strength: 1, stamina: 1, mobility: 1, level: 1, xp: 0 }, 
   proficiencyPoints: 0,
   cash: 0,
+  permanentEnergy: 0,
   ExerciseProficiencies: [],
   ResearchUpgrades: [],
   exercises: [],

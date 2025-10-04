@@ -34,12 +34,14 @@ export default function GamePage() {
           stats: {
             strength: save.strength,
             stamina: save.stamina,
-            agility: save.agility,
+            mobility: save.mobility,
             level: save.level,
             xp: save.xp
           },
           proficiencyPoints: save.proficiencyPoints,
           cash: save.cash,
+          permanentEnergy: save.permanentEnergy || 0,
+          maxEnergy: save.maxEnergy,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -112,12 +114,14 @@ export default function GamePage() {
           stats: {
             strength: save.strength,
             stamina: save.stamina,
-            agility: save.agility,
+            mobility: save.mobility,
             level: save.level,
             xp: save.xp
           },
           proficiencyPoints: save.proficiencyPoints,
           cash: save.cash,
+          permanentEnergy: save.permanentEnergy || 0,
+          maxEnergy: save.maxEnergy,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -147,12 +151,13 @@ export default function GamePage() {
         stats: {
           strength: save.strength,
           stamina: save.stamina,
-          agility: save.agility,
+          mobility: save.mobility,
           level: save.level,
           xp: save.xp
         },
         proficiencyPoints: save.proficiencyPoints,
         cash: save.cash,
+        permanentEnergy: save.permanentEnergy || 0,
         ExerciseProficiencies: save.ExerciseProficiencies || [],
         ResearchUpgrades: save.ResearchUpgrades || []
       });

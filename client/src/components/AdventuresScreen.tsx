@@ -10,7 +10,7 @@ interface AdventuresScreenProps {
 }
 
 export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
-  const { energy, adventures, setAdventures, setFromServer } = useGameStore();
+  const { energy, adventures, setAdventures, setFromServer, maxEnergy, permanentEnergy } = useGameStore();
   const [loading, setLoading] = useState(true);
   const [attempting, setAttempting] = useState<string | null>(null);
   const [dailyAttempts, setDailyAttempts] = useState(0);
@@ -127,12 +127,14 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
           stats: {
             strength: save.strength,
             stamina: save.stamina,
-            agility: save.agility,
+            mobility: save.mobility,
             level: save.level,
             xp: save.xp
           },
           proficiencyPoints: save.proficiencyPoints,
           cash: save.cash,
+          permanentEnergy: save.permanentEnergy || 0,
+          maxEnergy: save.maxEnergy,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -225,7 +227,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
               ADVENTURES
             </h1>
             <div className="text-emerald-600 font-black ring-2 ring-black bg-amber-50/95 px-4 py-2 rounded-lg" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-              ENERGY: {energy}/100
+              ENERGY: {energy}/{maxEnergy || (100 + permanentEnergy)}
             </div>
           </div>
         </div>

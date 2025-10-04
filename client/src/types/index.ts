@@ -9,7 +9,7 @@ export interface User {
 export interface GameStats {
   strength: number;
   stamina: number;
-  agility: number;
+  mobility: number;
   level: number;
   xp: number;
 }
@@ -22,7 +22,7 @@ export interface Exercise {
   statGains: {
     strength: number;
     stamina: number;
-    agility: number;
+    mobility: number;
   };
   imagePath?: string;
 }
@@ -56,7 +56,7 @@ export interface Adventure {
   statReward: {
     strength: number;
     stamina: number;
-    agility: number;
+    mobility: number;
   };
   cashReward: number;
   strengthReq: number;
@@ -76,7 +76,7 @@ export interface AdventureAttempt {
   statGains: {
     strength: number;
     stamina: number;
-    agility: number;
+    mobility: number;
   };
   cashGained: number;
   attemptedAt: string;
@@ -110,7 +110,7 @@ export interface WorkoutResponse {
   statGains: {
     strength: number;
     stamina: number;
-    agility: number;
+    mobility: number;
   };
   proficiencyGained: number;
   energyAfter: number;
@@ -142,7 +142,7 @@ export interface AdventureCompletionResponse {
     statGains: {
       strength: number;
       stamina: number;
-      agility: number;
+      mobility: number;
     };
     cashGained: number;
     statsAfter: GameStats;

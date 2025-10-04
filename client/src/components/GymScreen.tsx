@@ -8,7 +8,7 @@ interface GymScreenProps {
 
 
 export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
-  const { energy, stats, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, cash } = useGameStore();
+  const { energy, stats, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, cash, permanentEnergy, maxEnergy } = useGameStore();
   const [selectedCategory, setSelectedCategory] = useState<'strength' | 'endurance' | 'mobility'>('strength');
   
   const level = getCurrentLevel();
@@ -139,7 +139,7 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
               GYM
             </h1>
             <div className="text-gray-800 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-              ENERGY: <span className="text-green-600">{energy}/100</span>
+              ENERGY: <span className="text-green-600">{energy}/{maxEnergy || (100 + permanentEnergy)}</span>
             </div>
           </div>
         </div>
@@ -209,8 +209,8 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
                   <div className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'monospace' }}>STAMINA</div>
                 </div>
                 <div>
-                  <div className="text-green-500 font-black text-lg bg-gradient-to-b from-green-400 to-green-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.agility}</div>
-                  <div className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'monospace' }}>AGILITY</div>
+                  <div className="text-green-500 font-black text-lg bg-gradient-to-b from-green-400 to-green-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.mobility}</div>
+                  <div className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'monospace' }}>MOBILITY</div>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t-2 border-black">
@@ -263,8 +263,14 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
                 
                 <div className="flex justify-between items-center mt-2">
                   <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>ENERGY</span>
-                  <span className="text-green-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{energy}/100</span>
+                  <span className="text-green-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{energy}/{maxEnergy || (100 + permanentEnergy)}</span>
                 </div>
+                {permanentEnergy > 0 && (
+                  <div className="flex justify-between items-center mt-1">
+                    <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT ENERGY</span>
+                    <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
