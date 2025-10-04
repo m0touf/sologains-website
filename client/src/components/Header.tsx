@@ -31,8 +31,8 @@ export default function Header() {
           </div>
           <button
             onClick={logout}
-            className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white border-4 border-black transition-all duration-200 text-sm font-black hover:shadow-md"
-            style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000', backgroundColor: '#dc2626' }}
+            className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white ring-2 ring-black transition-all duration-200 text-sm font-black hover:shadow-md rounded-lg"
+            style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
           >
             LOGOUT
           </button>

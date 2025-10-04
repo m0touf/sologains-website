@@ -122,15 +122,24 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
 
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-br from-amber-50 to-amber-100" style={{ imageRendering: 'pixelated' }}>
-      {/* Back Button */}
-      <div className="p-4">
-        <button
-          onClick={onBack}
-          className="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-black text-lg border-4 border-black transition-all duration-200 hover:shadow-md uppercase"
-          style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000', backgroundColor: '#dc2626' }}
-        >
-          Back to Home
-        </button>
+      {/* Header */}
+      <div className="p-6 border-b-2 border-black bg-gradient-to-r from-amber-200 to-orange-200">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={onBack}
+            className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors ring-2 ring-black bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg"
+            style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
+          >
+            <span className="text-xl">←</span>
+            <span className="font-black">BACK TO HOME</span>
+          </button>
+          <h1 className="text-3xl font-black text-gray-800" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
+            STORE
+          </h1>
+          <div className="text-red-200 font-black ring-2 ring-black bg-amber-50/95 px-4 py-2 rounded-lg" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+            ${cash} CASH | {energy}/{maxEnergy || (100 + permanentEnergy)} ENERGY
+          </div>
+        </div>
       </div>
 
       {/* Store */}
@@ -139,24 +148,9 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
           {/* Header Section */}
           <div className="mb-8">
             <div className="text-center mb-6">
-              <h2 className="text-3xl font-black text-gray-800 mb-3" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
-                STORE
-              </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto" style={{ fontFamily: 'monospace' }}>
                 Buy energy boosters, supplements, and special items to enhance your training!
               </p>
-            </div>
-            
-            {/* Cash and Energy Display */}
-            <div className="bg-gradient-to-r from-red-900 to-red-800 backdrop-blur-sm p-4 ring-2 ring-red-600 shadow-xl rounded-xl max-w-sm mx-auto">
-              <div className="text-center">
-                <div className="text-white font-black text-sm mb-1" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                  YOUR RESOURCES
-                </div>
-                <div className="text-red-200 font-black text-xl" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                  ${cash} CASH | {energy}/{maxEnergy || (100 + permanentEnergy)} ENERGY
-                </div>
-              </div>
             </div>
           </div>
           

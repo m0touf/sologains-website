@@ -24,15 +24,7 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
   }
 
   return (
-    <div className="flex-1 relative overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-[2px]"
-        style={{
-          backgroundImage: 'url(/src/assets/backgrounds/Background_Image_Home_05.png)',
-          imageRendering: 'pixelated'
-        }}
-      ></div>
+    <div className="flex-1 relative bg-gradient-to-br from-amber-50 to-amber-100 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
 
       <div className="relative z-10 h-full flex">
         {/* Left Side - Activity Buttons */}
@@ -62,7 +54,7 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                 imageRendering: 'pixelated'
               }}
             >
-              {/* <div className="absolute inset-0 bg-black/20"></div> */}
+              <div className="absolute inset-0 bg-black/20"></div>
               <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-2">
                 <h3 className="text-2xl font-black text-white drop-shadow-lg" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>STORE</h3>
                 <p className="text-sm font-bold text-white drop-shadow-md" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>Buy supplements</p>
@@ -210,8 +202,8 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
               <div className="mt-1 space-y-2">
                 <button
                   onClick={onResetEnergy}
-                  className="w-full py-2 px-4 bg-red-600 hover:bg-red-500 text-white border-4 border-black transition-all duration-200 text-sm font-black hover:shadow-md"
-                  style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000', backgroundColor: '#dc2626' }}
+                  className="w-full py-2 px-4 bg-red-600 hover:bg-red-500 text-white ring-2 ring-black transition-all duration-200 text-sm font-black hover:shadow-md rounded-lg"
+                  style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
                 >
                   Admin: Reset Energy
                 </button>
@@ -254,8 +246,8 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                 console.error("❌ Network error:", error);
               }
             }}
-            className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-500 text-white border-4 border-black transition-all duration-200 text-sm font-black hover:shadow-md"
-            style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000', backgroundColor: '#7c3aed' }}
+            className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-500 text-white ring-2 ring-black transition-all duration-200 text-sm font-black hover:shadow-md rounded-lg"
+            style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
           >
             TEST: Set Tomorrow
           </button>

@@ -113,49 +113,43 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
   };
 
   return (
-    <div className="flex-1 relative overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-[2px]"
-        style={{
-          backgroundImage: 'url(/src/assets/backgrounds/Background_Image_Home_05.png)',
-          imageRendering: 'pixelated'
-        }}
-      ></div>
-      
+    <div className="flex-1 relative bg-gradient-to-br from-amber-50 to-amber-100 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
       <div className="relative z-10 h-full flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b-2 border-black bg-gradient-to-r from-amber-200 to-orange-200" style={{ imageRendering: 'pixelated' }}>
+        <div className="p-6 border-b-2 border-black bg-gradient-to-r from-amber-200 to-orange-200">
           <div className="flex items-center justify-between">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 px-4 py-2 text-white font-black rounded-lg shadow-md hover:bg-red-700 transition-colors ring-2 ring-black"
-              style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000', backgroundColor: '#dc2626' }}
+              className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors ring-2 ring-black bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg"
+              style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
             >
               <span className="text-xl">←</span>
-              <span>BACK</span>
+              <span className="font-black">BACK TO HOME</span>
             </button>
             <h1 className="text-3xl font-black text-gray-800" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
               GYM
             </h1>
-            <div className="text-gray-800 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-              ENERGY: <span className="text-green-600">{energy}/{maxEnergy || (100 + permanentEnergy)}</span>
+            <div className="text-emerald-600 font-black ring-2 ring-black bg-amber-50/95 px-4 py-2 rounded-lg" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+              ENERGY: {energy}/{maxEnergy || (100 + permanentEnergy)}
             </div>
           </div>
         </div>
 
         {/* Category Selector */}
-        <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 ring-3 ring-black">
+        <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 ring-2 ring-black">
           <div className="flex justify-center space-x-4">
             {(['strength', 'endurance', 'mobility'] as const).map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-3 ring-2 ring-black rounded-lg font-black transition-all duration-200 text-white shadow-lg`}
+                className={`px-6 py-3 ring-2 ring-black rounded-lg font-black transition-all duration-200 text-white shadow-lg hover:shadow-xl hover:scale-105 ${
+                  selectedCategory === category 
+                    ? 'bg-red-600 ring-4 ring-red-300' 
+                    : 'bg-red-500 hover:bg-red-600'
+                }`}
                 style={{ 
                   fontFamily: 'monospace', 
-                  textShadow: '1px 1px 0px #000',
-                  backgroundColor: '#dc2626'
+                  textShadow: '1px 1px 0px #000'
                 }}
               >
                 {category.toUpperCase()}
@@ -197,7 +191,7 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
             {/* Character Stats */}
             <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-6 ring-3 ring-black shadow-lg rounded-lg w-full max-w-sm" style={{ imageRendering: 'pixelated' }}>
               <h2 className="text-2xl font-black text-gray-800 mb-4 text-center" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
-                YOUR CHARACTER
+                YOUR STATS
               </h2>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>

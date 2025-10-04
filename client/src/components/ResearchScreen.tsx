@@ -71,17 +71,17 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
           <div className="flex items-center justify-between">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 px-4 py-2 text-white font-black rounded-lg shadow-md hover:bg-red-700 transition-colors ring-2 ring-black"
-              style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000', backgroundColor: '#dc2626' }}
+              className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors ring-2 ring-black bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg"
+              style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
             >
               <span className="text-xl">←</span>
-              <span>BACK TO HOME</span>
+              <span className="font-black">BACK TO HOME</span>
             </button>
             <h1 className="text-3xl font-black text-gray-800" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
               RESEARCH
             </h1>
-            <div className="text-gray-800 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-              Proficiency Points: <span className="text-yellow-600">{proficiencyPoints}</span>
+            <div className="text-yellow-600 font-black ring-2 ring-black bg-amber-50/95 px-4 py-2 rounded-lg" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+              PROFICIENCY POINTS: {proficiencyPoints}
             </div>
           </div>
         </div>
