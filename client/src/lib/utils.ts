@@ -81,7 +81,6 @@ export const isValidPassword = (password: string): boolean => {
 
 // Game utilities
 export const calculateXpProgress = (currentXp: number, level: number) => {
-  const LMAX = 100;
   let cumulativeXp = 0;
   
   for (let i = 1; i < level; i++) {

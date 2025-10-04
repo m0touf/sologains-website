@@ -2,6 +2,7 @@ import { useGameStore } from '../game/store';
 import { useAuthStore } from '../stores/authStore';
 import { useEffect, useState } from 'react';
 import { apiClient } from '../lib/api';
+import LoadingScreen from './LoadingScreen';
 
 interface StoreScreenProps {
   onBack: () => void;
@@ -17,6 +18,9 @@ interface ShopItem {
   type: string;
   effectValue: number;
   statType?: string;
+  quantityRemaining?: number;
+  quantityMax?: number;
+  quantityPurchased?: number;
 }
 
 interface ShopItems {
@@ -26,11 +30,11 @@ interface ShopItems {
 }
 
 export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
-  const { energy, cash, setFromServer, maxEnergy, permanentEnergy } = useGameStore();
+  const { energy, cash, setFromServer, maxEnergy, permanentEnergy, isInitialized } = useGameStore();
   const [shopItems, setShopItems] = useState<ShopItems | null>(null);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
-
+  
   // Load shop items on component mount
   const loadShopItems = async () => {
     try {
@@ -38,7 +42,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
-      const items = await apiClient.getStoreItems();
+      const items = await apiClient.getStoreItems() as any;
       setShopItems(items);
     } catch (error) {
       console.error("Failed to load shop items:", error);
@@ -48,8 +52,15 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
   };
 
   useEffect(() => {
-    loadShopItems();
-  }, []);
+    if (isInitialized) {
+      loadShopItems();
+    }
+  }, [isInitialized]);
+
+  // Show loading if not initialized or loading shop items
+  if (!isInitialized || loading) {
+    return <LoadingScreen />;
+  }
 
   const handlePurchase = async (item: ShopItem) => {
     setPurchasing(item.id);
@@ -57,7 +68,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
-      const result = await apiClient.purchaseItem({ itemId: item.id });
+      const result = await apiClient.purchaseItem({ itemId: item.id }) as any;
       
       // Update game state with the purchase result
       setFromServer({
@@ -99,26 +110,8 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
   };
 
 
-  if (loading) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100">
-        <div className="text-center">
-          <div className="text-2xl mb-4 font-black text-gray-700" style={{ fontFamily: 'monospace' }}>LOADING</div>
-          <div className="text-gray-700 font-bold">Loading shop items...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!shopItems) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100">
-        <div className="text-center">
-          <div className="text-2xl mb-4 font-black text-gray-700" style={{ fontFamily: 'monospace' }}>ERROR</div>
-          <div className="text-gray-700 font-bold">Failed to load shop items</div>
-        </div>
-      </div>
-    );
+  if (loading || !shopItems) {
+    return <LoadingScreen />;
   }
 
   return (

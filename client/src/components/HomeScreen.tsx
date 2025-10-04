@@ -1,6 +1,7 @@
 import { useGameStore } from '../game/store';
 import { useAuthStore } from '../stores/authStore';
 import { useEffect, useState } from 'react';
+import LoadingScreen from './LoadingScreen';
 
 interface HomeScreenProps {
   onNavigate: (section: 'gym' | 'store' | 'adventures' | 'research') => void;
@@ -8,11 +9,16 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProps) {
-  const { energy, xp, stats, getXpProgress, getCurrentLevel, getEnergyRegenProgress, proficiencyPoints, cash, permanentEnergy, maxEnergy, luckBoostPercent, fractionalEnergy } = useGameStore();
+  const { energy, xp, stats, getXpProgress, getCurrentLevel, getEnergyRegenProgress, proficiencyPoints, cash, permanentEnergy, maxEnergy, luckBoostPercent, fractionalEnergy, isInitialized } = useGameStore();
   const level = getCurrentLevel();
   const xpProgress = getXpProgress();
   const energyRegenProgress = getEnergyRegenProgress();
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  
+  // Show loading if not initialized
+  if (!isInitialized) {
+    return <LoadingScreen />;
+  }
 
   // Show notification
   const showNotification = (message: string, type: 'success' | 'error') => {
@@ -88,7 +94,6 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
           if (response.ok) {
             showNotification(`Test date set to tomorrow (${dateStr})`, 'success');
           } else {
-            const error = await response.json();
             showNotification('Failed to set test date', 'error');
           }
         } catch {

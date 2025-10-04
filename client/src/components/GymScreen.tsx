@@ -1,5 +1,6 @@
 import { useGameStore } from '../game/store';
 import { useState } from 'react';
+import LoadingScreen from './LoadingScreen';
 
 interface GymScreenProps {
   onBack: () => void;
@@ -8,8 +9,13 @@ interface GymScreenProps {
 
 
 export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
-  const { energy, stats, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, cash, permanentEnergy, maxEnergy } = useGameStore();
+  const { energy, stats, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, cash, permanentEnergy, maxEnergy, isInitialized } = useGameStore();
   const [selectedCategory, setSelectedCategory] = useState<'strength' | 'endurance' | 'mobility'>('strength');
+  
+  // Show loading if not initialized
+  if (!isInitialized) {
+    return <LoadingScreen />;
+  }
   
   const level = getCurrentLevel();
   const xpProgress = getXpProgress();

@@ -343,15 +343,15 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
 
     // Apply Tier 4: Signature Move - 5% more proficiency gain
     if (researchUpgrade && researchUpgrade.tier >= 4) {
-      proficiencyResult.deltaGained = Math.round(proficiencyResult.deltaGained * 1.05);
-      proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.deltaGained);
+      proficiencyResult.proficiencyGained = Math.round(proficiencyResult.proficiencyGained * 1.05);
+      proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.proficiencyGained);
     }
 
     // Apply proficiency boost if available
     if (save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0) {
-      proficiencyResult.deltaGained = Math.round(proficiencyResult.deltaGained * 2); // Double proficiency gain
-      proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.deltaGained);
-      console.log(`Proficiency Boost applied! Proficiency gained: ${proficiencyResult.deltaGained}`);
+      proficiencyResult.proficiencyGained = Math.round(proficiencyResult.proficiencyGained * 2); // Double proficiency gain
+      proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.proficiencyGained);
+      console.log(`Proficiency Boost applied! Proficiency gained: ${proficiencyResult.proficiencyGained}`);
     }
 
     // Calculate new daily stat gains for response
@@ -400,7 +400,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         shouldResetDaily,
         intensity,
         grade,
-        deltaGained: proficiencyResult.deltaGained,
+        deltaGained: proficiencyResult.proficiencyGained,
         newProficiency: proficiencyResult.newProficiency,
         statGains,
         newDailyStatGains
@@ -442,7 +442,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           fractionalEnergyAfter: newEnergy, // Include fractional energy
           xpAfter: newXp,
           levelAfter: newLevel,
-          proficiencyGained: proficiencyResult.deltaGained,
+          proficiencyGained: proficiencyResult.proficiencyGained,
           ppGained,
           proficiencyPointsAfter: newProficiencyPoints,
           statGains,

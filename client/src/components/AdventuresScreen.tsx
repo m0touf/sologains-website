@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/authStore';
 import { apiClient } from '../lib/api';
 import { getTimeRemaining, getDifficultyColor, getDifficultyBg, getDifficultyIcon } from '../lib/utils';
 import { showUserError } from '../lib/errorHandler';
+import LoadingScreen from './LoadingScreen';
 
 interface AdventuresScreenProps {
   onBack: () => void;
@@ -31,7 +32,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
         }
 
         console.log('Loading adventures...');
-        const dailyAdventures = await apiClient.getDailyAdventures();
+        const dailyAdventures = await apiClient.getDailyAdventures() as any;
         console.log('Loaded adventures:', dailyAdventures.length);
         console.log('Sample adventure:', dailyAdventures[0]);
         setAdventures(dailyAdventures);
@@ -74,7 +75,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   const handleAttemptAdventure = async (adventureId: string) => {
     setAttempting(adventureId);
     try {
-      const result = await apiClient.attemptAdventure({ adventureId });
+      const result = await apiClient.attemptAdventure({ adventureId }) as any;
       if (result) {
         if (result.adventureStarted) {
           // Refresh daily attempts and in-progress adventures
@@ -93,7 +94,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
-      const save = await apiClient.getSave();
+      const save = await apiClient.getSave() as any;
       setDailyAttempts(save.dailyAdventureAttempts || 0);
     } catch (error) {
       console.error('Error loading save data:', error);
@@ -106,7 +107,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
-      const attempts = await apiClient.getAdventureHistory();
+        const attempts = await apiClient.getAdventureHistory() as any;
       const inProgress = attempts.filter((attempt: any) => 
         attempt.status === "in_progress" && 
         new Date(attempt.completedAt) > new Date()
@@ -123,7 +124,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
-      const attempts = await apiClient.getAdventureHistory();
+        const attempts = await apiClient.getAdventureHistory() as any;
       const readyToClaim = attempts.filter((attempt: any) => 
         attempt.status === "ready_to_claim"
       );
@@ -139,7 +140,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
-      const result = await apiClient.checkAdventureCompletions();
+      const result = await apiClient.checkAdventureCompletions() as any;
       if (result.readyAdventures && result.readyAdventures.length > 0) {
         // Refresh ready to claim adventures
         loadReadyToClaimAdventures();
@@ -155,14 +156,14 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
-      const result = await apiClient.claimAdventureRewards({ adventureAttemptId });
+        const result = await apiClient.claimAdventureRewards({ adventureAttemptId }) as any;
       if (result.success) {
         // Remove from ready to claim and add to completed
         setReadyToClaimAdventures(prev => prev.filter(adv => adv.id !== adventureAttemptId));
         setCompletedAdventures(prev => [...prev, result.adventureName]);
         
         // Refresh game state with updated data
-        const save = await apiClient.getSave();
+        const save = await apiClient.getSave() as any;
         setFromServer({
           energy: save.energy,
           xp: save.xp,
@@ -216,7 +217,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
           const token = useAuthStore.getState().token;
           if (!token) return;
 
-          const history = await apiClient.getAdventureHistory();
+          const history = await apiClient.getAdventureHistory() as any;
           const completed = history
             .filter((attempt: any) => attempt.status === "completed")
             .map((attempt: any) => attempt.adventureId);
@@ -231,15 +232,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     }, []);
 
   if (loading) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100">
-        <div className="text-center">
-          <div className="text-2xl mb-4 font-black text-gray-700" style={{ fontFamily: 'monospace' }}>LOADING</div>
-          <div className="text-gray-700 font-bold">Loading adventures...</div>
-          <div className="text-gray-600 text-sm mt-2">Check console for debug info</div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (adventures.length === 0) {
@@ -397,7 +390,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                     const inProgressAdv = getInProgressAdventure(adventure.id);
                     const timeRemaining = getTimeRemaining(inProgressAdv.completedAt);
                     const totalDuration = adventure.durationMinutes * 60 * 1000; // Convert to milliseconds
-                    const elapsed = totalDuration - timeRemaining.timeLeft;
+                    const elapsed = totalDuration - (timeRemaining.timeLeft || 0);
                     const progressPercentage = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
                     
                     return (

@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { useGameStore } from '../game/store';
 import { RESEARCH_TIER_COSTS, RESEARCH_TIER_EFFECTS } from '../utils/proficiencyPoints';
+import LoadingScreen from './LoadingScreen';
 
 interface ResearchScreenProps {
   onBack: () => void;
 }
 
 export default function ResearchScreen({ onBack }: ResearchScreenProps) {
-  const { exercises, getProficiency, proficiencyPoints, getResearchTier, upgradeExercise } = useGameStore();
+  const { exercises, getProficiency, proficiencyPoints, getResearchTier, upgradeExercise, isInitialized } = useGameStore();
   const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
+  
+  // Show loading if not initialized
+  if (!isInitialized) {
+    return <LoadingScreen />;
+  }
   
   // Group exercises by category
   const exercisesByCategory = exercises.reduce((acc, exercise) => {

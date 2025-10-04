@@ -47,6 +47,7 @@ type Adventure = {
   staminaReq: number;
   canAttempt: boolean;
   userStats: { strength: number; stamina: number; mobility: number };
+  durationMinutes: number;
 };
 
 type Save = {
@@ -68,6 +69,8 @@ type Save = {
 type GameState = Save & {
   exercises: Exercise[];
   adventures: Adventure[];
+  isLoading: boolean;
+  isInitialized: boolean;
   spendEnergy: (amt: number) => void;
   addXp: (xp: number) => void;
   addStats: (stats: Partial<Stats>) => void;
@@ -83,6 +86,8 @@ type GameState = Save & {
   upgradeExercise: (exerciseId: string, tier: number) => Promise<void>;
   setAdventures: (adventures: Adventure[]) => void;
   attemptAdventure: (adventureId: string) => Promise<any>;
+  setLoading: (loading: boolean) => void;
+  setInitialized: (initialized: boolean) => void;
 };
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -98,6 +103,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   ResearchUpgrades: [],
   exercises: [],
   adventures: [],
+  isLoading: true,
+  isInitialized: false,
   
   spendEnergy: (amt) => set((s) => ({ energy: Math.max(0, s.energy - amt) })),
   addXp: (xp) => set((s) => ({ xp: s.xp + xp })),
@@ -232,6 +239,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
   setAdventures: (adventures) => set({ adventures }),
+  setLoading: (loading) => set({ isLoading: loading }),
+  setInitialized: (initialized) => set({ isInitialized: initialized }),
   attemptAdventure: async (adventureId) => {
     try {
       const token = useAuthStore.getState().token;

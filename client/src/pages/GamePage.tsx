@@ -9,9 +9,19 @@ import GymScreen from "../components/GymScreen";
 import StoreScreen from "../components/StoreScreen";
 import AdventuresScreen from "../components/AdventuresScreen";
 import ResearchScreen from "../components/ResearchScreen";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function GamePage() {
-  const { spendEnergy, addXp, setFromServer, setExercises, addProficiencyPoints } = useGameStore();
+  const { 
+    spendEnergy, 
+    setFromServer, 
+    setExercises, 
+    addProficiencyPoints, 
+    isLoading, 
+    isInitialized, 
+    setLoading, 
+    setInitialized 
+  } = useGameStore();
   const { token } = useAuthStore();
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
 
@@ -21,12 +31,15 @@ export default function GamePage() {
     
     const loadGameState = async () => {
       try {
+        setLoading(true);
+        
         // Load save data and exercises in parallel
         const [save, exercises] = await Promise.all([
           apiClient.getSave(),
           apiClient.getExercises()
-        ]);
+        ]) as [any, any];
 
+        // Set all data at once to prevent flashing
         setFromServer({
           energy: save.energy,
           xp: save.xp,
@@ -50,12 +63,17 @@ export default function GamePage() {
         });
 
         setExercises(exercises);
+        
+        // Mark as initialized and stop loading
+        setInitialized(true);
+        setLoading(false);
       } catch (error) {
         console.error("Failed to load game state:", error);
+        setLoading(false);
       }
     };
     loadGameState();
-  }, [setFromServer, setExercises, token]);
+  }, [setFromServer, setExercises, setLoading, setInitialized, token]);
 
   const doWorkout = async (
     workoutType: 'strength' | 'endurance' | 'mobility', 
@@ -73,7 +91,7 @@ export default function GamePage() {
         reps,
         intensity,
         grade
-      });
+      }) as any;
       
       spendEnergy(data.energySpent);
       if (data.ppGained > 0) {
@@ -109,7 +127,7 @@ export default function GamePage() {
         }
       });
       if (saveRes.ok) {
-        const save = await saveRes.json();
+        const save = await saveRes.json() as any;
         setFromServer({
           energy: save.energy,
           xp: save.xp,
@@ -144,12 +162,12 @@ export default function GamePage() {
     if (!token) return;
     
     try {
-      const data = await apiClient.resetEnergy();
+      const data = await apiClient.resetEnergy() as any;
       setFromServer({ energy: data.energy, fractionalEnergy: data.fractionalEnergy, lastEnergyUpdate: new Date().toISOString() });
       console.log("Energy reset to 100%");
       
       // Reload full game state to ensure everything is in sync
-      const save = await apiClient.getSave();
+      const save = await apiClient.getSave() as any;
       setFromServer({
         energy: save.energy,
         xp: save.xp,
@@ -190,6 +208,11 @@ export default function GamePage() {
         return <HomeScreen onNavigate={setCurrentScreen} onResetEnergy={resetEnergy} />;
     }
   };
+
+  // Show loading screen while initializing
+  if (isLoading || !isInitialized) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-slate-200 relative overflow-hidden">

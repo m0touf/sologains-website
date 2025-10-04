@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { computeEnergyFloat, getCappedEnergy } from '../config/energy';
+import { AuthenticatedRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 
@@ -46,7 +47,7 @@ const newDaySchema = z.object({
 });
 
 // Get daily shop items (rotated based on date)
-export const getShopItems = async (req: Request, res: Response) => {
+export const getShopItems = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
@@ -139,7 +140,7 @@ function rotateItems(items: any[], seed: number, count: number): any[] {
 }
 
 // Purchase an item
-export const purchaseItem = async (req: Request, res: Response) => {
+export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
@@ -261,7 +262,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
           data: {
             dailyStatGains: 0,
             dailyEnergy: 0,
-            lastDailyReset: new Date().toISOString().split('T')[0] // Today's date
+            lastDailyReset: new Date() // Today's date
           }
         });
         break;
@@ -339,7 +340,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
 };
 
 // Simulate a new day (reset energy, daily limits, rotate content)
-export const simulateNewDay = async (req: Request, res: Response) => {
+export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
@@ -417,7 +418,7 @@ export const simulateNewDay = async (req: Request, res: Response) => {
 };
 
 // Test endpoint to simulate different dates (for testing daily resets)
-export const simulateDate = async (req: Request, res: Response) => {
+export const simulateDate = async (req: AuthenticatedRequest, res: Response) => {
   try {
     console.log('simulateDate called with user:', req.user);
     const userId = req.user?.userId;
@@ -462,7 +463,7 @@ export const simulateDate = async (req: Request, res: Response) => {
 };
 
 // Test endpoint to auto-complete all in-progress adventures
-export const autoCompleteAdventures = async (req: Request, res: Response) => {
+export const autoCompleteAdventures = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
     if (!userId) {

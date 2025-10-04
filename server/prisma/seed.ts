@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { adventures } from './adventureSeed';
+import seedShopItems from './shopSeed';
 
 const prisma = new PrismaClient();
 
@@ -226,6 +227,10 @@ async function main() {
   }
 
   console.log(`✅ Created ${adventures.length} adventures`);
+
+  // Seed shop items
+  await seedShopItems();
+
   console.log('🎉 Database seeded successfully!');
 }
 
