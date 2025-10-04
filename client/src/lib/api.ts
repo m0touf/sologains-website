@@ -4,11 +4,40 @@ import { ApiError, logError } from './errorHandler';
 
 class ApiClient {
   private getAuthHeaders() {
-    const token = useAuthStore.getState().token;
+    const accessToken = useAuthStore.getState().accessToken;
     return {
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${accessToken}`,
       'Content-Type': 'application/json'
     };
+  }
+
+  private async refreshAccessToken(): Promise<boolean> {
+    const refreshToken = useAuthStore.getState().refreshToken;
+    if (!refreshToken) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ refreshToken })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        useAuthStore.getState().setTokens(data.accessToken, refreshToken);
+        return true;
+      }
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+    }
+
+    // If refresh fails, logout user
+    useAuthStore.getState().logout();
+    return false;
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -23,6 +52,33 @@ class ApiClient {
           ...options.headers,
         },
       });
+
+      // If token is expired, try to refresh
+      if (response.status === 403 && endpoint !== '/auth/refresh') {
+        const refreshed = await this.refreshAccessToken();
+        if (refreshed) {
+          // Retry the request with new token
+          const newHeaders = this.getAuthHeaders();
+          const retryResponse = await fetch(url, {
+            ...options,
+            headers: {
+              ...newHeaders,
+              ...options.headers,
+            },
+          });
+
+          if (!retryResponse.ok) {
+            const error = await retryResponse.json().catch(() => ({ error: 'Network error' }));
+            throw new ApiError(
+              error.error || 'Request failed',
+              error.code,
+              retryResponse.status
+            );
+          }
+
+          return retryResponse.json();
+        }
+      }
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({ error: 'Network error' }));

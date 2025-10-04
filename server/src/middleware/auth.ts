@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/auth';
+import { verifyAccessToken } from '../utils/auth';
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -17,7 +17,7 @@ export const authenticateToken = async (req: AuthenticatedRequest, res: Response
     return res.status(401).json({ error: 'Access token required' });
   }
 
-  const payload = verifyToken(token);
+  const payload = verifyAccessToken(token);
   if (!payload) {
     return res.status(403).json({ error: 'Invalid or expired token' });
   }
@@ -31,7 +31,7 @@ export const optionalAuth = async (req: AuthenticatedRequest, res: Response, nex
   const token = authHeader && authHeader.split(' ')[1];
 
   if (token) {
-    const payload = verifyToken(token);
+    const payload = verifyAccessToken(token);
     if (payload) {
       req.user = payload;
     }

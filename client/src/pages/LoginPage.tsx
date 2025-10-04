@@ -27,7 +27,7 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
-      useAuthStore.getState().login(data.token, data.user);
+      useAuthStore.getState().login(data.accessToken, data.refreshToken, data.user);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
