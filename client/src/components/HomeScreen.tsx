@@ -24,8 +24,16 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
   }
 
   return (
-    <div className="flex-1 relative bg-gradient-to-br from-amber-50 to-amber-100 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
-
+    <div className="flex-1 relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-[2px]"
+        style={{
+          backgroundImage: 'url(/src/assets/backgrounds/Background_Image_Home_05.png)',
+          imageRendering: 'pixelated'
+        }}
+      ></div>
+      
       <div className="relative z-10 h-full flex">
         {/* Left Side - Activity Buttons */}
         <div className="w-2/5 p-4 flex flex-col justify-center">
