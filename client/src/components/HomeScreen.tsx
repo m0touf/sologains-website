@@ -318,8 +318,8 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>ENERGY</span>
                     <div className="flex items-center gap-1">
-                      <span className="text-green-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{energy}/{maxEnergy || (180 + permanentEnergy)}</span>
-                      {(fractionalEnergy || energy) > 180 && (
+                      <span className="text-green-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{energy}/{maxEnergy || (150 + permanentEnergy)}</span>
+                      {(fractionalEnergy || energy) > 150 && (
                         <span className="text-yellow-500 font-black text-xs" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>⚡</span>
                       )}
                     </div>
@@ -350,12 +350,10 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                     <span className="text-orange-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{luckBoostPercent}%</span>
                   </div>
                   
-                  {permanentEnergy > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT ENERGY</span>
-                      <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
-                    </div>
-                  )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT ENERGY</span>
+                    <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
+                  </div>
                 </div>
               </div>
             </div>

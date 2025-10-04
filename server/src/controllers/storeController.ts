@@ -7,9 +7,9 @@ import { AuthenticatedRequest } from '../middleware/auth';
 const prisma = new PrismaClient();
 
 // XP Curve System (same as gameController)
-const LMAX = 50;
+const LMAX = 100;
 const BASE_REQ = 20;
-const GROWTH = 1.092795;
+const GROWTH = 1.048900;
 
 function xpToNext(n: number) {
   return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
@@ -218,7 +218,7 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
     let newStrength = save.strength;
     let newStamina = save.stamina;
     let newMobility = save.mobility;
-    let newMaxEnergy = save.maxEnergy || 180;
+    let newMaxEnergy = save.maxEnergy || 150;
     let newXp = save.xp;
     let newXpBoostRemaining = save.xpBoostRemaining || 0;
     let newProficiencyBoostRemaining = save.proficiencyBoostRemaining || 0;
@@ -364,7 +364,7 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
     }
 
     // Reset energy to max
-    const maxEnergy = save.maxEnergy || 180;
+    const maxEnergy = save.maxEnergy || 150;
     
     // Reset daily stat gains for all exercises
     await prisma.exerciseProficiency.updateMany({

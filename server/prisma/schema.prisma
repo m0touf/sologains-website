@@ -29,7 +29,7 @@ model Save {
   mobility             Int     @default(1)
   proficiencyPoints    Int     @default(0)
   cash                 Int     @default(0)
-  maxEnergy            Float   @default(180.0)
+  maxEnergy            Float   @default(150.0)
   permanentEnergy      Int     @default(0) // permanent energy stat that increases max energy
   shopRotationSeed     Int?
   lastShopRotation     DateTime?

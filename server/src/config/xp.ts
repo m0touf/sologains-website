@@ -1,7 +1,7 @@
 // XP Curve System Configuration
-export const LMAX = 50;                    // Maximum level
+export const LMAX = 100;                   // Maximum level
 export const BASE_REQ = 20;                // Base XP requirement for level 1
-export const GROWTH = 1.092795;            // Growth factor for XP curve
+export const GROWTH = 1.048900;            // Growth factor for XP curve
 
 /**
  * Calculate XP required to reach the next level

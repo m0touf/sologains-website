@@ -270,7 +270,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
               ADVENTURES
             </h1>
             <div className="text-emerald-600 font-black ring-2 ring-black bg-amber-50/95 px-4 py-2 rounded-lg" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-              ENERGY: {energy}/{maxEnergy || (100 + permanentEnergy)}
+              ENERGY: {energy}/{maxEnergy || (150 + permanentEnergy)}
             </div>
           </div>
         </div>

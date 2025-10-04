@@ -25,6 +25,33 @@ type ExerciseProficiency = {
   Exercise: Exercise;
 };
 
+type ResearchBenefit = {
+  id: string;
+  name: string;
+  description: string;
+  type: 'monetary' | 'energy' | 'stat' | 'bonus' | 'xp' | 'adventure' | 'utility' | 'quality';
+  value: number;
+  isPercentage: boolean;
+  category: 'strength' | 'endurance' | 'mobility';
+};
+
+
+type AvailableResearch = {
+  exercise: {
+    id: string;
+    name: string;
+    category: string;
+  };
+  proficiency: number;
+  currentTier: number;
+  availableTiers: {
+    tier: number;
+    cost: number;
+    benefits: ResearchBenefit[];
+    canUnlock: boolean;
+  }[];
+};
+
 type ResearchUpgrade = {
   id: string;
   userId: string;
@@ -32,6 +59,7 @@ type ResearchUpgrade = {
   tier: number;
   isActive: boolean;
   Exercise: Exercise;
+  benefits?: ResearchBenefit[];
 };
 
 type Adventure = {
@@ -69,6 +97,7 @@ type Save = {
 type GameState = Save & {
   exercises: Exercise[];
   adventures: Adventure[];
+  availableResearch: AvailableResearch[];
   isLoading: boolean;
   isInitialized: boolean;
   spendEnergy: (amt: number) => void;
@@ -88,6 +117,7 @@ type GameState = Save & {
   attemptAdventure: (adventureId: string) => Promise<any>;
   setLoading: (loading: boolean) => void;
   setInitialized: (initialized: boolean) => void;
+  loadAvailableResearch: () => Promise<void>;
 };
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -103,6 +133,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   ResearchUpgrades: [],
   exercises: [],
   adventures: [],
+  availableResearch: [],
   isLoading: true,
   isInitialized: false,
   
@@ -150,7 +181,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     } else {
       // Fallback: calculate from integer energy
       const hoursElapsed = (now.getTime() - lastUpdate.getTime()) / (1000 * 60 * 60);
-      currentFractionalEnergy = Math.min(state.maxEnergy || 180, state.energy + (hoursElapsed * 5));
+      currentFractionalEnergy = Math.min(state.maxEnergy || 150, state.energy + (hoursElapsed * 5));
     }
     
     // Get the fractional part (0-1) to show progress toward next energy point
@@ -232,6 +263,9 @@ export const useGameStore = create<GameState>((set, get) => ({
         // Test getResearchTier immediately after setting
         const testTier = get().getResearchTier(exerciseId);
         console.log(`Test getResearchTier for ${exerciseId}:`, testTier);
+        
+        // Reload available research to get updated benefits
+        await get().loadAvailableResearch();
       }
     } catch (error) {
       console.error("Network error:", error);
@@ -241,6 +275,32 @@ export const useGameStore = create<GameState>((set, get) => ({
   setAdventures: (adventures) => set({ adventures }),
   setLoading: (loading) => set({ isLoading: loading }),
   setInitialized: (initialized) => set({ isInitialized: initialized }),
+  loadAvailableResearch: async () => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+      
+      const res = await fetch("http://localhost:4000/api/available-research", {
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      
+      if (!res.ok) {
+        console.error("Failed to load available research");
+        return;
+      }
+      
+      const data = await res.json();
+      set({ availableResearch: data });
+    } catch (error) {
+      console.error("Error loading available research:", error);
+    }
+  },
   attemptAdventure: async (adventureId) => {
     try {
       const token = useAuthStore.getState().token;

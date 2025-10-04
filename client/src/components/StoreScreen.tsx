@@ -131,7 +131,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
             STORE
           </h1>
           <div className="text-red-200 font-black ring-2 ring-black bg-amber-50/95 px-4 py-2 rounded-lg" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-            ${cash} CASH | {energy}/{maxEnergy || (180 + permanentEnergy)} ENERGY
+            ${cash} CASH | {energy}/{maxEnergy || (150 + permanentEnergy)} ENERGY
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGameStore } from '../game/store';
-import { RESEARCH_TIER_COSTS, RESEARCH_TIER_EFFECTS } from '../utils/proficiencyPoints';
 import LoadingScreen from './LoadingScreen';
 
 interface ResearchScreenProps {
@@ -8,23 +7,36 @@ interface ResearchScreenProps {
 }
 
 export default function ResearchScreen({ onBack }: ResearchScreenProps) {
-  const { exercises, getProficiency, proficiencyPoints, getResearchTier, upgradeExercise, isInitialized } = useGameStore();
+  const { 
+    availableResearch, 
+    proficiencyPoints, 
+    upgradeExercise, 
+    isInitialized, 
+    loadAvailableResearch 
+  } = useGameStore();
   const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null); // Only one category can be open at a time
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  
+  // Load available research on component mount
+  useEffect(() => {
+    if (isInitialized) {
+      loadAvailableResearch();
+    }
+  }, [isInitialized, loadAvailableResearch]);
   
   // Show loading if not initialized
   if (!isInitialized) {
     return <LoadingScreen />;
   }
   
-  // Group exercises by category
-  const exercisesByCategory = exercises.reduce((acc, exercise) => {
-    if (!acc[exercise.category]) {
-      acc[exercise.category] = [];
+  // Group research by category
+  const researchByCategory = availableResearch.reduce((acc, research) => {
+    if (!acc[research.exercise.category]) {
+      acc[research.exercise.category] = [];
     }
-    acc[exercise.category].push(exercise);
+    acc[research.exercise.category].push(research);
     return acc;
-  }, {} as Record<string, typeof exercises>);
+  }, {} as Record<string, typeof availableResearch>);
 
 
 
@@ -40,10 +52,13 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
   };
 
   const canUpgrade = (exerciseId: string, tier: number) => {
-    const proficiency = getProficiency(exerciseId);
-    const cost = RESEARCH_TIER_COSTS[tier as keyof typeof RESEARCH_TIER_COSTS];
-    const currentTier = getResearchTier(exerciseId);
-    return proficiency >= 1000 && proficiencyPoints >= cost && currentTier < tier;
+    const research = availableResearch.find(r => r.exercise.id === exerciseId);
+    if (!research) return false;
+    
+    const tierData = research.availableTiers.find(t => t.tier === tier);
+    if (!tierData) return false;
+    
+    return tierData.canUnlock && proficiencyPoints >= tierData.cost;
   };
 
   const handleUpgrade = async (exerciseId: string, tier: number) => {
@@ -108,8 +123,8 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
               </div>
             </div>
             
-            {/* Exercise Categories */}
-            {Object.entries(exercisesByCategory).map(([category, categoryExercises]) => {
+            {/* Research Categories */}
+            {Object.entries(researchByCategory).map(([category, categoryResearch]) => {
               const isExpanded = expandedCategory === category;
               
               return (
@@ -126,11 +141,11 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
                   >
                     <div className="flex items-center justify-between">
                       <h3 className="text-2xl font-black text-gray-800" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
-                        {category.toUpperCase()} EXERCISES
+                        {category.toUpperCase()} RESEARCH
                       </h3>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-bold text-gray-700" style={{ fontFamily: 'monospace' }}>
-                          {categoryExercises.length} exercises
+                          {categoryResearch.length} exercises
                         </span>
                         <div className={`text-2xl transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
                           ▼
@@ -142,10 +157,11 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
                   {/* Category Content - Collapsible */}
                   {isExpanded && (
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-                      {categoryExercises.map((exercise) => {
-                        const proficiency = getProficiency(exercise.id);
+                      {categoryResearch.map((research) => {
+                        const exercise = research.exercise;
+                        const proficiency = research.proficiency;
                         const isMaxProficiency = proficiency >= 1000;
-                        const currentTier = getResearchTier(exercise.id);
+                        const currentTier = research.currentTier;
                         const isSelected = selectedExercise === exercise.id;
                         
                         return (
@@ -198,9 +214,8 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
                             {/* Research Tiers - Always show when selected */}
                             {isSelected && (
                               <div className="space-y-2 mt-3 pt-3 border-t-2 border-gray-400">
-                                {[1, 2, 3, 4].map((tier) => {
-                                  const cost = RESEARCH_TIER_COSTS[tier as keyof typeof RESEARCH_TIER_COSTS];
-                                  const effect = RESEARCH_TIER_EFFECTS[tier as keyof typeof RESEARCH_TIER_EFFECTS];
+                                {research.availableTiers.map((tierData) => {
+                                  const { tier, cost, benefits } = tierData;
                                   const canUpgradeTier = canUpgrade(exercise.id, tier);
                                   const isUnlocked = currentTier >= tier;
                                   const isLocked = !isMaxProficiency;
@@ -228,9 +243,12 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
                                           {isUnlocked ? 'ACTIVE' : `${cost} PP`}
                                         </span>
                                       </div>
-                                      <div className="text-gray-700 font-bold text-center" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-                                        {isUnlocked ? `${effect.name}: ${effect.description}` : `${effect.name}: ${effect.description}`}
-                                      </div>
+                                      {benefits.map((benefit, index) => (
+                                        <div key={index} className="text-gray-700 font-bold text-center mb-1" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
+                                          <div className="font-black text-blue-700">{benefit.name}</div>
+                                          <div className="text-xs">{benefit.description}</div>
+                                        </div>
+                                      ))}
                                       {isLocked && !isUnlocked && (
                                         <div className="text-red-600 text-xs font-bold mt-1" style={{ fontFamily: 'monospace' }}>
                                           Requires 1000 proficiency

@@ -1,12 +1,13 @@
 // Energy regeneration system constants
 export const ENERGY_RATE_PER_HOUR = 5;     // 5/h = 120/day
-export const ENERGY_CAP = 180;             // ~36h of regen; players can miss a day
+export const ENERGY_CAP = 150;             // ~30h of regen; players can miss a day
 export const OVERCAP_BUFFER = 20;          // Allow +20 overcap for level-up refills
+export const MAX_ENERGY_WITH_OVERFLOW = ENERGY_CAP + OVERCAP_BUFFER; // 170 total
 
 // XP scaling to preserve 6-month curve
-export const DAILY_XP_TARGET = 100;        // keep this the same
+export const DAILY_XP_TARGET = 200;        // Increased to match new energy costs
 export const ENERGY_PER_DAY = 24 * ENERGY_RATE_PER_HOUR; // 120
-export const XP_ENERGY_SCALE = DAILY_XP_TARGET / ENERGY_PER_DAY; // 100/120 = 0.8333...
+export const XP_ENERGY_SCALE = DAILY_XP_TARGET / ENERGY_PER_DAY; // 200/120 = 1.666...
 
 /**
  * Compute current energy based on time elapsed since last update
@@ -36,7 +37,7 @@ export function getCappedEnergy(energy: number): number {
  * @returns Energy capped at ENERGY_CAP + OVERCAP_BUFFER
  */
 export function getEnergyWithOvercap(energy: number): number {
-  return Math.min(ENERGY_CAP + OVERCAP_BUFFER, energy);
+  return Math.min(MAX_ENERGY_WITH_OVERFLOW, energy);
 }
 
 /**

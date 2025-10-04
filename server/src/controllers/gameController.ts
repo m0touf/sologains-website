@@ -10,7 +10,11 @@ import {
   levelFromXp,
   calculateProficiencyGain,
   calculateProficiencyPointsGained,
-  calculateAllStatGains
+  calculateAllStatGains,
+  getResearchBenefits,
+  getAllResearchBenefits,
+  canUnlockTier,
+  getTierCost
 } from '../config';
 
 const prisma = new PrismaClient();
@@ -51,7 +55,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     // Update energy based on time elapsed
     const now = new Date();
     const currentEnergy = computeEnergyFloat(save.energy, save.lastEnergyUpdate, now);
-    // For regeneration, cap at 180. Overcap only applies to manual actions
+    // For regeneration, cap at 150. Overcap only applies to manual actions
     const cappedEnergy = getCappedEnergy(currentEnergy);
     
     // Update energy in database if it changed
@@ -146,7 +150,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       ...updatedSave,
       energy: Math.floor(cappedEnergy),
       fractionalEnergy: cappedEnergy, // Use capped energy for regeneration
-      maxEnergy: updatedSave?.maxEnergy || 180
+      maxEnergy: updatedSave?.maxEnergy || 150
     });
   } catch (error) {
     console.error('Get save error:', error);
@@ -497,8 +501,8 @@ export const resetEnergy = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     // Reset energy to max (with overcap buffer for level-ups)
-    const maxEnergy = (save.maxEnergy || 180) + (save.permanentEnergy || 0);
-    const resetEnergy = maxEnergy + 20; // Overcap buffer
+    const maxEnergy = (save.maxEnergy || 150) + (save.permanentEnergy || 0);
+    const resetEnergy = getEnergyWithOvercap(maxEnergy); // Use config function for consistency
 
     const updatedSave = await prisma.save.update({
       where: { userId },
@@ -602,8 +606,8 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       return res.status(404).json({ error: 'Save not found' });
     }
     
-    const tierCosts = { 1: 2, 2: 4, 3: 6, 4: 8 };
-    const cost = tierCosts[tier as keyof typeof tierCosts];
+    // Get tier cost from research config
+    const cost = getTierCost(exerciseId, tier);
     
     if (save.proficiencyPoints < cost) {
       return res.status(400).json({ error: `Not enough proficiency points. Need ${cost}, have ${save.proficiencyPoints}` });
@@ -621,6 +625,12 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     
     if (existingUpgrade && existingUpgrade.tier >= tier) {
       return res.status(400).json({ error: 'Already upgraded to this tier or higher' });
+    }
+    
+    // Check tier ladder requirement
+    const currentTier = existingUpgrade ? existingUpgrade.tier : 0;
+    if (!canUnlockTier(exerciseId, tier, currentTier)) {
+      return res.status(400).json({ error: `Must unlock tier ${tier - 1} first` });
     }
     
     await prisma.$transaction(async (tx) => {
@@ -657,10 +667,14 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       });
     });
     
+    // Get the benefits for this tier
+    const benefits = getResearchBenefits(exerciseId, tier);
+    
     res.json({ 
       message: `Successfully upgraded ${exercise.name} to tier ${tier}`,
       proficiencyPoints: save.proficiencyPoints - cost,
-      newProficiency: 700
+      newProficiency: 700,
+      benefits: benefits
     });
   } catch (error) {
     console.error('Upgrade exercise error:', error);
@@ -679,9 +693,67 @@ export const getResearchUpgrades = async (req: AuthenticatedRequest, res: Respon
       }
     });
     
-    res.json(upgrades);
+    // Add benefits information to each upgrade
+    const upgradesWithBenefits = upgrades.map(upgrade => ({
+      ...upgrade,
+      benefits: getResearchBenefits(upgrade.exerciseId, upgrade.tier)
+    }));
+    
+    res.json(upgradesWithBenefits);
   } catch (error) {
     console.error('Get research upgrades error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// New endpoint to get all available research options
+export const getAvailableResearch = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    
+    // Get all exercises with their proficiencies
+    const exercises = await prisma.exercise.findMany({
+      include: {
+        ExerciseProficiencies: {
+          where: { userId }
+        }
+      }
+    });
+    
+    // Get current research upgrades
+    const currentUpgrades = await prisma.researchUpgrade.findMany({
+      where: { userId }
+    });
+    
+    const upgradeMap = new Map(currentUpgrades.map(u => [u.exerciseId, u.tier]));
+    
+    // Build available research options
+    const availableResearch = exercises.map(exercise => {
+      const proficiency = exercise.ExerciseProficiencies[0];
+      const currentTier = upgradeMap.get(exercise.id) || 0;
+      const allBenefits = getAllResearchBenefits(exercise.id);
+      
+      return {
+        exercise: {
+          id: exercise.id,
+          name: exercise.name,
+          category: exercise.category
+        },
+        proficiency: proficiency?.proficiency || 0,
+        currentTier,
+        availableTiers: allBenefits.map(tier => ({
+          tier: tier.tier,
+          cost: tier.cost,
+          benefits: tier.benefits,
+          canUnlock: canUnlockTier(exercise.id, tier.tier, currentTier) && 
+                     (proficiency?.proficiency || 0) >= 1000
+        }))
+      };
+    });
+    
+    res.json(availableResearch);
+  } catch (error) {
+    console.error('Get available research error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

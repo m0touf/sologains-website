@@ -56,14 +56,14 @@ export const signup = async (req: Request, res: Response) => {
           userId: newUser.id,
           level: 1,
           xp: 0,
-          energy: 180.0,
+          energy: 150.0,
           lastEnergyUpdate: new Date(),
           strength: 1,
           stamina: 1,
           mobility: 1,
           proficiencyPoints: 0,
           cash: 500,
-          maxEnergy: 180.0,
+          maxEnergy: 150.0,
         },
       });
 
