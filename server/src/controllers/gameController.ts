@@ -2,70 +2,20 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../middleware/auth';
-import { computeEnergyFloat, getCappedEnergy, getEnergyWithOvercap, scaleXpReward } from '../config/energy';
+import { 
+  computeEnergyFloat, 
+  getCappedEnergy, 
+  getEnergyWithOvercap, 
+  scaleXpReward,
+  levelFromXp,
+  calculateProficiencyGain,
+  calculateProficiencyPointsGained,
+  calculateAllStatGains
+} from '../config';
 
 const prisma = new PrismaClient();
 
-// XP Curve System
-const LMAX = 50;
-const BASE_REQ = 20;
-const GROWTH = 1.092795;
-
-function xpToNext(n: number) {
-  return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
-}
-
-function totalXpTo(L: number) {
-  const r = GROWTH, A = BASE_REQ;
-  return Math.round(A * (Math.pow(r, L) - 1) / (r - 1));
-}
-
-function levelFromXp(totalXp: number) {
-  let level = 1;
-  let cumulativeXp = 0;
-  
-  while (level <= LMAX) {
-    const xpNeeded = xpToNext(level);
-    if (cumulativeXp + xpNeeded > totalXp) {
-      break;
-    }
-    cumulativeXp += xpNeeded;
-    level++;
-  }
-  
-  return level;
-}
-
-// Advanced Proficiency System
-const K = 2.2;
-const intensityMul = (i: 1|2|3|4|5) => 1 + 0.25 * (i - 1);
-const gradeMul = (g: "perfect"|"good"|"okay"|"miss") =>
-  g === "perfect" ? 1.2 : g === "good" ? 1.0 : g === "okay" ? 0.8 : 0.4;
-const DR = (p: number) => 1 - Math.pow(p / 1000, 0.8);
-const dayDR = (x: number) => (x <= 30 ? 1 : Math.sqrt(30 / x));
-
-// Proficiency points system
-const ppForLevel = (n: number) => 1 + Math.floor((n - 1) / 10);
-const calculatePPGained = (newLevel: number) => {
-  if (newLevel <= 1) return 0;
-  return ppForLevel(newLevel);
-};
-
-function gainProficiency(
-  proficiency: number,
-  dailyEnergy: number,
-  energySpent: number,
-  intensity: 1|2|3|4|5 = 3,
-  grade: "perfect"|"good"|"okay"|"miss" = "good"
-) {
-  const delta = Math.max(
-    6,
-    K * energySpent * intensityMul(intensity) * gradeMul(grade) * DR(proficiency) * dayDR(dailyEnergy)
-  );
-  const newProficiency = Math.min(1000, proficiency + Math.round(delta));
-  const newDailyEnergy = dailyEnergy + energySpent;
-  return { newProficiency, newDailyEnergy, deltaGained: Math.round(delta) };
-}
+// All math functions are now imported from config files
 
 const workoutSchema = z.object({
   type: z.enum(['strength', 'endurance', 'mobility']),
@@ -305,9 +255,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(400).json({ error: 'Not enough energy' });
     }
 
-    // Calculate stat gains based on exercise stat type and daily limits
-    const statGains = { strength: 0, stamina: 0, mobility: 0 };
-
     // Get intensity and grade from request (with defaults)
     const intensity = (parse.data.intensity || 3) as 1|2|3|4|5;
     const grade = (parse.data.grade || "good") as "perfect"|"good"|"okay"|"miss";
@@ -335,10 +282,10 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     // Check if user has exceeded daily stat gain limit (5 per exercise)
     const maxDailyStatGains = 5;
     
-    if (currentDailyStatGains >= maxDailyStatGains) {
-      console.log(`Daily stat gain limit reached for ${exercise.name} (${currentDailyStatGains}/${maxDailyStatGains})`);
-      // No stat gains, but still allow proficiency and XP gains
-    } else {
+    // Calculate stat gains using centralized function
+    let statGains = { strength: 0, stamina: 0, mobility: 0 };
+    
+    if (currentDailyStatGains < maxDailyStatGains) {
       // Use exercise's stat gain amount instead of calculating from reps
       let statGainAmount = exercise.statGainAmount;
       
@@ -347,6 +294,15 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         statGainAmount = Math.round(statGainAmount * 1.05);
       }
       
+      // Use centralized stat gain calculation
+      const calculatedGains = calculateAllStatGains(
+        energySpent,
+        intensity,
+        grade,
+        { strength: save.strength, stamina: save.stamina, mobility: save.mobility }
+      );
+      
+      // Apply the stat gain amount to the appropriate stat
       switch (exercise.statType) {
         case 'strength':
           statGains.strength = statGainAmount;
@@ -358,6 +314,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           statGains.mobility = statGainAmount;
           break;
       }
+    } else {
+      console.log(`Daily stat gain limit reached for ${exercise.name} (${currentDailyStatGains}/${maxDailyStatGains})`);
     }
     
     // Calculate final stats after stat gains are determined
@@ -370,12 +328,12 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     
     // Calculate proficiency points gained from level up
     const oldLevel = save.level;
-    const ppGained = newLevel > oldLevel ? calculatePPGained(newLevel) : 0;
+    const ppGained = newLevel > oldLevel ? calculateProficiencyPointsGained(newLevel) : 0;
     const newProficiencyPoints = save.proficiencyPoints + ppGained;
     
     // Calculate base proficiency gain (use reset daily values if needed)
     const dailyEnergyForCalc = shouldResetDaily ? 0 : currentDailyEnergy;
-    let proficiencyResult = gainProficiency(
+    let proficiencyResult = calculateProficiencyGain(
       currentProficiency,
       dailyEnergyForCalc,
       energySpent,

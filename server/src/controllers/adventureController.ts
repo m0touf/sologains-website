@@ -2,39 +2,18 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../middleware/auth';
-import { computeEnergyFloat, getCappedEnergy, scaleXpReward } from '../config/energy';
+import { 
+  computeEnergyFloat, 
+  getCappedEnergy, 
+  scaleXpReward,
+  levelFromXp,
+  calculateAdventureSuccessChance,
+  calculateAdventureRewards
+} from '../config';
 
 const prisma = new PrismaClient();
 
-// XP Curve System (same as gameController)
-const LMAX = 50;
-const BASE_REQ = 20;
-const GROWTH = 1.092795;
-
-function xpToNext(n: number) {
-  return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
-}
-
-function totalXpTo(L: number) {
-  const r = GROWTH, A = BASE_REQ;
-  return Math.round(A * (Math.pow(r, L) - 1) / (r - 1));
-}
-
-function levelFromXp(totalXp: number) {
-  let level = 1;
-  let cumulativeXp = 0;
-  
-  while (level <= LMAX) {
-    const xpNeeded = xpToNext(level);
-    if (cumulativeXp + xpNeeded > totalXp) {
-      break;
-    }
-    cumulativeXp += xpNeeded;
-    level++;
-  }
-  
-  return level;
-}
+// All math functions are now imported from config files
 
 // Get daily adventures (cycles through 50 adventures based on date)
 export const getDailyAdventures = async (req: AuthenticatedRequest, res: Response) => {
@@ -219,19 +198,29 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
     // Calculate when adventure will complete
     const completionTime = new Date(currentTime.getTime() + adventureDurationMs);
     
-    // Calculate success chance based on stats vs requirements
-    const strengthRatio = adventure.strengthReq > 0 ? save.strength / adventure.strengthReq : 1;
-    const staminaRatio = adventure.staminaReq > 0 ? save.stamina / adventure.staminaReq : 1;
-    const successChance = Math.min(0.95, Math.max(0.3, (strengthRatio + staminaRatio) / 2));
+    // Calculate success chance using centralized function
+    const successChance = calculateAdventureSuccessChance(
+      { strength: save.strength, stamina: save.stamina, mobility: save.mobility },
+      { strengthReq: adventure.strengthReq, staminaReq: adventure.staminaReq }
+    );
     
     // Determine if adventure succeeds
     const success = Math.random() < successChance;
 
-    // Calculate rewards (only given when adventure completes)
-    const rawXpGained = success ? adventure.xpReward : Math.floor(adventure.xpReward * 0.3);
-    const xpGained = scaleXpReward(rawXpGained);
-    const statGains = success ? adventure.statReward as { strength: number, stamina: number, mobility: number } : { strength: 0, stamina: 0, mobility: 0 };
-    const cashGained = success ? adventure.cashReward : 0;
+    // Calculate rewards using centralized function
+    const rewards = calculateAdventureRewards(
+      {
+        xpReward: adventure.xpReward,
+        cashReward: adventure.cashReward,
+        statReward: adventure.statReward as { strength: number, stamina: number, mobility: number }
+      },
+      success,
+      save.luckBoostPercent || 0
+    );
+    
+    const xpGained = scaleXpReward(rewards.xpGained);
+    const statGains = rewards.statGains;
+    const cashGained = rewards.cashGained;
 
     // Update user stats immediately (energy is spent now)
     const newEnergy = currentEnergy - adventure.energyCost;
@@ -401,20 +390,20 @@ export const claimAdventureRewards = async (req: AuthenticatedRequest, res: Resp
 
     const statGains = attempt.statGains as { strength: number, stamina: number, mobility: number };
     
-    // Apply luck boost for bonus rewards
-    let bonusReward = false;
-    let xpGained = attempt.xpGained;
-    let cashGained = attempt.cashGained;
+    // Apply luck boost using centralized function
+    const rewards = calculateAdventureRewards(
+      {
+        xpReward: attempt.xpGained,
+        cashReward: attempt.cashGained,
+        statReward: statGains
+      },
+      attempt.success,
+      save.luckBoostPercent || 0
+    );
     
-    if (save.luckBoostPercent && save.luckBoostPercent > 0) {
-      const luckChance = save.luckBoostPercent / 100;
-      if (Math.random() < luckChance) {
-        bonusReward = true;
-        xpGained = Math.round(xpGained * 1.5);
-        cashGained = Math.round(cashGained * 1.3);
-        console.log(`Adventure Luck Boost triggered! Bonus XP: ${xpGained}, Bonus Cash: ${cashGained}`);
-      }
-    }
+    const xpGained = rewards.xpGained;
+    const cashGained = rewards.cashGained;
+    const bonusReward = rewards.bonusReward;
 
     // Calculate new stats
     const newXp = save.xp + xpGained;
@@ -456,7 +445,7 @@ export const claimAdventureRewards = async (req: AuthenticatedRequest, res: Resp
       success: true,
       message: `Adventure "${attempt.Adventure.name}" completed!`,
       adventureName: attempt.Adventure.name,
-      success: attempt.success,
+      adventureSuccess: attempt.success,
       xpGained: xpGained,
       statGains,
       cashGained: cashGained,
