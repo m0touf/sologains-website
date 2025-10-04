@@ -250,11 +250,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       }
     }
 
-    // Check if user has enough energy
-    if (energy < energySpent) {
-      return res.status(400).json({ error: 'Not enough energy' });
-    }
-
     // Get intensity and grade from request (with defaults)
     const intensity = (parse.data.intensity || 3) as 1|2|3|4|5;
     const grade = (parse.data.grade || "good") as "perfect"|"good"|"okay"|"miss";
@@ -318,8 +313,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       console.log(`Daily stat gain limit reached for ${exercise.name} (${currentDailyStatGains}/${maxDailyStatGains})`);
     }
     
-    // Calculate final stats after stat gains are determined
-    const newEnergy = currentEnergy - energySpent;
+    // Calculate final stats after stat gains are determined (will be recalculated in transaction)
     const newXp = save.xp + xpGained;
     const newLevel = levelFromXp(newXp);
     const newStrength = save.strength + statGains.strength;
@@ -359,12 +353,32 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0) :
       (currentDailyStatGains + (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0));
 
-    await prisma.$transaction(async (tx) => {
-          // Update save
-          await tx.save.update({
-            where: { userId },
-            data: {
-              energy: newEnergy,
+    const result = await prisma.$transaction(async (tx) => {
+      // CRITICAL: Re-check energy inside transaction to prevent race conditions
+      const currentSave = await tx.save.findUnique({ where: { userId } });
+      if (!currentSave) {
+        throw new Error('Save not found during transaction');
+      }
+      
+      // Recalculate energy with current time
+      const transactionTime = new Date();
+      const transactionEnergy = computeEnergyFloat(currentSave.energy, currentSave.lastEnergyUpdate, transactionTime);
+      const transactionCappedEnergy = getCappedEnergy(transactionEnergy);
+      const transactionEnergyInt = Math.floor(transactionCappedEnergy);
+      
+      // Check if user has enough energy (inside transaction to prevent race conditions)
+      if (transactionEnergyInt < energySpent) {
+        throw new Error('Not enough energy');
+      }
+      
+      // Recalculate final energy using transaction values
+      const finalNewEnergy = transactionEnergy - energySpent;
+      
+      // Update save
+      await tx.save.update({
+        where: { userId },
+        data: {
+          energy: finalNewEnergy,
               xp: newXp,
               level: newLevel,
               strength: newStrength,
@@ -432,14 +446,16 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         });
         console.log(`Created new proficiency: ${proficiencyResult.newProficiency}, daily stat gains: ${statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0}`);
       }
+      
+      return { finalNewEnergy };
     });
 
         console.log('=== WORKOUT SUCCESS ===');
         res.json({ 
           energySpent, 
           xpGained, 
-          energyAfter: Math.floor(newEnergy), 
-          fractionalEnergyAfter: newEnergy, // Include fractional energy
+          energyAfter: Math.floor(result.finalNewEnergy), 
+          fractionalEnergyAfter: result.finalNewEnergy, // Include fractional energy
           xpAfter: newXp,
           levelAfter: newLevel,
           proficiencyGained: proficiencyResult.proficiencyGained,

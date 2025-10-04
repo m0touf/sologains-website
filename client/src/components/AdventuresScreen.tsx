@@ -160,7 +160,12 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       if (result.success) {
         // Remove from ready to claim and add to completed
         setReadyToClaimAdventures(prev => prev.filter(adv => adv.id !== adventureAttemptId));
-        setCompletedAdventures(prev => [...prev, result.adventureName]);
+        
+        // Find the adventure ID from the ready to claim adventures
+        const completedAdventure = readyToClaimAdventures.find(adv => adv.id === adventureAttemptId);
+        if (completedAdventure) {
+          setCompletedAdventures(prev => [...prev, completedAdventure.adventureId]);
+        }
         
         // Refresh game state with updated data
         const save = await apiClient.getSave() as any;

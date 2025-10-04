@@ -1,5 +1,5 @@
 import { useGameStore } from '../game/store';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import LoadingScreen from './LoadingScreen';
 
 interface GymScreenProps {
@@ -11,6 +11,8 @@ interface GymScreenProps {
 export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
   const { energy, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, permanentEnergy, maxEnergy, isInitialized, stats } = useGameStore();
   const [selectedCategory, setSelectedCategory] = useState<'strength' | 'endurance' | 'mobility'>('strength');
+  const [isWorkingOut, setIsWorkingOut] = useState<string | null>(null);
+  const lastWorkoutTime = useRef<number>(0);
   
   // Show loading if not initialized
   if (!isInitialized) {
@@ -32,12 +34,45 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
     return 'from-red-500 to-red-400';
   };
 
+  const handleWorkout = async (exercise: any) => {
+    const now = Date.now();
+    const timeSinceLastWorkout = now - lastWorkoutTime.current;
+    
+    // Prevent rapid clicking (minimum 1 second between workouts)
+    if (timeSinceLastWorkout < 1000) {
+      console.log('Workout cooldown active, please wait...');
+      return;
+    }
+    
+    // Prevent multiple simultaneous workouts
+    if (isWorkingOut) {
+      console.log('Already working out, please wait...');
+      return;
+    }
+    
+    // Check energy
+    if (energy < exercise.baseEnergy) {
+      console.log('Not enough energy');
+      return;
+    }
+    
+    setIsWorkingOut(exercise.id);
+    lastWorkoutTime.current = now;
+    
+    try {
+      await onWorkout(exercise.category as 'strength' | 'endurance' | 'mobility', exercise.id, exercise.baseReps);
+    } finally {
+      setIsWorkingOut(null);
+    }
+  };
+
   const renderExerciseCard = (exercise: any) => {
     const proficiency = getProficiency(exercise.id);
     const dailyStatGains = getDailyStatGains(exercise.id);
     const proficiencyColor = getProficiencyColor(proficiency);
     const isMaxProficiency = proficiency >= 1000;
     const isDailyLimitReached = dailyStatGains >= 5;
+    const isCurrentlyWorkingOut = isWorkingOut === exercise.id;
     
     // Get the stat gain amount and type
     const statGainAmount = exercise.statGainAmount || 1;
@@ -47,10 +82,10 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
     return (
       <button
         key={exercise.id}
-        onClick={() => onWorkout(exercise.category as 'strength' | 'endurance' | 'mobility', exercise.id, exercise.baseReps)}
-        disabled={energy < exercise.baseEnergy}
+        onClick={() => handleWorkout(exercise)}
+        disabled={energy < exercise.baseEnergy || isCurrentlyWorkingOut || isWorkingOut !== null}
         className={`group relative w-full aspect-square rounded-lg ring-2 ring-black shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden ${
-          energy < exercise.baseEnergy ? 'opacity-50 cursor-not-allowed' : ''
+          energy < exercise.baseEnergy || isCurrentlyWorkingOut || isWorkingOut !== null ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         style={{
           backgroundImage: exercise.imagePath ? `url(${exercise.imagePath})` : 'none',
