@@ -149,7 +149,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
                 {shopItems.energy_boosters.map((item, itemIndex) => (
                   <div
                     key={itemIndex}
-                    className={`p-4 rounded-xl border-2 border-black shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
+                    className={`p-4 rounded-xl border-2 border-black shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex flex-col h-full ${
                       cash >= item.cost
                         ? 'bg-stone-100 cursor-pointer hover:brightness-110'
                         : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
@@ -169,13 +169,13 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
                     <h3 className="font-black text-gray-800 mb-2" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
                       {item.name}
                     </h3>
-                    <p className="text-sm text-gray-700 mb-4" style={{ fontFamily: 'monospace' }}>
+                    <p className="text-sm text-gray-700 mb-4 flex-grow" style={{ fontFamily: 'monospace' }}>
                       {item.description}
                     </p>
                     <button
                       onClick={() => handlePurchase(item)}
                       disabled={cash < item.cost || purchasing === item.id}
-                      className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black transform hover:scale-105 ${
+                      className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black transform hover:scale-105 mt-auto ${
                         cash >= item.cost && purchasing !== item.id
                           ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white hover:shadow-xl hover:ring-green-300'
                           : 'bg-gray-500 text-gray-300 cursor-not-allowed opacity-60'
@@ -198,7 +198,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
                 {shopItems.supplements.map((item, itemIndex) => (
                   <div
                     key={itemIndex}
-                    className={`p-4 rounded-xl border-2 border-black shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
+                    className={`p-4 rounded-xl border-2 border-black shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex flex-col h-full ${
                       cash >= item.cost
                         ? 'bg-stone-100 cursor-pointer hover:brightness-110'
                         : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
@@ -218,13 +218,13 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
                     <h3 className="font-black text-gray-800 mb-2" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
                       {item.name}
                     </h3>
-                    <p className="text-sm text-gray-700 mb-4" style={{ fontFamily: 'monospace' }}>
+                    <p className="text-sm text-gray-700 mb-4 flex-grow" style={{ fontFamily: 'monospace' }}>
                       {item.description}
                     </p>
                     <button
                       onClick={() => handlePurchase(item)}
                       disabled={cash < item.cost || purchasing === item.id}
-                      className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black transform hover:scale-105 ${
+                      className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black transform hover:scale-105 mt-auto ${
                         cash >= item.cost && purchasing !== item.id
                           ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white hover:shadow-xl hover:ring-green-300'
                           : 'bg-gray-500 text-gray-300 cursor-not-allowed opacity-60'
@@ -247,7 +247,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
                 {shopItems.special_items.map((item, itemIndex) => (
                   <div
                     key={itemIndex}
-                    className={`p-4 rounded-xl border-2 border-black shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
+                    className={`p-4 rounded-xl border-2 border-black shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex flex-col h-full ${
                       cash >= item.cost
                         ? 'bg-stone-100 cursor-pointer hover:brightness-110'
                         : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
@@ -267,13 +267,13 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
                     <h3 className="font-black text-gray-800 mb-2" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
                       {item.name}
                     </h3>
-                    <p className="text-sm text-gray-700 mb-4" style={{ fontFamily: 'monospace' }}>
+                    <p className="text-sm text-gray-700 mb-4 flex-grow" style={{ fontFamily: 'monospace' }}>
                       {item.description}
                     </p>
                     <button
                       onClick={() => handlePurchase(item)}
                       disabled={cash < item.cost || purchasing === item.id}
-                      className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black transform hover:scale-105 ${
+                      className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black transform hover:scale-105 mt-auto ${
                         cash >= item.cost && purchasing !== item.id
                           ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white hover:shadow-xl hover:ring-green-300'
                           : 'bg-gray-500 text-gray-300 cursor-not-allowed opacity-60'

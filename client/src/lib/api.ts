@@ -76,6 +76,7 @@ class ApiClient {
   async resetEnergy() {
     return this.request('/reset-energy', {
       method: 'POST',
+      body: JSON.stringify({}),
     });
   }
 
@@ -117,6 +118,7 @@ class ApiClient {
   async checkAdventureCompletions() {
     return this.request('/check-adventure-completions', {
       method: 'POST',
+      body: JSON.stringify({}),
     });
   }
 

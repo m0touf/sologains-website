@@ -63,7 +63,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   const handleAttemptAdventure = async (adventureId: string) => {
     setAttempting(adventureId);
     try {
-      const result = await apiClient.attemptAdventure(adventureId);
+      const result = await apiClient.attemptAdventure({ adventureId });
       if (result) {
         if (result.adventureStarted) {
           // Refresh daily attempts and in-progress adventures
