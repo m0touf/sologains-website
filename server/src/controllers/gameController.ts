@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../middleware/auth';
+import logger from '../utils/logger';
 import { 
   computeEnergyFloat, 
   getCappedEnergy, 
@@ -49,6 +50,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     });
     
     if (!save) {
+      logger.error(`Save not found for user ${userId}`);
       return res.status(404).json({ error: 'Save not found. Please contact support.' });
     }
 
@@ -77,6 +79,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     
     // If it's a new day, automatically reset daily limits and rotate content
     if (todayKey !== lastDailyResetDate) {
+      logger.info(`Daily reset for user ${userId}: ${todayKey} (was ${lastDailyResetDate})`);
       
       // Reset daily stat gains for all exercises
       await prisma.exerciseProficiency.updateMany({
@@ -138,7 +141,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       maxEnergy: updatedSave?.maxEnergy || 150
     });
   } catch (error) {
-    console.error('Get save error:', error);
+    logger.error('Get save error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -158,6 +161,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     });
 
     if (!exercise) {
+      logger.error(`Exercise not found: ${parse.data.exerciseId}`);
       return res.status(404).json({ error: 'Exercise not found' });
     }
 
@@ -174,6 +178,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       }
     });
     if (!save) {
+      logger.error(`Save not found for user ${userId} during workout`);
       return res.status(404).json({ error: 'Save not found' });
     }
 
@@ -337,6 +342,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       // CRITICAL: Re-check energy inside transaction to prevent race conditions
       const currentSave = await tx.save.findUnique({ where: { userId } });
       if (!currentSave) {
+        logger.error(`Save not found during transaction for user ${userId}`);
         throw new Error('Save not found during transaction');
       }
       
@@ -440,8 +446,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           luckBoostPercent: save.luckBoostPercent || 0
         });
   } catch (error) {
-    console.error('Workout error:', error);
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    logger.error('Workout error:', error);
+    logger.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     res.status(500).json({ error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' });
   }
 };
@@ -456,6 +462,7 @@ export const resetEnergy = async (req: AuthenticatedRequest, res: Response) => {
     });
 
     if (!save) {
+      logger.error(`Save not found for user ${userId} during energy reset`);
       return res.status(404).json({ error: 'Save not found' });
     }
 
@@ -477,7 +484,7 @@ export const resetEnergy = async (req: AuthenticatedRequest, res: Response) => {
       fractionalEnergy: resetEnergy // Include fractional energy
     });
   } catch (error) {
-    console.error('Energy reset error:', error);
+    logger.error('Energy reset error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -494,7 +501,7 @@ export const getExercises = async (req: AuthenticatedRequest, res: Response) => 
 
     res.json(exercises);
   } catch (error) {
-    console.error('Get exercises error:', error);
+    logger.error('Get exercises error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -512,7 +519,7 @@ export const getProficiencies = async (req: AuthenticatedRequest, res: Response)
     
     res.json(proficiencies);
   } catch (error) {
-    console.error('Get proficiencies error:', error);
+    logger.error('Get proficiencies error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -534,6 +541,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     });
     
     if (!exercise) {
+      logger.error(`Exercise not found for research upgrade: ${exerciseId}`);
       return res.status(404).json({ error: 'Exercise not found' });
     }
     
@@ -558,6 +566,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     });
     
     if (!save) {
+      logger.error(`Save not found for user ${userId} during research upgrade`);
       return res.status(404).json({ error: 'Save not found' });
     }
     
@@ -632,7 +641,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       benefits: benefits
     });
   } catch (error) {
-    console.error('Upgrade exercise error:', error);
+    logger.error('Upgrade exercise error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -656,7 +665,7 @@ export const getResearchUpgrades = async (req: AuthenticatedRequest, res: Respon
     
     res.json(upgradesWithBenefits);
   } catch (error) {
-    console.error('Get research upgrades error:', error);
+    logger.error('Get research upgrades error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -708,7 +717,7 @@ export const getAvailableResearch = async (req: AuthenticatedRequest, res: Respo
     
     res.json(availableResearch);
   } catch (error) {
-    console.error('Get available research error:', error);
+    logger.error('Get available research error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

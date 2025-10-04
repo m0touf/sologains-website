@@ -15,6 +15,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   DailyPurchases DailyPurchase[]
+  
+  @@index([email])
+  @@index([username])
 }
 
 model Save {
@@ -44,6 +47,9 @@ model Save {
   ExerciseProficiencies ExerciseProficiency[]
   ResearchUpgrades     ResearchUpgrade[]
   AdventureAttempts    AdventureAttempt[]
+  
+  @@index([lastDailyReset])
+  @@index([lastEnergyUpdate])
 }
 
 model Workout {
@@ -75,6 +81,9 @@ model Exercise {
   updatedAt       DateTime @updatedAt
   ExerciseProficiencies ExerciseProficiency[]
   ResearchUpgrades       ResearchUpgrade[]
+  
+  @@index([category, isActive])
+  @@index([statType])
 }
 
 model ExerciseProficiency {
@@ -94,6 +103,9 @@ model ExerciseProficiency {
   
   @@unique([userId, exerciseId])
   @@index([userId])
+  @@index([exerciseId])
+  @@index([proficiency])
+  @@index([lastDailyReset])
 }
 
 model ResearchUpgrade {
@@ -110,6 +122,8 @@ model ResearchUpgrade {
   
   @@unique([userId, exerciseId])
   @@index([userId])
+  @@index([exerciseId])
+  @@index([tier])
 }
 
 
@@ -131,6 +145,8 @@ model Adventure {
   AdventureAttempts AdventureAttempt[]
 
   @@unique([name, difficulty])
+  @@index([difficulty, isActive])
+  @@index([energyCost])
 }
 
 model AdventureAttempt {
@@ -150,6 +166,10 @@ model AdventureAttempt {
   Adventure   Adventure @relation(fields: [adventureId], references: [id], onDelete: Cascade)
   
   @@index([userId, attemptedAt])
+  @@index([userId, status])
+  @@index([adventureId])
+  @@index([status])
+  @@index([completedAt])
 }
 
 model ShopItem {
@@ -167,6 +187,8 @@ model ShopItem {
   DailyPurchases DailyPurchase[]
   
   @@index([category, isActive])
+  @@index([type])
+  @@index([cost])
 }
 
 model DailyPurchase {

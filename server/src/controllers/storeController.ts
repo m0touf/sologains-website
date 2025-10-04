@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { computeEnergyFloat, getCappedEnergy } from '../config/energy';
 import { AuthenticatedRequest } from '../middleware/auth';
+import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
 
@@ -120,7 +121,7 @@ export const getShopItems = async (req: AuthenticatedRequest, res: Response) => 
 
     res.json(rotatedItems);
   } catch (error) {
-    console.error('Error fetching shop items:', error);
+    logger.error('Error fetching shop items:', error);
     res.status(500).json({ error: 'Failed to fetch shop items' });
   }
 };
@@ -334,7 +335,7 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
     });
 
   } catch (error) {
-    console.error('Error purchasing item:', error);
+    logger.error('Error purchasing item:', error);
     res.status(500).json({ error: 'Failed to purchase item' });
   }
 };
@@ -412,7 +413,7 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
     });
 
   } catch (error) {
-    console.error('Error simulating new day:', error);
+    logger.error('Error simulating new day:', error);
     res.status(500).json({ error: 'Failed to simulate new day' });
   }
 };
@@ -453,7 +454,7 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
     });
 
   } catch (error) {
-    console.error('Error setting test date:', error);
+    logger.error('Error setting test date:', error);
     res.status(500).json({ error: 'Failed to set test date' });
   }
 };
@@ -510,7 +511,7 @@ export const autoCompleteAdventures = async (req: AuthenticatedRequest, res: Res
     });
 
   } catch (error) {
-    console.error('Error auto-completing adventures:', error);
+    logger.error('Error auto-completing adventures:', error);
     res.status(500).json({ error: 'Failed to auto-complete adventures' });
   }
 };
