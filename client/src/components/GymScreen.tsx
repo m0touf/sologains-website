@@ -161,8 +161,8 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Side - Exercise Grid */}
-          <div className="w-2/3 p-6 overflow-y-auto">
-            <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-6 ring-3 ring-black shadow-lg rounded-lg" style={{ imageRendering: 'pixelated' }}>
+          <div className="w-2/3 p-4 overflow-y-auto">
+            <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-4 ring-3 ring-black shadow-lg rounded-lg" style={{ imageRendering: 'pixelated' }}>
               <h2 className="text-2xl font-black text-gray-800 mb-6 text-center" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
                 {selectedCategory.toUpperCase()} TRAINING
               </h2>
@@ -175,10 +175,10 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
           </div>
 
           {/* Right Side - Character Display */}
-          <div className="w-1/3 p-6 flex flex-col items-center justify-center">
-            <div className="text-center mb-6">
+          <div className="w-1/3 p-4 flex flex-col items-center justify-start">
+            <div className="text-center mb-4">
               {/* Character Placeholder */}
-              <div className="mx-auto mb-4 flex items-center justify-center">
+              <div className="mx-auto mb-3 flex items-center justify-center">
                 <div className="w-48 h-48 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300" style={{ imageRendering: 'pixelated' }}>
                   <div className="text-4xl text-amber-600 font-black" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>?</div>
                 </div>
@@ -189,7 +189,7 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
             </div>
 
             {/* Character Stats */}
-            <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-6 ring-3 ring-black shadow-lg rounded-lg w-full max-w-sm" style={{ imageRendering: 'pixelated' }}>
+            <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-4 ring-3 ring-black shadow-lg rounded-lg w-full" style={{ imageRendering: 'pixelated' }}>
               <h2 className="text-2xl font-black text-gray-800 mb-4 text-center" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
                 YOUR STATS
               </h2>
