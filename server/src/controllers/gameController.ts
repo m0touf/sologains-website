@@ -74,15 +74,9 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     const todayKey = today.toISOString().slice(0, 10);
     const lastDailyResetDate = save.lastDailyReset ? new Date(save.lastDailyReset).toISOString().slice(0, 10) : null;
     
-    console.log(`Daily reset check for user ${userId}:`);
-    console.log(`  Today: ${todayKey}`);
-    console.log(`  Last reset: ${lastDailyResetDate}`);
-    console.log(`  Should reset: ${todayKey !== lastDailyResetDate}`);
     
     // If it's a new day, automatically reset daily limits and rotate content
     if (todayKey !== lastDailyResetDate) {
-      console.log(`🔄 NEW DAY DETECTED! Resetting daily limits for user ${userId}`);
-      console.log(`  Today: ${todayKey}, Last reset: ${lastDailyResetDate}`);
       
       // Reset daily stat gains for all exercises
       await prisma.exerciseProficiency.updateMany({
@@ -117,17 +111,8 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
           }
         });
 
-      console.log(`✅ Daily reset completed for user ${userId}`);
-      console.log(`  - Daily adventure attempts reset to 0`);
-      console.log(`  - Shop rotation seed: ${newShopRotationSeed}`);
-      console.log(`  - Adventure rotation seed: ${newAdventureRotationSeed}`);
     }
     
-    console.log('getSave response:', {
-      userId,
-      researchUpgrades: save.ResearchUpgrades,
-      researchUpgradesCount: save.ResearchUpgrades?.length || 0
-    });
     
     // Fetch updated save data after potential reset
     const updatedSave = await prisma.save.findUnique({ 
@@ -160,14 +145,10 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
 
 export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    console.log('=== WORKOUT START ===');
     const userId = req.user!.userId;
-    console.log('User ID:', userId);
-    console.log('Workout request body:', req.body);
     const parse = workoutSchema.safeParse(req.body);
     
     if (!parse.success) {
-      console.log('Validation error:', parse.error.flatten());
       return res.status(400).json({ error: parse.error.flatten() });
     }
 
@@ -221,7 +202,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     // Apply research tier effects
     const researchUpgrade = save.ResearchUpgrades[0]; // Should be only one active upgrade per exercise
     if (researchUpgrade) {
-      console.log(`Applying research tier ${researchUpgrade.tier} effects for ${exercise.name}`);
       
       // Tier 1: Energy Efficiency - 5% less energy cost
       if (researchUpgrade.tier >= 1) {
@@ -237,7 +217,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     // Apply XP boost if available
     if (save.xpBoostRemaining && save.xpBoostRemaining > 0) {
       xpGained = Math.round(xpGained * 2); // Double XP
-      console.log(`XP Boost applied! XP gained: ${xpGained}`);
     }
 
     // Scale XP to maintain 6-month pacing with new energy system
@@ -250,7 +229,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       if (Math.random() < luckChance) {
         bonusReward = true;
         xpGained = Math.round(xpGained * 1.5); // 50% bonus XP
-        console.log(`Luck Boost triggered! Bonus XP gained: ${xpGained}`);
       }
     }
 
@@ -314,7 +292,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           break;
       }
     } else {
-      console.log(`Daily stat gain limit reached for ${exercise.name} (${currentDailyStatGains}/${maxDailyStatGains})`);
     }
     
     // Calculate final stats after stat gains are determined (will be recalculated in transaction)
@@ -349,7 +326,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     if (save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0) {
       proficiencyResult.proficiencyGained = Math.round(proficiencyResult.proficiencyGained * 2); // Double proficiency gain
       proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.proficiencyGained);
-      console.log(`Proficiency Boost applied! Proficiency gained: ${proficiencyResult.proficiencyGained}`);
     }
 
     // Calculate new daily stat gains for response
@@ -409,20 +385,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       });
 
       // Update or create exercise proficiency using new system
-      console.log(`Proficiency update for ${exercise.name}:`, {
-        userId,
-        exerciseId: exercise.id,
-        currentProficiency,
-        currentDailyEnergy,
-        currentDailyStatGains,
-        shouldResetDaily,
-        intensity,
-        grade,
-        deltaGained: proficiencyResult.proficiencyGained,
-        newProficiency: proficiencyResult.newProficiency,
-        statGains,
-        newDailyStatGains
-      });
 
       if (existingProficiency) {
         await tx.exerciseProficiency.update({
@@ -435,7 +397,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             totalReps: existingProficiency.totalReps + reps,
           }
         });
-        console.log(`Updated proficiency from ${currentProficiency} to ${proficiencyResult.newProficiency}, daily stat gains: ${newDailyStatGains}`);
       } else {
         await tx.exerciseProficiency.create({
           data: {
@@ -448,13 +409,11 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             totalReps: reps,
           }
         });
-        console.log(`Created new proficiency: ${proficiencyResult.newProficiency}, daily stat gains: ${statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0}`);
       }
       
       return { finalNewEnergy };
     });
 
-        console.log('=== WORKOUT SUCCESS ===');
         res.json({ 
           energySpent, 
           xpGained, 
@@ -563,11 +522,9 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     const userId = req.user!.userId;
     const { exerciseId, tier } = req.body;
     
-    console.log('Upgrade request:', { userId, exerciseId, tier });
     
     // Validate tier
     if (!tier || tier < 1 || tier > 4) {
-      console.log('Invalid tier:', tier);
       return res.status(400).json({ error: 'Invalid tier. Must be 1-4.' });
     }
     
@@ -590,10 +547,8 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       }
     });
     
-    console.log('Proficiency check:', { proficiency: proficiency?.proficiency, required: 1000 });
     
     if (!proficiency || proficiency.proficiency < 1000) {
-      console.log('Proficiency requirement not met');
       return res.status(400).json({ error: 'Exercise must reach 1000 proficiency first' });
     }
     

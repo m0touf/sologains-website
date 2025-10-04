@@ -420,10 +420,8 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
 // Test endpoint to simulate different dates (for testing daily resets)
 export const simulateDate = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    console.log('simulateDate called with user:', req.user);
     const userId = req.user?.userId;
     if (!userId) {
-      console.log('No userId found in request');
       return res.status(401).json({ error: 'Unauthorized - no user ID' });
     }
 
@@ -432,7 +430,6 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
       return res.status(400).json({ error: 'Date required' });
     }
 
-    console.log(`Setting test date to ${date} for user ${userId}`);
 
     // Parse the date and set it as the last reset date
     const testDate = new Date(date);
@@ -448,7 +445,6 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
       }
     });
 
-    console.log(`Successfully set test date to ${testDate.toISOString().slice(0, 10)} for user ${userId}`);
 
     res.json({
       success: true,

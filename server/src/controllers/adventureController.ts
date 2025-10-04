@@ -18,7 +18,6 @@ const prisma = new PrismaClient();
 // Get daily adventures (cycles through 50 adventures based on date)
 export const getDailyAdventures = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    console.log('getDailyAdventures called for user:', req.user?.userId);
     const userId = req.user!.userId;
     
     // Get user's current stats and rotation seed
@@ -83,7 +82,6 @@ export const getDailyAdventures = async (req: AuthenticatedRequest, res: Respons
       }
     }
 
-    console.log('Returning', dailyAdventures.length, 'daily adventures');
     res.json(dailyAdventures);
   } catch (error) {
     console.error('Get daily adventures error:', error);
