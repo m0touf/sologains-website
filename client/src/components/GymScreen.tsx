@@ -9,7 +9,7 @@ interface GymScreenProps {
 
 
 export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
-  const { energy, stats, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, cash, permanentEnergy, maxEnergy, isInitialized } = useGameStore();
+  const { energy, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, permanentEnergy, maxEnergy, isInitialized, stats } = useGameStore();
   const [selectedCategory, setSelectedCategory] = useState<'strength' | 'endurance' | 'mobility'>('strength');
   
   // Show loading if not initialized
@@ -141,136 +141,135 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
           </div>
         </div>
 
-        {/* Category Selector */}
-        <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 ring-2 ring-black">
-          <div className="flex justify-center space-x-4">
-            {(['strength', 'endurance', 'mobility'] as const).map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-3 ring-2 ring-black rounded-lg font-black transition-all duration-200 text-white shadow-lg hover:shadow-xl hover:scale-105 ${
-                  selectedCategory === category 
-                    ? 'bg-red-600 ring-4 ring-red-300' 
-                    : 'bg-red-500 hover:bg-red-600'
-                }`}
-                style={{ 
-                  fontFamily: 'monospace', 
-                  textShadow: '1px 1px 0px #000'
-                }}
-              >
-                {category.toUpperCase()}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Main Content */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Left Side - Exercise Grid */}
-          <div className="w-2/3 p-4 overflow-y-auto">
-            <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-4 ring-3 ring-black shadow-lg rounded-lg" style={{ imageRendering: 'pixelated' }}>
-              <h2 className="text-2xl font-black text-gray-800 mb-6 text-center" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
-                {selectedCategory.toUpperCase()} TRAINING
-              </h2>
-              <div className="grid grid-cols-3 gap-4">
-                {getExercisesByCategory(selectedCategory).map((exercise) => 
-                  renderExerciseCard(exercise)
-                )}
+        <div className="flex-1 p-6 overflow-y-auto">
+          <div className="max-w-7xl mx-auto">
+            {/* Header Section */}
+            <div className="mb-8">
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-black text-gray-800 mb-3" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
+                  TRAINING CENTER
+                </h2>
+                <p className="text-gray-600 text-lg max-w-2xl mx-auto" style={{ fontFamily: 'monospace' }}>
+                  Train your strength, endurance, and mobility to become stronger. Each exercise improves your stats and gives you proficiency points!
+                </p>
+              </div>
+              
+              {/* Category Selector */}
+              <div className="flex justify-center space-x-4 mb-8">
+                {(['strength', 'endurance', 'mobility'] as const).map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-8 py-4 ring-2 ring-black rounded-xl font-black transition-all duration-200 text-white shadow-lg hover:shadow-xl hover:scale-105 ${
+                      selectedCategory === category 
+                        ? 'bg-red-600 ring-4 ring-red-300' 
+                        : 'bg-red-500 hover:bg-red-600'
+                    }`}
+                    style={{ 
+                      fontFamily: 'monospace', 
+                      textShadow: '1px 1px 0px #000'
+                    }}
+                  >
+                    {category.toUpperCase()}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
 
-          {/* Right Side - Character Display */}
-          <div className="w-1/3 p-4 flex flex-col items-center justify-start">
-            <div className="text-center mb-4">
-              {/* Character Placeholder */}
-              <div className="mx-auto mb-3 flex items-center justify-center">
-                <div className="w-48 h-48 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300" style={{ imageRendering: 'pixelated' }}>
-                  <div className="text-4xl text-amber-600 font-black" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>?</div>
+            {/* Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Exercise Grid - Takes 2 columns on large screens */}
+              <div className="lg:col-span-2">
+                <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-6 ring-3 ring-black shadow-lg rounded-xl" style={{ imageRendering: 'pixelated' }}>
+                  <h3 className="text-2xl font-black text-gray-800 mb-6 text-center" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
+                    {selectedCategory.toUpperCase()} EXERCISES
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {getExercisesByCategory(selectedCategory).map((exercise) => 
+                      renderExerciseCard(exercise)
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="text-sm text-gray-800 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-                Character coming soon
-              </div>
-            </div>
 
-            {/* Character Stats */}
-            <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-4 ring-3 ring-black shadow-lg rounded-lg w-full" style={{ imageRendering: 'pixelated' }}>
-              <h2 className="text-2xl font-black text-gray-800 mb-4 text-center" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
-                YOUR STATS
-              </h2>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-red-500 font-black text-lg bg-gradient-to-b from-red-400 to-red-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.strength}</div>
-                  <div className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'monospace' }}>STRENGTH</div>
-                </div>
-                <div>
-                  <div className="text-blue-500 font-black text-lg bg-gradient-to-b from-blue-400 to-blue-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.stamina}</div>
-                  <div className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'monospace' }}>STAMINA</div>
-                </div>
-                <div>
-                  <div className="text-green-500 font-black text-lg bg-gradient-to-b from-green-400 to-green-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.mobility}</div>
-                  <div className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'monospace' }}>MOBILITY</div>
-                </div>
-              </div>
-              <div className="mt-4 pt-4 border-t-2 border-black">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>LEVEL {level}</span>
-                  <span className="text-blue-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{xp} XP</span>
-                </div>
-                
-                {/* XP Progress Bar */}
-                <div className="mt-2">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-bold text-gray-700" style={{ fontFamily: 'monospace' }}>
-                      XP TO NEXT LEVEL
-                    </span>
-                    <span className="text-xs font-black text-gray-800" style={{ fontFamily: 'monospace' }}>
-                      {xpProgress.current}/{xpProgress.needed}
-                    </span>
+              {/* Character and Stats - Takes 1 column on large screens */}
+              <div className="space-y-6">
+                {/* Character Section */}
+                <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-6 ring-3 ring-black shadow-lg rounded-xl text-center" style={{ imageRendering: 'pixelated' }}>
+                  <h3 className="text-xl font-black text-gray-800 mb-4" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
+                    CHARACTER
+                  </h3>
+                  <div className="mx-auto mb-4 flex items-center justify-center">
+                    <div className="w-40 h-40 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300" style={{ imageRendering: 'pixelated' }}>
+                      <div className="text-3xl text-amber-600 font-black" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>?</div>
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-300 border-2 border-black rounded-full h-3">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500"
-                      style={{ width: `${xpProgress.progress}%` }}
-                    ></div>
+                  <div className="text-sm text-gray-800 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
+                    Character coming soon
                   </div>
                 </div>
-                
-                {/* Proficiency Points */}
-                <div className="mt-3 pt-3 border-t border-gray-400">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-gray-700" style={{ fontFamily: 'monospace' }}>
-                      PROFICIENCY POINTS
-                    </span>
-                    <span className="text-sm font-black text-yellow-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                      {proficiencyPoints}
-                    </span>
+
+                {/* Stats Section */}
+                <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm p-6 ring-3 ring-black shadow-lg rounded-xl" style={{ imageRendering: 'pixelated' }}>
+                  <h3 className="text-xl font-black text-gray-800 mb-4 text-center" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
+                    YOUR STATS
+                  </h3>
+                  
+                  {/* Skill Stats */}
+                  <div className="grid grid-cols-3 gap-3 mb-6">
+                    <div className="text-center">
+                      <div className="text-red-500 font-black text-lg bg-gradient-to-b from-red-400 to-red-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.strength}</div>
+                      <div className="text-gray-700 text-xs font-bold" style={{ fontFamily: 'monospace' }}>STRENGTH</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-blue-500 font-black text-lg bg-gradient-to-b from-blue-400 to-blue-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.stamina}</div>
+                      <div className="text-gray-700 text-xs font-bold" style={{ fontFamily: 'monospace' }}>STAMINA</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-green-500 font-black text-lg bg-gradient-to-b from-green-400 to-green-600 bg-clip-text text-transparent" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{stats.mobility}</div>
+                      <div className="text-gray-700 text-xs font-bold" style={{ fontFamily: 'monospace' }}>MOBILITY</div>
+                    </div>
+                  </div>
+                  
+                  {/* XP Section */}
+                  <div className="mb-4 pt-4 border-t-2 border-black">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>LEVEL {level}</span>
+                      <span className="text-blue-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{xp} XP</span>
+                    </div>
+                    
+                    {/* XP Progress Bar */}
+                    <div className="mt-2">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-bold text-gray-700" style={{ fontFamily: 'monospace' }}>
+                          XP TO NEXT LEVEL
+                        </span>
+                        <span className="text-xs font-black text-gray-800" style={{ fontFamily: 'monospace' }}>
+                          {xpProgress.current}/{xpProgress.needed}
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-300 border-2 border-black rounded-full h-3">
+                        <div
+                          className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500"
+                          style={{ width: `${xpProgress.progress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Proficiency Points */}
+                  <div className="pt-4 border-t-2 border-black">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-bold text-gray-700" style={{ fontFamily: 'monospace' }}>
+                        PROFICIENCY POINTS
+                      </span>
+                      <span className="text-lg font-black text-yellow-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                        {proficiencyPoints}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                
-                {/* Cash */}
-                <div className="mt-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-gray-700" style={{ fontFamily: 'monospace' }}>
-                      CASH
-                    </span>
-                    <span className="text-sm font-black text-green-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                      ${cash}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-gray-700 font-bold" style={{ fontFamily: 'monospace' }}>ENERGY</span>
-                  <span className="text-green-500 font-black" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{energy}/{maxEnergy || (100 + permanentEnergy)}</span>
-                </div>
-                {permanentEnergy > 0 && (
-                  <div className="flex justify-between items-center mt-1">
-                    <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT ENERGY</span>
-                    <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
-                  </div>
-                )}
               </div>
             </div>
           </div>
