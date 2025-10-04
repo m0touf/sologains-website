@@ -119,10 +119,6 @@ export const verifyRefreshToken = (token: string): RefreshTokenPayload | null =>
   }
 };
 
-// Legacy function for backward compatibility
-export const generateToken = generateAccessToken;
-export const verifyToken = verifyAccessToken;
-
 // Password strength validation
 export const validatePasswordStrength = (password: string): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
@@ -157,15 +153,3 @@ export const validatePasswordStrength = (password: string): { isValid: boolean; 
   };
 };
 
-// Generate secure random password (for admin use)
-export const generateSecurePassword = (length: number = 16): string => {
-  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-  let password = '';
-  
-  for (let i = 0; i < length; i++) {
-    const randomIndex = crypto.randomInt(0, charset.length);
-    password += charset[randomIndex];
-  }
-  
-  return password;
-};

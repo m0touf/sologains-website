@@ -3,38 +3,6 @@ export const MAX_SKILL_LEVEL = 100;        // Maximum skill level
 export const BASE_STAT_GAIN = 1;           // Base stat gain per workout
 export const STAT_GAIN_MULTIPLIER = 0.1;   // Multiplier for stat gains
 
-/**
- * Calculate stat gains from a workout
- * @param energySpent Energy spent in the workout
- * @param intensity Exercise intensity (1-5)
- * @param grade Exercise grade
- * @param currentStat Current stat level
- * @returns Stat gain amount
- */
-export function calculateStatGain(
-  energySpent: number,
-  intensity: 1|2|3|4|5 = 3,
-  grade: "perfect"|"good"|"okay"|"miss" = "good",
-  currentStat: number = 1
-): number {
-  // Base gain calculation
-  const baseGain = BASE_STAT_GAIN + (energySpent * STAT_GAIN_MULTIPLIER);
-  
-  // Intensity multiplier
-  const intensityMultiplier = 1 + 0.2 * (intensity - 1);
-  
-  // Grade multiplier
-  const gradeMultiplier = grade === "perfect" ? 1.5 : 
-                         grade === "good" ? 1.0 : 
-                         grade === "okay" ? 0.7 : 0.3;
-  
-  // Diminishing returns based on current stat level
-  const diminishingReturns = Math.max(0.1, 1 - (currentStat / MAX_SKILL_LEVEL) * 0.5);
-  
-  const totalGain = baseGain * intensityMultiplier * gradeMultiplier * diminishingReturns;
-  
-  return Math.max(0, Math.round(totalGain));
-}
 
 /**
  * Calculate stat gains for all three stats

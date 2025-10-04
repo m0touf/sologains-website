@@ -43,27 +43,3 @@ export function levelFromXp(totalXp: number): number {
   return level;
 }
 
-/**
- * Calculate XP progress for current level
- * @param totalXp Total XP accumulated
- * @returns Object with current level, XP progress, and next level requirement
- */
-export function getXpProgress(totalXp: number): {
-  currentLevel: number;
-  xpProgress: number;
-  xpToNext: number;
-  totalXpToNext: number;
-} {
-  const currentLevel = levelFromXp(totalXp);
-  const totalXpToCurrent = totalXpTo(currentLevel);
-  const totalXpToNext = totalXpTo(currentLevel + 1);
-  const xpProgress = totalXp - totalXpToCurrent;
-  const xpToNext = totalXpToNext - totalXpToCurrent;
-  
-  return {
-    currentLevel,
-    xpProgress,
-    xpToNext,
-    totalXpToNext
-  };
-}
