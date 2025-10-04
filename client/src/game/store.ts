@@ -58,6 +58,7 @@ type Save = {
   cash: number;
   permanentEnergy: number;
   maxEnergy?: number;
+  luckBoostPercent: number;
   ExerciseProficiencies: ExerciseProficiency[];
   ResearchUpgrades: ResearchUpgrade[];
 };
@@ -89,6 +90,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   proficiencyPoints: 0,
   cash: 0,
   permanentEnergy: 0,
+  luckBoostPercent: 0,
   ExerciseProficiencies: [],
   ResearchUpgrades: [],
   exercises: [],

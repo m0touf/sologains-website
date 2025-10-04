@@ -7,7 +7,7 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProps) {
-  const { energy, xp, stats, getXpProgress, getCurrentLevel, proficiencyPoints, cash, permanentEnergy, maxEnergy } = useGameStore();
+  const { energy, xp, stats, getXpProgress, getCurrentLevel, proficiencyPoints, cash, permanentEnergy, maxEnergy, luckBoostPercent } = useGameStore();
   const level = getCurrentLevel();
   const xpProgress = getXpProgress();
 
@@ -207,6 +207,10 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
                 </div>
               )}
+              <div className="flex justify-between items-center mt-1">
+                <span className="text-gray-600 font-bold text-sm" style={{ fontFamily: 'monospace' }}>LUCK BOOST</span>
+                <span className="text-orange-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{luckBoostPercent}%</span>
+              </div>
               <div className="mt-1 space-y-2">
                 <button
                   onClick={onResetEnergy}

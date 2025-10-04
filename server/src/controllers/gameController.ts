@@ -122,6 +122,11 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
         }
       });
 
+      // Clear daily purchases (shop items become available again)
+      await prisma.dailyPurchase.deleteMany({
+        where: { userId }
+      });
+
       // Generate new rotation seeds for shop and adventures
       const newShopRotationSeed = Math.floor(Math.random() * 1000000);
       const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);

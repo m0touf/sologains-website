@@ -5,14 +5,26 @@ import { AuthenticatedRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 
-// Calculate level from XP (same as in gameController)
-function calculateLevel(totalXp: number) {
+// XP Curve System (same as gameController)
+const LMAX = 50;
+const BASE_REQ = 20;
+const GROWTH = 1.092795;
+
+function xpToNext(n: number) {
+  return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
+}
+
+function totalXpTo(L: number) {
+  const r = GROWTH, A = BASE_REQ;
+  return Math.round(A * (Math.pow(r, L) - 1) / (r - 1));
+}
+
+function levelFromXp(totalXp: number) {
   let level = 1;
   let cumulativeXp = 0;
-  const LMAX = 100; // Max level
   
   while (level <= LMAX) {
-    const xpNeeded = Math.floor(100 * Math.pow(1.15, level - 1));
+    const xpNeeded = xpToNext(level);
     if (cumulativeXp + xpNeeded > totalXp) {
       break;
     }
@@ -62,8 +74,9 @@ export const getDailyAdventures = async (req: AuthenticatedRequest, res: Respons
     ];
 
     for (const { difficulty, count } of distribution) {
-      const availableAdventures = adventuresByDifficulty[difficulty];
-      if (availableAdventures.length === 0) continue;
+      // Fix: Add type assertion to allow string indexing
+      const availableAdventures = adventuresByDifficulty[difficulty as keyof typeof adventuresByDifficulty];
+      if (!availableAdventures || availableAdventures.length === 0) continue;
 
       // Use rotation seed to cycle through adventures of this difficulty
       const offset = (rotationSeed * count) % availableAdventures.length;
@@ -71,6 +84,8 @@ export const getDailyAdventures = async (req: AuthenticatedRequest, res: Respons
       for (let i = 0; i < count; i++) {
         const index = (offset + i) % availableAdventures.length;
         const adventure = availableAdventures[index];
+        
+        if (!adventure) continue;
         
         // Check if user meets requirements
         const meetsRequirements = adventure.strengthReq <= save.strength && 
@@ -283,16 +298,16 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
     for (const attempt of completedAdventures) {
       const statGains = attempt.statGains as { strength: number, stamina: number, mobility: number };
       
+      // Apply luck boost for bonus rewards
+      let bonusReward = false;
+      let xpGained = attempt.xpGained;
+      let cashGained = attempt.cashGained;
+      
       // Update user stats with rewards
       const updatedSave = await prisma.$transaction(async (tx) => {
         // Get current save
         const save = await tx.save.findUnique({ where: { userId } });
         if (!save) return null;
-
-        // Apply luck boost for bonus rewards
-        let bonusReward = false;
-        let xpGained = attempt.xpGained;
-        let cashGained = attempt.cashGained;
         
         if (save.luckBoostPercent && save.luckBoostPercent > 0) {
           const luckChance = save.luckBoostPercent / 100; // Convert percentage to decimal
@@ -312,7 +327,7 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
         const newCash = save.cash + cashGained;
 
         // Calculate new level
-        const newLevel = calculateLevel(newXp);
+        const newLevel = levelFromXp(newXp);
 
         // Update save
         const updatedSave = await tx.save.update({

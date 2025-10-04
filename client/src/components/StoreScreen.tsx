@@ -67,6 +67,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
         stats: result.statsAfter,
         proficiencyPoints: result.proficiencyPointsAfter,
         permanentEnergy: result.permanentEnergyAfter,
+        luckBoostPercent: result.luckBoostPercent || 0,
       });
 
       // Update local shop items quantities without refreshing

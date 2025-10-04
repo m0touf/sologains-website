@@ -42,6 +42,7 @@ export default function GamePage() {
           cash: save.cash,
           permanentEnergy: save.permanentEnergy || 0,
           maxEnergy: save.maxEnergy,
+          luckBoostPercent: save.luckBoostPercent || 0,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -122,6 +123,7 @@ export default function GamePage() {
           cash: save.cash,
           permanentEnergy: save.permanentEnergy || 0,
           maxEnergy: save.maxEnergy,
+          luckBoostPercent: save.luckBoostPercent || 0,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -158,6 +160,7 @@ export default function GamePage() {
         proficiencyPoints: save.proficiencyPoints,
         cash: save.cash,
         permanentEnergy: save.permanentEnergy || 0,
+        luckBoostPercent: save.luckBoostPercent || 0,
         ExerciseProficiencies: save.ExerciseProficiencies || [],
         ResearchUpgrades: save.ResearchUpgrades || []
       });
