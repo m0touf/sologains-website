@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { computeEnergyFloat, getCappedEnergy, getEnergyWithOvercap, scaleXpReward } from '../config/energy';
 
 const prisma = new PrismaClient();
 
@@ -97,6 +98,23 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(404).json({ error: 'Save not found. Please contact support.' });
     }
 
+    // Update energy based on time elapsed
+    const now = new Date();
+    const currentEnergy = computeEnergyFloat(save.energy, save.lastEnergyUpdate, now);
+    // For regeneration, cap at 180. Overcap only applies to manual actions
+    const cappedEnergy = getCappedEnergy(currentEnergy);
+    
+    // Update energy in database if it changed
+    if (Math.abs(currentEnergy - save.energy) > 0.01) {
+      await prisma.save.update({
+        where: { userId },
+        data: {
+          energy: currentEnergy,
+          lastEnergyUpdate: now
+        }
+      });
+    }
+
     // Check if we need to reset daily limits (automatic daily reset)
     const today = new Date();
     const todayKey = today.toISOString().slice(0, 10);
@@ -131,11 +149,10 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       const newShopRotationSeed = Math.floor(Math.random() * 1000000);
       const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);
 
-        // Update save data with new rotation seeds and reset energy
+        // Update save data with new rotation seeds (no energy reset)
         await prisma.save.update({
           where: { userId },
           data: {
-            energy: (save.maxEnergy || 100) + (save.permanentEnergy || 0),
             lastDailyReset: today,
             shopRotationSeed: newShopRotationSeed,
             lastShopRotation: today,
@@ -147,7 +164,6 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
         });
 
       console.log(`✅ Daily reset completed for user ${userId}`);
-      console.log(`  - Energy reset to ${save.maxEnergy || 100}`);
       console.log(`  - Daily adventure attempts reset to 0`);
       console.log(`  - Shop rotation seed: ${newShopRotationSeed}`);
       console.log(`  - Adventure rotation seed: ${newAdventureRotationSeed}`);
@@ -176,7 +192,12 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       }
     });
     
-    res.json(updatedSave);
+    res.json({
+      ...updatedSave,
+      energy: Math.floor(cappedEnergy),
+      fractionalEnergy: cappedEnergy, // Use capped energy for regeneration
+      maxEnergy: updatedSave?.maxEnergy || 180
+    });
   } catch (error) {
     console.error('Get save error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -222,15 +243,21 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     const now = new Date();
-    const last = save.lastEnergyResetDate ? new Date(save.lastEnergyResetDate) : null;
-    const todayKey = now.toISOString().slice(0, 10);
-    const lastKey = last ? last.toISOString().slice(0, 10) : null;
-    let energy = save.energy;
+    
+    // Update energy based on time elapsed
+    const currentEnergy = computeEnergyFloat(save.energy, save.lastEnergyUpdate, now);
+    const cappedEnergy = getCappedEnergy(currentEnergy);
+    
+    // Update energy in database
+    await prisma.save.update({
+      where: { userId },
+      data: {
+        energy: currentEnergy,
+        lastEnergyUpdate: now
+      }
+    });
 
-    if (todayKey !== lastKey) {
-      // Reset daily energy
-      energy = 100;
-    }
+    const energy = Math.floor(cappedEnergy);
 
     // Use exercise data or provided reps
     const reps = parse.data.reps || exercise.baseReps;
@@ -258,6 +285,9 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       xpGained = Math.round(xpGained * 2); // Double XP
       console.log(`XP Boost applied! XP gained: ${xpGained}`);
     }
+
+    // Scale XP to maintain 6-month pacing with new energy system
+    xpGained = scaleXpReward(xpGained);
 
     // Apply luck boost for bonus rewards
     let bonusReward = false;
@@ -297,6 +327,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     const currentDailyStatGains = existingProficiency?.dailyStatGains || 0;
     
     // Check if we need to reset daily tracking
+    const todayKey = now.toISOString().slice(0, 10);
     const lastReset = existingProficiency?.lastDailyReset ? new Date(existingProficiency.lastDailyReset) : null;
     const lastResetKey = lastReset ? lastReset.toISOString().slice(0, 10) : null;
     const shouldResetDaily = todayKey !== lastResetKey;
@@ -330,7 +361,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     }
     
     // Calculate final stats after stat gains are determined
-    const newEnergy = energy - energySpent;
+    const newEnergy = currentEnergy - energySpent;
     const newXp = save.xp + xpGained;
     const newLevel = levelFromXp(newXp);
     const newStrength = save.strength + statGains.strength;
@@ -384,7 +415,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
               proficiencyPoints: newProficiencyPoints,
               xpBoostRemaining: save.xpBoostRemaining && save.xpBoostRemaining > 0 ? save.xpBoostRemaining - 1 : 0,
               proficiencyBoostRemaining: save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0 ? save.proficiencyBoostRemaining - 1 : 0,
-              lastEnergyResetDate: new Date(),
+              lastEnergyUpdate: now,
             },
           });
 
@@ -449,7 +480,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
         res.json({ 
           energySpent, 
           xpGained, 
-          energyAfter: newEnergy, 
+          energyAfter: Math.floor(newEnergy), 
+          fractionalEnergyAfter: newEnergy, // Include fractional energy
           xpAfter: newXp,
           levelAfter: newLevel,
           proficiencyGained: proficiencyResult.deltaGained,
@@ -481,18 +513,31 @@ export const resetEnergy = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user!.userId;
 
-    // Update energy to 100
+    // Get current save to check max energy
+    const save = await prisma.save.findUnique({
+      where: { userId }
+    });
+
+    if (!save) {
+      return res.status(404).json({ error: 'Save not found' });
+    }
+
+    // Reset energy to max (with overcap buffer for level-ups)
+    const maxEnergy = (save.maxEnergy || 180) + (save.permanentEnergy || 0);
+    const resetEnergy = maxEnergy + 20; // Overcap buffer
+
     const updatedSave = await prisma.save.update({
       where: { userId },
       data: {
-        energy: 100,
-        lastEnergyResetDate: new Date(),
+        energy: resetEnergy,
+        lastEnergyUpdate: new Date(),
       },
     });
 
     res.json({ 
-      message: 'Energy reset to 100%',
-      energy: updatedSave.energy 
+      message: 'Energy reset to maximum',
+      energy: Math.floor(resetEnergy),
+      fractionalEnergy: resetEnergy // Include fractional energy
     });
   } catch (error) {
     console.error('Energy reset error:', error);

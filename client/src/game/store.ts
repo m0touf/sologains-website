@@ -59,6 +59,8 @@ type Save = {
   permanentEnergy: number;
   maxEnergy?: number;
   luckBoostPercent: number;
+  lastEnergyUpdate?: string;
+  fractionalEnergy?: number; // Store the actual fractional energy from server
   ExerciseProficiencies: ExerciseProficiency[];
   ResearchUpgrades: ResearchUpgrade[];
 };
@@ -77,6 +79,7 @@ type GameState = Save & {
   getXpProgress: () => { current: number; needed: number; progress: number };
   getCurrentLevel: () => number;
   getResearchTier: (exerciseId: string) => number;
+  getEnergyRegenProgress: () => { current: number; needed: number; progress: number; timeToNext: number };
   upgradeExercise: (exerciseId: string, tier: number) => Promise<void>;
   setAdventures: (adventures: Adventure[]) => void;
   attemptAdventure: (adventureId: string) => Promise<any>;
@@ -125,6 +128,36 @@ export const useGameStore = create<GameState>((set, get) => ({
   getCurrentLevel: () => {
     const state = get();
     return levelFromXp(state.xp);
+  },
+  getEnergyRegenProgress: () => {
+    const state = get();
+    const now = new Date();
+    const lastUpdate = state.lastEnergyUpdate ? new Date(state.lastEnergyUpdate) : now;
+    
+    // Use fractional energy if available, otherwise calculate it
+    let currentFractionalEnergy;
+    if (state.fractionalEnergy !== undefined) {
+      // Calculate current fractional energy based on time elapsed
+      const hoursElapsed = (now.getTime() - lastUpdate.getTime()) / (1000 * 60 * 60);
+      currentFractionalEnergy = Math.min(state.maxEnergy || 180, state.fractionalEnergy + (hoursElapsed * 5));
+    } else {
+      // Fallback: calculate from integer energy
+      const hoursElapsed = (now.getTime() - lastUpdate.getTime()) / (1000 * 60 * 60);
+      currentFractionalEnergy = Math.min(state.maxEnergy || 180, state.energy + (hoursElapsed * 5));
+    }
+    
+    // Get the fractional part (0-1) to show progress toward next energy point
+    const fractionalPart = currentFractionalEnergy % 1;
+    
+    // Calculate time until next energy point (in minutes)
+    const timeToNext = Math.max(0, (1 - fractionalPart) * 12); // 12 minutes per energy point
+    
+    return {
+      current: Math.floor(fractionalPart * 12), // minutes into current cycle
+      needed: 12, // total minutes per energy point
+      progress: fractionalPart * 100, // percentage
+      timeToNext: Math.ceil(timeToNext) // minutes until next energy
+    };
   },
   getResearchTier: (exerciseId) => {
     const state = get();

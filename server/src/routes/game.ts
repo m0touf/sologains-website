@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
 import { getSave, doWorkout, resetEnergy, getExercises, getProficiencies, upgradeExercise, getResearchUpgrades } from '../controllers/gameController';
-import { getDailyAdventures, attemptAdventure, getAdventureHistory, checkAdventureCompletions } from '../controllers/adventureController';
+import { getDailyAdventures, attemptAdventure, getAdventureHistory, checkAdventureCompletions, claimAdventureRewards } from '../controllers/adventureController';
 
 const router = Router();
 
@@ -20,6 +20,7 @@ router.post('/upgrade-exercise', upgradeExercise);
 router.get('/adventures', getDailyAdventures);
 router.post('/attempt-adventure', attemptAdventure);
 router.post('/check-adventure-completions', checkAdventureCompletions);
+router.post('/claim-adventure-rewards', claimAdventureRewards);
 router.get('/adventure-history', getAdventureHistory);
 
 

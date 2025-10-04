@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
-import { getShopItems, purchaseItem, simulateNewDay, simulateDate } from '../controllers/storeController';
+import { getShopItems, purchaseItem, simulateNewDay, simulateDate, autoCompleteAdventures } from '../controllers/storeController';
 
 const router = Router();
 
@@ -15,5 +15,8 @@ router.post('/new-day', authenticateToken, simulateNewDay);
 
 // Test endpoint to simulate different dates (for testing daily resets)
 router.post('/test-date', authenticateToken, simulateDate);
+
+// Test endpoint to auto-complete adventures
+router.post('/auto-complete-adventures', authenticateToken, autoCompleteAdventures);
 
 export default router;

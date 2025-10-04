@@ -15,6 +15,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   const [attempting, setAttempting] = useState<string | null>(null);
   const [dailyAttempts, setDailyAttempts] = useState(0);
   const [inProgressAdventures, setInProgressAdventures] = useState<any[]>([]);
+  const [readyToClaimAdventures, setReadyToClaimAdventures] = useState<any[]>([]);
   const [completedAdventures, setCompletedAdventures] = useState<string[]>([]);
 
   // Load daily adventures on component mount
@@ -53,6 +54,16 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   // Get in-progress adventure data
   const getInProgressAdventure = (adventureId: string) => {
     return inProgressAdventures.find(adv => adv.adventureId === adventureId);
+  };
+
+  // Check if adventure is ready to claim
+  const isAdventureReadyToClaim = (adventureId: string) => {
+    return readyToClaimAdventures.some(adv => adv.adventureId === adventureId);
+  };
+
+  // Get ready to claim adventure data
+  const getReadyToClaimAdventure = (adventureId: string) => {
+    return readyToClaimAdventures.find(adv => adv.adventureId === adventureId);
   };
 
   // Check if adventure is completed
@@ -106,17 +117,49 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     }
   };
 
-  // Check for completed adventures
-  const checkCompletedAdventures = async () => {
+  // Load ready to claim adventures
+  const loadReadyToClaimAdventures = async () => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) return;
+
+      const attempts = await apiClient.getAdventureHistory();
+      const readyToClaim = attempts.filter((attempt: any) => 
+        attempt.status === "ready_to_claim"
+      );
+      setReadyToClaimAdventures(readyToClaim);
+    } catch (error) {
+      console.error('Error loading ready to claim adventures:', error);
+    }
+  };
+
+  // Check for ready to claim adventures
+  const checkReadyToClaimAdventures = async () => {
     try {
       const token = useAuthStore.getState().token;
       if (!token) return;
 
       const result = await apiClient.checkAdventureCompletions();
-      if (result.completedAdventures.length > 0) {
-        // Track completed adventures
-        const newCompletedAdventures = result.completedAdventures.map(adv => adv.adventureId).filter(Boolean);
-        setCompletedAdventures(prev => [...prev, ...newCompletedAdventures]);
+      if (result.readyAdventures && result.readyAdventures.length > 0) {
+        // Refresh ready to claim adventures
+        loadReadyToClaimAdventures();
+      }
+    } catch (error) {
+      console.error('Error checking ready to claim adventures:', error);
+    }
+  };
+
+  // Claim adventure rewards
+  const handleClaimAdventureRewards = async (adventureAttemptId: string) => {
+    try {
+      const token = useAuthStore.getState().token;
+      if (!token) return;
+
+      const result = await apiClient.claimAdventureRewards({ adventureAttemptId });
+      if (result.success) {
+        // Remove from ready to claim and add to completed
+        setReadyToClaimAdventures(prev => prev.filter(adv => adv.id !== adventureAttemptId));
+        setCompletedAdventures(prev => [...prev, result.adventureName]);
         
         // Refresh game state with updated data
         const save = await apiClient.getSave();
@@ -144,21 +187,23 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
         loadCurrentSave();
       }
     } catch (error) {
-      console.error('Error checking completed adventures:', error);
+      console.error('Error claiming adventure rewards:', error);
     }
   };
 
-    // Check for completed adventures every 30 seconds and load in-progress adventures
+    // Check for ready to claim adventures every 30 seconds and load in-progress adventures
     useEffect(() => {
       const interval = setInterval(() => {
-        checkCompletedAdventures();
+        checkReadyToClaimAdventures();
         loadInProgressAdventures();
+        loadReadyToClaimAdventures();
         loadCurrentSave(); // Also refresh daily attempts
       }, 30000);
       
       // Check immediately on load
-      checkCompletedAdventures();
+      checkReadyToClaimAdventures();
       loadInProgressAdventures();
+      loadReadyToClaimAdventures();
       loadCurrentSave();
       
       return () => clearInterval(interval);
@@ -272,11 +317,13 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                   className={`p-6 rounded-xl border-2 border-black shadow-xl transition-all duration-300 flex flex-col transform hover:scale-105 hover:shadow-2xl ${
                     isAdventureCompleted(adventure.id)
                       ? 'bg-green-300 border-green-500 opacity-80 cursor-not-allowed'
-                      : isAdventureInProgress(adventure.id)
-                        ? `${getDifficultyBg(adventure.difficulty)} cursor-default`
-                        : adventure.canAttempt && energy >= adventure.energyCost && dailyAttempts < 2 && inProgressAdventures.length === 0
-                          ? `${getDifficultyBg(adventure.difficulty)} cursor-pointer hover:brightness-110`
-                          : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
+                      : isAdventureReadyToClaim(adventure.id)
+                        ? 'bg-yellow-300 border-yellow-500 cursor-pointer hover:brightness-110'
+                        : isAdventureInProgress(adventure.id)
+                          ? `${getDifficultyBg(adventure.difficulty)} cursor-default`
+                          : adventure.canAttempt && energy >= adventure.energyCost && dailyAttempts < 2 && inProgressAdventures.length === 0
+                            ? `${getDifficultyBg(adventure.difficulty)} cursor-pointer hover:brightness-110`
+                            : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
                   }`}
                   style={{ imageRendering: 'pixelated' }}
                 >
@@ -371,9 +418,22 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                     );
                   })()}
                   
-                  {/* Only show button if adventure is not in progress */}
-                  {!isAdventureInProgress(adventure.id) && (
-                  <button
+                  {/* Show appropriate button based on adventure state */}
+                  {isAdventureReadyToClaim(adventure.id) ? (
+                    <button
+                      onClick={() => {
+                        const readyAdv = getReadyToClaimAdventure(adventure.id);
+                        if (readyAdv) {
+                          handleClaimAdventureRewards(readyAdv.id);
+                        }
+                      }}
+                      className="w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black mt-auto transform hover:scale-105 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white hover:shadow-xl hover:ring-yellow-300"
+                      style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
+                    >
+                      CLAIM REWARDS
+                    </button>
+                  ) : !isAdventureInProgress(adventure.id) && (
+                    <button
                       onClick={() => handleAttemptAdventure(adventure.id)}
                       disabled={!adventure.canAttempt || energy < adventure.energyCost || attempting === adventure.id || dailyAttempts >= 2 || inProgressAdventures.length > 0 || isAdventureCompleted(adventure.id)}
                       className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black mt-auto transform hover:scale-105 ${
@@ -397,7 +457,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                                   ? 'NOT ENOUGH ENERGY'
                                   : 'ATTEMPT ADVENTURE'
                       }
-                  </button>
+                    </button>
                   )}
                 </div>
               ))}

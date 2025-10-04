@@ -43,6 +43,8 @@ export default function GamePage() {
           permanentEnergy: save.permanentEnergy || 0,
           maxEnergy: save.maxEnergy,
           luckBoostPercent: save.luckBoostPercent || 0,
+          lastEnergyUpdate: save.lastEnergyUpdate,
+          fractionalEnergy: save.fractionalEnergy,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -74,7 +76,6 @@ export default function GamePage() {
       });
       
       spendEnergy(data.energySpent);
-      addXp(data.xpGained);
       if (data.ppGained > 0) {
         addProficiencyPoints(data.ppGained);
       }
@@ -82,7 +83,8 @@ export default function GamePage() {
         stats: data.statsAfter,
         level: data.levelAfter,
         xp: data.xpAfter,
-        proficiencyPoints: data.proficiencyPointsAfter
+        proficiencyPoints: data.proficiencyPointsAfter,
+        fractionalEnergy: data.fractionalEnergyAfter
       });
 
         // Show stat gain information
@@ -124,6 +126,8 @@ export default function GamePage() {
           permanentEnergy: save.permanentEnergy || 0,
           maxEnergy: save.maxEnergy,
           luckBoostPercent: save.luckBoostPercent || 0,
+          lastEnergyUpdate: save.lastEnergyUpdate,
+          fractionalEnergy: save.fractionalEnergy,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
@@ -141,7 +145,7 @@ export default function GamePage() {
     
     try {
       const data = await apiClient.resetEnergy();
-      setFromServer({ energy: data.energy });
+      setFromServer({ energy: data.energy, fractionalEnergy: data.fractionalEnergy, lastEnergyUpdate: new Date().toISOString() });
       console.log("Energy reset to 100%");
       
       // Reload full game state to ensure everything is in sync

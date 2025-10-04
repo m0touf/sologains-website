@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { computeEnergyFloat, getCappedEnergy, scaleXpReward } from '../config/energy';
 
 const prisma = new PrismaClient();
 
@@ -144,6 +145,20 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
       return res.status(404).json({ error: 'Save not found' });
     }
 
+    // Update energy based on time elapsed
+    const now = new Date();
+    const currentEnergy = computeEnergyFloat(save.energy, save.lastEnergyUpdate, now);
+    const cappedEnergy = getCappedEnergy(currentEnergy);
+    
+    // Update energy in database
+    await prisma.save.update({
+      where: { userId },
+      data: {
+        energy: currentEnergy,
+        lastEnergyUpdate: now
+      }
+    });
+
     // Check daily adventure limit (2 per day)
     if (save.dailyAdventureAttempts >= 2) {
       return res.status(400).json({ error: 'You have reached your daily adventure limit (2 per day)' });
@@ -179,10 +194,10 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
       }
 
     // Check if adventure can be completed before midnight
-    const now = new Date();
-    const midnight = new Date(now);
+    const currentTime = new Date();
+    const midnight = new Date(currentTime);
     midnight.setHours(23, 59, 59, 999);
-    const timeUntilMidnight = midnight.getTime() - now.getTime();
+    const timeUntilMidnight = midnight.getTime() - currentTime.getTime();
     const adventureDurationMs = adventure.durationMinutes * 60 * 1000;
 
     if (timeUntilMidnight < adventureDurationMs) {
@@ -192,7 +207,7 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
     }
 
     // Check if user has enough energy
-    if (save.energy < adventure.energyCost) {
+    if (Math.floor(cappedEnergy) < adventure.energyCost) {
       return res.status(400).json({ error: 'Not enough energy' });
     }
 
@@ -202,7 +217,7 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
     }
 
     // Calculate when adventure will complete
-    const completionTime = new Date(now.getTime() + adventureDurationMs);
+    const completionTime = new Date(currentTime.getTime() + adventureDurationMs);
     
     // Calculate success chance based on stats vs requirements
     const strengthRatio = adventure.strengthReq > 0 ? save.strength / adventure.strengthReq : 1;
@@ -213,12 +228,13 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
     const success = Math.random() < successChance;
 
     // Calculate rewards (only given when adventure completes)
-    const xpGained = success ? adventure.xpReward : Math.floor(adventure.xpReward * 0.3);
+    const rawXpGained = success ? adventure.xpReward : Math.floor(adventure.xpReward * 0.3);
+    const xpGained = scaleXpReward(rawXpGained);
     const statGains = success ? adventure.statReward as { strength: number, stamina: number, mobility: number } : { strength: 0, stamina: 0, mobility: 0 };
     const cashGained = success ? adventure.cashReward : 0;
 
     // Update user stats immediately (energy is spent now)
-    const newEnergy = save.energy - adventure.energyCost;
+    const newEnergy = currentEnergy - adventure.energyCost;
 
     // Update save and create attempt record
     await prisma.$transaction(async (tx) => {
@@ -227,6 +243,7 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
         where: { userId },
         data: {
           energy: newEnergy,
+          lastEnergyUpdate: now,
           dailyAdventureAttempts: save.dailyAdventureAttempts + 1,
         },
       });
@@ -249,7 +266,7 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
 
     res.json({
       success: true,
-      energyAfter: newEnergy,
+      energyAfter: Math.floor(newEnergy),
       adventureStarted: true,
       completionTime: completionTime.toISOString(),
       durationMinutes: adventure.durationMinutes,
@@ -272,8 +289,8 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
     const userId = req.user!.userId;
     const now = new Date();
 
-    // Find all in-progress adventures that should be completed
-    const completedAdventures = await prisma.adventureAttempt.findMany({
+    // Find all in-progress adventures that should be ready to claim
+    const readyAdventures = await prisma.adventureAttempt.findMany({
       where: {
         userId,
         status: "in_progress",
@@ -286,97 +303,38 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
       }
     });
 
-    if (completedAdventures.length === 0) {
+    if (readyAdventures.length === 0) {
       return res.json({ 
-        message: "No adventures completed",
-        completedAdventures: []
+        message: "No adventures ready to claim",
+        readyAdventures: []
       });
     }
 
-    // Process each completed adventure
+    // Mark adventures as ready to claim
     const results = [];
-    for (const attempt of completedAdventures) {
-      const statGains = attempt.statGains as { strength: number, stamina: number, mobility: number };
-      
-      // Apply luck boost for bonus rewards
-      let bonusReward = false;
-      let xpGained = attempt.xpGained;
-      let cashGained = attempt.cashGained;
-      
-      // Update user stats with rewards
-      const updatedSave = await prisma.$transaction(async (tx) => {
-        // Get current save
-        const save = await tx.save.findUnique({ where: { userId } });
-        if (!save) return null;
-        
-        if (save.luckBoostPercent && save.luckBoostPercent > 0) {
-          const luckChance = save.luckBoostPercent / 100; // Convert percentage to decimal
-          if (Math.random() < luckChance) {
-            bonusReward = true;
-            xpGained = Math.round(xpGained * 1.5); // 50% bonus XP
-            cashGained = Math.round(cashGained * 1.3); // 30% bonus cash
-            console.log(`Adventure Luck Boost triggered! Bonus XP: ${xpGained}, Bonus Cash: ${cashGained}`);
-          }
+    for (const attempt of readyAdventures) {
+      // Mark adventure as ready to claim
+      await prisma.adventureAttempt.update({
+        where: { id: attempt.id },
+        data: {
+          status: "ready_to_claim"
         }
-
-        // Calculate new stats
-        const newXp = save.xp + xpGained;
-        const newStrength = save.strength + statGains.strength;
-        const newStamina = save.stamina + statGains.stamina;
-        const newMobility = save.mobility + statGains.mobility;
-        const newCash = save.cash + cashGained;
-
-        // Calculate new level
-        const newLevel = levelFromXp(newXp);
-
-        // Update save
-        const updatedSave = await tx.save.update({
-          where: { userId },
-          data: {
-            xp: newXp,
-            level: newLevel,
-            strength: newStrength,
-            stamina: newStamina,
-            mobility: newMobility,
-            cash: newCash,
-          }
-        });
-
-        // Mark adventure as completed
-        await tx.adventureAttempt.update({
-          where: { id: attempt.id },
-          data: {
-            status: "completed"
-          }
-        });
-
-        return updatedSave;
       });
 
-      if (updatedSave) {
-        results.push({
-          adventureId: attempt.adventureId,
-          adventureName: attempt.Adventure.name,
-          success: attempt.success,
-          xpGained: xpGained,
-          statGains,
-          cashGained: cashGained,
-          bonusReward: bonusReward,
-          statsAfter: {
-            strength: updatedSave.strength,
-            stamina: updatedSave.stamina,
-            mobility: updatedSave.mobility,
-            level: updatedSave.level,
-            xp: updatedSave.xp
-          },
-          cashAfter: updatedSave.cash
-        });
-      }
+      results.push({
+        adventureId: attempt.adventureId,
+        adventureName: attempt.Adventure.name,
+        success: attempt.success,
+        xpGained: attempt.xpGained,
+        statGains: attempt.statGains,
+        cashGained: attempt.cashGained,
+        completedAt: attempt.completedAt
+      });
     }
 
     res.json({
-      message: `${results.length} adventure(s) completed`,
-      completedAdventures: results
+      message: `${results.length} adventure(s) ready to claim`,
+      readyAdventures: results
     });
   } catch (error) {
     console.error('Check adventure completions error:', error);
@@ -401,6 +359,120 @@ export const getAdventureHistory = async (req: AuthenticatedRequest, res: Respon
     res.json(attempts);
   } catch (error) {
     console.error('Get adventure history error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Claim adventure rewards
+const claimAdventureSchema = z.object({
+  adventureAttemptId: z.string(),
+});
+
+export const claimAdventureRewards = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    const parse = claimAdventureSchema.safeParse(req.body);
+    
+    if (!parse.success) {
+      return res.status(400).json({ error: parse.error.flatten() });
+    }
+
+    // Get the adventure attempt
+    const attempt = await prisma.adventureAttempt.findFirst({
+      where: {
+        id: parse.data.adventureAttemptId,
+        userId,
+        status: "ready_to_claim"
+      },
+      include: {
+        Adventure: true
+      }
+    });
+
+    if (!attempt) {
+      return res.status(404).json({ error: 'Adventure not found or not ready to claim' });
+    }
+
+    // Get current save
+    const save = await prisma.save.findUnique({ where: { userId } });
+    if (!save) {
+      return res.status(404).json({ error: 'Save not found' });
+    }
+
+    const statGains = attempt.statGains as { strength: number, stamina: number, mobility: number };
+    
+    // Apply luck boost for bonus rewards
+    let bonusReward = false;
+    let xpGained = attempt.xpGained;
+    let cashGained = attempt.cashGained;
+    
+    if (save.luckBoostPercent && save.luckBoostPercent > 0) {
+      const luckChance = save.luckBoostPercent / 100;
+      if (Math.random() < luckChance) {
+        bonusReward = true;
+        xpGained = Math.round(xpGained * 1.5);
+        cashGained = Math.round(cashGained * 1.3);
+        console.log(`Adventure Luck Boost triggered! Bonus XP: ${xpGained}, Bonus Cash: ${cashGained}`);
+      }
+    }
+
+    // Calculate new stats
+    const newXp = save.xp + xpGained;
+    const newStrength = save.strength + statGains.strength;
+    const newStamina = save.stamina + statGains.stamina;
+    const newMobility = save.mobility + statGains.mobility;
+    const newCash = save.cash + cashGained;
+
+    // Calculate new level
+    const newLevel = levelFromXp(newXp);
+
+    // Update save and mark adventure as completed
+    const updatedSave = await prisma.$transaction(async (tx) => {
+      // Update save
+      const updatedSave = await tx.save.update({
+        where: { userId },
+        data: {
+          xp: newXp,
+          level: newLevel,
+          strength: newStrength,
+          stamina: newStamina,
+          mobility: newMobility,
+          cash: newCash,
+        }
+      });
+
+      // Mark adventure as completed
+      await tx.adventureAttempt.update({
+        where: { id: attempt.id },
+        data: {
+          status: "completed"
+        }
+      });
+
+      return updatedSave;
+    });
+
+    res.json({
+      success: true,
+      message: `Adventure "${attempt.Adventure.name}" completed!`,
+      adventureName: attempt.Adventure.name,
+      success: attempt.success,
+      xpGained: xpGained,
+      statGains,
+      cashGained: cashGained,
+      bonusReward: bonusReward,
+      statsAfter: {
+        strength: updatedSave.strength,
+        stamina: updatedSave.stamina,
+        mobility: updatedSave.mobility,
+        level: updatedSave.level,
+        xp: updatedSave.xp
+      },
+      cashAfter: updatedSave.cash
+    });
+
+  } catch (error) {
+    console.error('Claim adventure rewards error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

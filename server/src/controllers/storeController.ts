@@ -1,8 +1,39 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import { computeEnergyFloat, getCappedEnergy } from '../config/energy';
 
 const prisma = new PrismaClient();
+
+// XP Curve System (same as gameController)
+const LMAX = 50;
+const BASE_REQ = 20;
+const GROWTH = 1.092795;
+
+function xpToNext(n: number) {
+  return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
+}
+
+function totalXpTo(L: number) {
+  const r = GROWTH, A = BASE_REQ;
+  return Math.round(A * (Math.pow(r, L) - 1) / (r - 1));
+}
+
+function levelFromXp(totalXp: number) {
+  let level = 1;
+  let cumulativeXp = 0;
+  
+  while (level <= LMAX) {
+    const xpNeeded = xpToNext(level);
+    if (cumulativeXp + xpNeeded > totalXp) {
+      break;
+    }
+    cumulativeXp += xpNeeded;
+    level++;
+  }
+  
+  return level;
+}
 
 // Schema for purchasing items
 const purchaseSchema = z.object({
@@ -127,6 +158,20 @@ export const purchaseItem = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Save data not found' });
     }
 
+    // Update energy based on time elapsed
+    const now = new Date();
+    const currentEnergy = computeEnergyFloat(save.energy, save.lastEnergyUpdate, now);
+    const cappedEnergy = getCappedEnergy(currentEnergy);
+    
+    // Update energy in database
+    await prisma.save.update({
+      where: { userId },
+      data: {
+        energy: currentEnergy,
+        lastEnergyUpdate: now
+      }
+    });
+
     // Get the shop item
     const shopItem = await prisma.shopItem.findUnique({
       where: { id: itemId }
@@ -168,11 +213,11 @@ export const purchaseItem = async (req: Request, res: Response) => {
 
     // Apply item effects
     let newCash = save.cash - shopItem.cost;
-    let newEnergy = save.energy;
+    let newEnergy = currentEnergy;
     let newStrength = save.strength;
     let newStamina = save.stamina;
     let newMobility = save.mobility;
-    let newMaxEnergy = save.maxEnergy || 100;
+    let newMaxEnergy = save.maxEnergy || 180;
     let newXp = save.xp;
     let newXpBoostRemaining = save.xpBoostRemaining || 0;
     let newProficiencyBoostRemaining = save.proficiencyBoostRemaining || 0;
@@ -182,7 +227,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
 
     switch (shopItem.type) {
       case 'energy_restore':
-        newEnergy = Math.min(newMaxEnergy, newEnergy + shopItem.effectValue);
+        newEnergy = Math.min(newMaxEnergy + 20, newEnergy + shopItem.effectValue); // Allow overcap
         break;
       case 'stat_boost':
         if (shopItem.statType === 'strength') newStrength += shopItem.effectValue;
@@ -243,6 +288,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
         data: {
           cash: newCash,
           energy: newEnergy,
+          lastEnergyUpdate: now,
           strength: newStrength,
           stamina: newStamina,
           mobility: newMobility,
@@ -270,7 +316,7 @@ export const purchaseItem = async (req: Request, res: Response) => {
       success: true,
       message: `Purchased ${shopItem.name}`,
       cashAfter: newCash,
-      energyAfter: newEnergy,
+      energyAfter: Math.floor(newEnergy),
       maxEnergyAfter: newMaxEnergy,
       statsAfter: {
         strength: newStrength,
@@ -317,7 +363,7 @@ export const simulateNewDay = async (req: Request, res: Response) => {
     }
 
     // Reset energy to max
-    const maxEnergy = save.maxEnergy || 100;
+    const maxEnergy = save.maxEnergy || 180;
     
     // Reset daily stat gains for all exercises
     await prisma.exerciseProficiency.updateMany({
@@ -343,6 +389,7 @@ export const simulateNewDay = async (req: Request, res: Response) => {
       where: { userId },
       data: {
         energy: maxEnergy,
+        lastEnergyUpdate: new Date(),
         shopRotationSeed: newShopRotationSeed,
         lastShopRotation: new Date(),
         adventureRotationSeed: newAdventureRotationSeed,
@@ -357,7 +404,7 @@ export const simulateNewDay = async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: 'New day simulated successfully',
-      energy: maxEnergy,
+      energy: Math.floor(maxEnergy),
       dailyLimitsReset: true,
       shopRotated: true,
       adventuresRotated: true
@@ -411,5 +458,62 @@ export const simulateDate = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error setting test date:', error);
     res.status(500).json({ error: 'Failed to set test date' });
+  }
+};
+
+// Test endpoint to auto-complete all in-progress adventures
+export const autoCompleteAdventures = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Get current save
+    const save = await prisma.save.findUnique({ where: { userId } });
+    if (!save) {
+      return res.status(404).json({ error: 'Save not found' });
+    }
+
+    // Find all in-progress adventures
+    const inProgressAdventures = await prisma.adventureAttempt.findMany({
+      where: {
+        userId,
+        status: "in_progress"
+      },
+      include: {
+        Adventure: true
+      }
+    });
+
+    let readyCount = 0;
+
+    // Mark all in-progress adventures as ready to claim
+    for (const attempt of inProgressAdventures) {
+      // Mark adventure as ready to claim
+      await prisma.adventureAttempt.update({
+        where: { id: attempt.id },
+        data: {
+          status: "ready_to_claim"
+        }
+      });
+
+      readyCount++;
+    }
+
+    let message = `Marked ${readyCount} adventure(s) as ready to claim`;
+    if (readyCount === 0) {
+      message = 'No adventures to mark as ready';
+    }
+
+    res.json({
+      success: true,
+      message,
+      adventuresReady: readyCount
+    });
+
+  } catch (error) {
+    console.error('Error auto-completing adventures:', error);
+    res.status(500).json({ error: 'Failed to auto-complete adventures' });
   }
 };

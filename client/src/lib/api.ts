@@ -122,6 +122,13 @@ class ApiClient {
     });
   }
 
+  async claimAdventureRewards(data: { adventureAttemptId: string }) {
+    return this.request('/claim-adventure-rewards', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   // Store endpoints
   async getStoreItems() {
     return this.request('/store/items');

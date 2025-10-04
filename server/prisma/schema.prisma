@@ -21,15 +21,15 @@ model Save {
   userId               String  @id
   level                Int     @default(1)
   xp                   Int     @default(0)
-  energy               Int     @default(100)
-  lastEnergyResetDate  DateTime?
+  energy               Float   @default(100.0)
+  lastEnergyUpdate     DateTime @default(now())
   lastDailyReset       DateTime?
   strength             Int     @default(1)
   stamina              Int     @default(1)
   mobility             Int     @default(1)
   proficiencyPoints    Int     @default(0)
   cash                 Int     @default(0)
-  maxEnergy            Int     @default(100)
+  maxEnergy            Float   @default(180.0)
   permanentEnergy      Int     @default(0) // permanent energy stat that increases max energy
   shopRotationSeed     Int?
   lastShopRotation     DateTime?
@@ -144,7 +144,7 @@ model AdventureAttempt {
   cashGained  Int      @default(0)
   attemptedAt DateTime @default(now())
   completedAt DateTime? // when the adventure was completed (null if still in progress)
-  status      String   @default("in_progress") // "in_progress", "completed", "failed"
+  status      String   @default("in_progress") // "in_progress", "ready_to_claim", "completed", "failed"
   
   Save        Save     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   Adventure   Adventure @relation(fields: [adventureId], references: [id], onDelete: Cascade)
