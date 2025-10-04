@@ -36,61 +36,64 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-zinc-900 to-slate-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center p-4" style={{ imageRendering: 'pixelated' }}>
       <div className="w-full">
-        <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-xl p-8 w-full max-w-2xl mx-auto">
+        <div className="bg-gradient-to-br from-amber-50 to-amber-100 backdrop-blur-sm ring-3 ring-black shadow-lg rounded-xl p-8 w-full max-w-2xl mx-auto" style={{ imageRendering: 'pixelated' }}>
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-              Solo Gains
+            <h1 className="text-4xl font-black text-gray-800 mb-2" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #fff' }}>
+              SOLO GAINS
             </h1>
-            <p className="text-zinc-400">Welcome back! Sign in to continue your journey.</p>
+            <p className="text-gray-700 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>Welcome back! Sign in to continue your journey.</p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-2">Email</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2" style={{ fontFamily: 'monospace' }}>EMAIL</label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="w-full px-4 py-3 bg-zinc-700 border border-zinc-600 rounded-lg text-white focus:outline-none focus:border-emerald-500 text-lg"
+                className="w-full px-4 py-3 bg-amber-100 border-2 border-black rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg font-bold"
+                style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}
                 placeholder="Enter your email"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-2">Password</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2" style={{ fontFamily: 'monospace' }}>PASSWORD</label>
               <input
                 type="password"
                 required
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full px-4 py-3 bg-zinc-700 border border-zinc-600 rounded-lg text-white focus:outline-none focus:border-emerald-500 text-lg"
+                className="w-full px-4 py-3 bg-amber-100 border-2 border-black rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg font-bold"
+                style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}
                 placeholder="Enter your password"
               />
             </div>
             
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-                <p className="text-red-400 text-sm text-center">{error}</p>
+              <div className="bg-red-200 border-2 border-red-500 rounded-lg p-3 ring-2 ring-red-300">
+                <p className="text-red-700 text-sm text-center font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>{error}</p>
               </div>
             )}
             
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+              className="w-full bg-black hover:bg-gray-800 text-white font-black py-3 px-4 rounded-lg ring-2 ring-black shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+              style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? 'SIGNING IN...' : 'SIGN IN'}
             </button>
           </form>
           
           <div className="text-center mt-6">
-            <p className="text-zinc-400 text-sm">
+            <p className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
               Don't have an account?{' '}
-              <a href="/signup" className="text-emerald-400 hover:text-emerald-300 underline">
-                Sign up
+              <a href="/signup" className="text-amber-600 hover:text-amber-700 underline font-black">
+                SIGN UP
               </a>
             </p>
           </div>
