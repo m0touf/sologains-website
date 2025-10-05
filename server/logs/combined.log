@@ -195,3 +195,9 @@
 {"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:18:37.500Z"}
 {"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:18:51.109Z"}
 {"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:21:10.142Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:24:08.013Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:24:08.014Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:24:08.013Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:24:08.013Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:24:08.013Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:24:08.014Z"}

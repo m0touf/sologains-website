@@ -718,11 +718,17 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     // Get the benefits for this tier
     const benefits = getResearchBenefits(exerciseId, tier);
     
+    // Get updated save data to return new max energy
+    const updatedSave = await prisma.save.findUnique({
+      where: { userId }
+    });
+    
     res.json({ 
       message: `Successfully upgraded ${exercise.name} to tier ${tier}`,
       proficiencyPoints: save.proficiencyPoints - cost,
       newProficiency: 700,
-      benefits: benefits
+      benefits: benefits,
+      maxEnergy: updatedSave?.maxEnergy || save.maxEnergy
     });
   } catch (error) {
     logger.error('Upgrade exercise error:', error);
