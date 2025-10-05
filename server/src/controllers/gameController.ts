@@ -50,8 +50,41 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     });
     
     if (!save) {
-      logger.error(`Save not found for user ${userId}`);
-      return res.status(404).json({ error: 'Save not found. Please contact support.' });
+      logger.info(`Creating new save for user ${userId}`);
+      // Create a new save record for the user
+      const newSave = await prisma.save.create({
+        data: {
+          userId: userId,
+          level: 1,
+          xp: 0,
+          energy: 150.0,
+          lastEnergyUpdate: new Date(),
+          strength: 1,
+          stamina: 1,
+          mobility: 1,
+          proficiencyPoints: 0,
+          cash: 500,
+          maxEnergy: 150.0,
+        },
+        include: {
+          ExerciseProficiencies: {
+            include: {
+              Exercise: true
+            }
+          },
+          ResearchUpgrades: {
+            include: {
+              Exercise: true
+            }
+          }
+        }
+      });
+      
+      // Return the newly created save
+      return res.json({
+        ...newSave,
+        fractionalEnergy: newSave.energy
+      });
     }
 
     // Update energy based on time elapsed

@@ -87,6 +87,7 @@ async function main() {
       baseXp: 30,
       statType: 'stamina',
       statGainAmount: 2,
+      imagePath: '/src/assets/exercises/endurance/Running_Gym_Button.png',
     },
     {
       id: 'cycling',
@@ -97,6 +98,7 @@ async function main() {
       baseXp: 25,
       statType: 'stamina',
       statGainAmount: 1,
+      imagePath: '/src/assets/exercises/endurance/Cycling_Gym_Button.png',
     },
     {
       id: 'swimming',
@@ -107,9 +109,10 @@ async function main() {
       baseXp: 35,
       statType: 'stamina',
       statGainAmount: 3,
+      imagePath: '/src/assets/exercises/endurance/Swimming_Gym_Button.png',
     },
     {
-      id: 'jump_rope',
+      id: 'jumprope',
       name: 'Jump Rope',
       category: 'endurance',
       baseReps: 40,
@@ -117,6 +120,7 @@ async function main() {
       baseXp: 20,
       statType: 'stamina',
       statGainAmount: 1,
+      imagePath: '/src/assets/exercises/endurance/Jumprope_Gym_Button.png',
     },
     {
       id: 'boxing',
@@ -127,6 +131,7 @@ async function main() {
       baseXp: 32,
       statType: 'stamina',
       statGainAmount: 2,
+      imagePath: '/src/assets/exercises/endurance/Boxing_Gym_Button.png',
     },
     {
       id: 'basketball',
@@ -137,6 +142,7 @@ async function main() {
       baseXp: 28,
       statType: 'stamina',
       statGainAmount: 2,
+      imagePath: '/src/assets/exercises/endurance/Basketball_Gym_Button.png',
     },
     // Mobility exercises
     {
@@ -148,6 +154,7 @@ async function main() {
       baseXp: 15,
       statType: 'mobility',
       statGainAmount: 1,
+      imagePath: '/src/assets/exercises/mobility/Hipflexorstretch_Gym_Button.png',
     },
     {
       id: 'shoulder_roll',
@@ -158,6 +165,7 @@ async function main() {
       baseXp: 12,
       statType: 'mobility',
       statGainAmount: 1,
+      imagePath: '/src/assets/exercises/mobility/Shoulderrollstretch_Gym_Button.png',
     },
     {
       id: 'cat_cow',
@@ -168,6 +176,7 @@ async function main() {
       baseXp: 15,
       statType: 'mobility',
       statGainAmount: 1,
+      imagePath: '/src/assets/exercises/mobility/Catcowstretch_Gym_Button.png',
     },
     {
       id: 'pigeon_pose',
@@ -178,6 +187,7 @@ async function main() {
       baseXp: 20,
       statType: 'mobility',
       statGainAmount: 2,
+      imagePath: '/src/assets/exercises/mobility/Pigeonpose_Gym_Button.png',
     },
     {
       id: 'downward_dog',
@@ -188,6 +198,7 @@ async function main() {
       baseXp: 18,
       statType: 'mobility',
       statGainAmount: 1,
+      imagePath: '/src/assets/exercises/mobility/Downwardsdog_Gym_Button.png',
     },
     {
       id: 'spinal_twist',
@@ -198,6 +209,7 @@ async function main() {
       baseXp: 12,
       statType: 'mobility',
       statGainAmount: 1,
+      imagePath: '/src/assets/exercises/mobility/Spinaltwist_Gym_Button.png',
     },
   ];
 
