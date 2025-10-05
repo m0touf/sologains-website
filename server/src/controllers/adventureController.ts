@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../middleware/auth';
+import logger from '../utils/logger';
 import { 
   computeEnergyFloat, 
   getCappedEnergy, 
@@ -18,7 +19,6 @@ const prisma = new PrismaClient();
 // Get daily adventures (cycles through 50 adventures based on date)
 export const getDailyAdventures = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    console.log('getDailyAdventures called for user:', req.user?.userId);
     const userId = req.user!.userId;
     
     // Get user's current stats and rotation seed
@@ -83,10 +83,9 @@ export const getDailyAdventures = async (req: AuthenticatedRequest, res: Respons
       }
     }
 
-    console.log('Returning', dailyAdventures.length, 'daily adventures');
     res.json(dailyAdventures);
   } catch (error) {
-    console.error('Get daily adventures error:', error);
+    logger.error('Get daily adventures error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -267,7 +266,7 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
       }
     });
   } catch (error) {
-    console.error('Attempt adventure error:', error);
+    logger.error('Attempt adventure error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -326,7 +325,7 @@ export const checkAdventureCompletions = async (req: AuthenticatedRequest, res: 
       readyAdventures: results
     });
   } catch (error) {
-    console.error('Check adventure completions error:', error);
+    logger.error('Check adventure completions error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -347,7 +346,7 @@ export const getAdventureHistory = async (req: AuthenticatedRequest, res: Respon
 
     res.json(attempts);
   } catch (error) {
-    console.error('Get adventure history error:', error);
+    logger.error('Get adventure history error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -461,7 +460,7 @@ export const claimAdventureRewards = async (req: AuthenticatedRequest, res: Resp
     });
 
   } catch (error) {
-    console.error('Claim adventure rewards error:', error);
+    logger.error('Claim adventure rewards error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

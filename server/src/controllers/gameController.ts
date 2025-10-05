@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../middleware/auth';
+import logger from '../utils/logger';
 import { 
   computeEnergyFloat, 
   getCappedEnergy, 
@@ -10,7 +11,11 @@ import {
   levelFromXp,
   calculateProficiencyGain,
   calculateProficiencyPointsGained,
-  calculateAllStatGains
+  calculateAllStatGains,
+  getResearchBenefits,
+  getAllResearchBenefits,
+  canUnlockTier,
+  getTierCost
 } from '../config';
 
 const prisma = new PrismaClient();
@@ -45,13 +50,14 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     });
     
     if (!save) {
+      logger.error(`Save not found for user ${userId}`);
       return res.status(404).json({ error: 'Save not found. Please contact support.' });
     }
 
     // Update energy based on time elapsed
     const now = new Date();
     const currentEnergy = computeEnergyFloat(save.energy, save.lastEnergyUpdate, now);
-    // For regeneration, cap at 180. Overcap only applies to manual actions
+    // For regeneration, cap at 150. Overcap only applies to manual actions
     const cappedEnergy = getCappedEnergy(currentEnergy);
     
     // Update energy in database if it changed
@@ -70,15 +76,10 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     const todayKey = today.toISOString().slice(0, 10);
     const lastDailyResetDate = save.lastDailyReset ? new Date(save.lastDailyReset).toISOString().slice(0, 10) : null;
     
-    console.log(`Daily reset check for user ${userId}:`);
-    console.log(`  Today: ${todayKey}`);
-    console.log(`  Last reset: ${lastDailyResetDate}`);
-    console.log(`  Should reset: ${todayKey !== lastDailyResetDate}`);
     
     // If it's a new day, automatically reset daily limits and rotate content
     if (todayKey !== lastDailyResetDate) {
-      console.log(`🔄 NEW DAY DETECTED! Resetting daily limits for user ${userId}`);
-      console.log(`  Today: ${todayKey}, Last reset: ${lastDailyResetDate}`);
+      logger.info(`Daily reset for user ${userId}: ${todayKey} (was ${lastDailyResetDate})`);
       
       // Reset daily stat gains for all exercises
       await prisma.exerciseProficiency.updateMany({
@@ -113,17 +114,8 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
           }
         });
 
-      console.log(`✅ Daily reset completed for user ${userId}`);
-      console.log(`  - Daily adventure attempts reset to 0`);
-      console.log(`  - Shop rotation seed: ${newShopRotationSeed}`);
-      console.log(`  - Adventure rotation seed: ${newAdventureRotationSeed}`);
     }
     
-    console.log('getSave response:', {
-      userId,
-      researchUpgrades: save.ResearchUpgrades,
-      researchUpgradesCount: save.ResearchUpgrades?.length || 0
-    });
     
     // Fetch updated save data after potential reset
     const updatedSave = await prisma.save.findUnique({ 
@@ -146,24 +138,20 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       ...updatedSave,
       energy: Math.floor(cappedEnergy),
       fractionalEnergy: cappedEnergy, // Use capped energy for regeneration
-      maxEnergy: updatedSave?.maxEnergy || 180
+      maxEnergy: updatedSave?.maxEnergy || 150
     });
   } catch (error) {
-    console.error('Get save error:', error);
+    logger.error('Get save error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    console.log('=== WORKOUT START ===');
     const userId = req.user!.userId;
-    console.log('User ID:', userId);
-    console.log('Workout request body:', req.body);
     const parse = workoutSchema.safeParse(req.body);
     
     if (!parse.success) {
-      console.log('Validation error:', parse.error.flatten());
       return res.status(400).json({ error: parse.error.flatten() });
     }
 
@@ -173,6 +161,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     });
 
     if (!exercise) {
+      logger.error(`Exercise not found: ${parse.data.exerciseId}`);
       return res.status(404).json({ error: 'Exercise not found' });
     }
 
@@ -189,6 +178,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       }
     });
     if (!save) {
+      logger.error(`Save not found for user ${userId} during workout`);
       return res.status(404).json({ error: 'Save not found' });
     }
 
@@ -217,7 +207,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     // Apply research tier effects
     const researchUpgrade = save.ResearchUpgrades[0]; // Should be only one active upgrade per exercise
     if (researchUpgrade) {
-      console.log(`Applying research tier ${researchUpgrade.tier} effects for ${exercise.name}`);
       
       // Tier 1: Energy Efficiency - 5% less energy cost
       if (researchUpgrade.tier >= 1) {
@@ -233,7 +222,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     // Apply XP boost if available
     if (save.xpBoostRemaining && save.xpBoostRemaining > 0) {
       xpGained = Math.round(xpGained * 2); // Double XP
-      console.log(`XP Boost applied! XP gained: ${xpGained}`);
     }
 
     // Scale XP to maintain 6-month pacing with new energy system
@@ -246,13 +234,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       if (Math.random() < luckChance) {
         bonusReward = true;
         xpGained = Math.round(xpGained * 1.5); // 50% bonus XP
-        console.log(`Luck Boost triggered! Bonus XP gained: ${xpGained}`);
       }
-    }
-
-    // Check if user has enough energy
-    if (energy < energySpent) {
-      return res.status(400).json({ error: 'Not enough energy' });
     }
 
     // Get intensity and grade from request (with defaults)
@@ -315,11 +297,9 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           break;
       }
     } else {
-      console.log(`Daily stat gain limit reached for ${exercise.name} (${currentDailyStatGains}/${maxDailyStatGains})`);
     }
     
-    // Calculate final stats after stat gains are determined
-    const newEnergy = currentEnergy - energySpent;
+    // Calculate final stats after stat gains are determined (will be recalculated in transaction)
     const newXp = save.xp + xpGained;
     const newLevel = levelFromXp(newXp);
     const newStrength = save.strength + statGains.strength;
@@ -351,7 +331,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     if (save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0) {
       proficiencyResult.proficiencyGained = Math.round(proficiencyResult.proficiencyGained * 2); // Double proficiency gain
       proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.proficiencyGained);
-      console.log(`Proficiency Boost applied! Proficiency gained: ${proficiencyResult.proficiencyGained}`);
     }
 
     // Calculate new daily stat gains for response
@@ -359,12 +338,33 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0) :
       (currentDailyStatGains + (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0));
 
-    await prisma.$transaction(async (tx) => {
-          // Update save
-          await tx.save.update({
-            where: { userId },
-            data: {
-              energy: newEnergy,
+    const result = await prisma.$transaction(async (tx) => {
+      // CRITICAL: Re-check energy inside transaction to prevent race conditions
+      const currentSave = await tx.save.findUnique({ where: { userId } });
+      if (!currentSave) {
+        logger.error(`Save not found during transaction for user ${userId}`);
+        throw new Error('Save not found during transaction');
+      }
+      
+      // Recalculate energy with current time
+      const transactionTime = new Date();
+      const transactionEnergy = computeEnergyFloat(currentSave.energy, currentSave.lastEnergyUpdate, transactionTime);
+      const transactionCappedEnergy = getCappedEnergy(transactionEnergy);
+      const transactionEnergyInt = Math.floor(transactionCappedEnergy);
+      
+      // Check if user has enough energy (inside transaction to prevent race conditions)
+      if (transactionEnergyInt < energySpent) {
+        throw new Error('Not enough energy');
+      }
+      
+      // Recalculate final energy using transaction values
+      const finalNewEnergy = transactionEnergy - energySpent;
+      
+      // Update save
+      await tx.save.update({
+        where: { userId },
+        data: {
+          energy: finalNewEnergy,
               xp: newXp,
               level: newLevel,
               strength: newStrength,
@@ -391,20 +391,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       });
 
       // Update or create exercise proficiency using new system
-      console.log(`Proficiency update for ${exercise.name}:`, {
-        userId,
-        exerciseId: exercise.id,
-        currentProficiency,
-        currentDailyEnergy,
-        currentDailyStatGains,
-        shouldResetDaily,
-        intensity,
-        grade,
-        deltaGained: proficiencyResult.proficiencyGained,
-        newProficiency: proficiencyResult.newProficiency,
-        statGains,
-        newDailyStatGains
-      });
 
       if (existingProficiency) {
         await tx.exerciseProficiency.update({
@@ -417,7 +403,6 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             totalReps: existingProficiency.totalReps + reps,
           }
         });
-        console.log(`Updated proficiency from ${currentProficiency} to ${proficiencyResult.newProficiency}, daily stat gains: ${newDailyStatGains}`);
       } else {
         await tx.exerciseProficiency.create({
           data: {
@@ -430,16 +415,16 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             totalReps: reps,
           }
         });
-        console.log(`Created new proficiency: ${proficiencyResult.newProficiency}, daily stat gains: ${statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0}`);
       }
+      
+      return { finalNewEnergy };
     });
 
-        console.log('=== WORKOUT SUCCESS ===');
         res.json({ 
           energySpent, 
           xpGained, 
-          energyAfter: Math.floor(newEnergy), 
-          fractionalEnergyAfter: newEnergy, // Include fractional energy
+          energyAfter: Math.floor(result.finalNewEnergy), 
+          fractionalEnergyAfter: result.finalNewEnergy, // Include fractional energy
           xpAfter: newXp,
           levelAfter: newLevel,
           proficiencyGained: proficiencyResult.proficiencyGained,
@@ -461,8 +446,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           luckBoostPercent: save.luckBoostPercent || 0
         });
   } catch (error) {
-    console.error('Workout error:', error);
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    logger.error('Workout error:', error);
+    logger.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     res.status(500).json({ error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' });
   }
 };
@@ -477,12 +462,13 @@ export const resetEnergy = async (req: AuthenticatedRequest, res: Response) => {
     });
 
     if (!save) {
+      logger.error(`Save not found for user ${userId} during energy reset`);
       return res.status(404).json({ error: 'Save not found' });
     }
 
     // Reset energy to max (with overcap buffer for level-ups)
-    const maxEnergy = (save.maxEnergy || 180) + (save.permanentEnergy || 0);
-    const resetEnergy = maxEnergy + 20; // Overcap buffer
+    const maxEnergy = (save.maxEnergy || 150) + (save.permanentEnergy || 0);
+    const resetEnergy = getEnergyWithOvercap(maxEnergy); // Use config function for consistency
 
     const updatedSave = await prisma.save.update({
       where: { userId },
@@ -498,7 +484,7 @@ export const resetEnergy = async (req: AuthenticatedRequest, res: Response) => {
       fractionalEnergy: resetEnergy // Include fractional energy
     });
   } catch (error) {
-    console.error('Energy reset error:', error);
+    logger.error('Energy reset error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -515,7 +501,7 @@ export const getExercises = async (req: AuthenticatedRequest, res: Response) => 
 
     res.json(exercises);
   } catch (error) {
-    console.error('Get exercises error:', error);
+    logger.error('Get exercises error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -533,7 +519,7 @@ export const getProficiencies = async (req: AuthenticatedRequest, res: Response)
     
     res.json(proficiencies);
   } catch (error) {
-    console.error('Get proficiencies error:', error);
+    logger.error('Get proficiencies error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -543,11 +529,9 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     const userId = req.user!.userId;
     const { exerciseId, tier } = req.body;
     
-    console.log('Upgrade request:', { userId, exerciseId, tier });
     
     // Validate tier
     if (!tier || tier < 1 || tier > 4) {
-      console.log('Invalid tier:', tier);
       return res.status(400).json({ error: 'Invalid tier. Must be 1-4.' });
     }
     
@@ -557,6 +541,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     });
     
     if (!exercise) {
+      logger.error(`Exercise not found for research upgrade: ${exerciseId}`);
       return res.status(404).json({ error: 'Exercise not found' });
     }
     
@@ -570,10 +555,8 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       }
     });
     
-    console.log('Proficiency check:', { proficiency: proficiency?.proficiency, required: 1000 });
     
     if (!proficiency || proficiency.proficiency < 1000) {
-      console.log('Proficiency requirement not met');
       return res.status(400).json({ error: 'Exercise must reach 1000 proficiency first' });
     }
     
@@ -583,11 +566,12 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     });
     
     if (!save) {
+      logger.error(`Save not found for user ${userId} during research upgrade`);
       return res.status(404).json({ error: 'Save not found' });
     }
     
-    const tierCosts = { 1: 2, 2: 4, 3: 6, 4: 8 };
-    const cost = tierCosts[tier as keyof typeof tierCosts];
+    // Get tier cost from research config
+    const cost = getTierCost(exerciseId, tier);
     
     if (save.proficiencyPoints < cost) {
       return res.status(400).json({ error: `Not enough proficiency points. Need ${cost}, have ${save.proficiencyPoints}` });
@@ -605,6 +589,12 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     
     if (existingUpgrade && existingUpgrade.tier >= tier) {
       return res.status(400).json({ error: 'Already upgraded to this tier or higher' });
+    }
+    
+    // Check tier ladder requirement
+    const currentTier = existingUpgrade ? existingUpgrade.tier : 0;
+    if (!canUnlockTier(exerciseId, tier, currentTier)) {
+      return res.status(400).json({ error: `Must unlock tier ${tier - 1} first` });
     }
     
     await prisma.$transaction(async (tx) => {
@@ -641,13 +631,17 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       });
     });
     
+    // Get the benefits for this tier
+    const benefits = getResearchBenefits(exerciseId, tier);
+    
     res.json({ 
       message: `Successfully upgraded ${exercise.name} to tier ${tier}`,
       proficiencyPoints: save.proficiencyPoints - cost,
-      newProficiency: 700
+      newProficiency: 700,
+      benefits: benefits
     });
   } catch (error) {
-    console.error('Upgrade exercise error:', error);
+    logger.error('Upgrade exercise error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -663,9 +657,67 @@ export const getResearchUpgrades = async (req: AuthenticatedRequest, res: Respon
       }
     });
     
-    res.json(upgrades);
+    // Add benefits information to each upgrade
+    const upgradesWithBenefits = upgrades.map(upgrade => ({
+      ...upgrade,
+      benefits: getResearchBenefits(upgrade.exerciseId, upgrade.tier)
+    }));
+    
+    res.json(upgradesWithBenefits);
   } catch (error) {
-    console.error('Get research upgrades error:', error);
+    logger.error('Get research upgrades error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// New endpoint to get all available research options
+export const getAvailableResearch = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    
+    // Get all exercises with their proficiencies
+    const exercises = await prisma.exercise.findMany({
+      include: {
+        ExerciseProficiencies: {
+          where: { userId }
+        }
+      }
+    });
+    
+    // Get current research upgrades
+    const currentUpgrades = await prisma.researchUpgrade.findMany({
+      where: { userId }
+    });
+    
+    const upgradeMap = new Map(currentUpgrades.map(u => [u.exerciseId, u.tier]));
+    
+    // Build available research options
+    const availableResearch = exercises.map(exercise => {
+      const proficiency = exercise.ExerciseProficiencies[0];
+      const currentTier = upgradeMap.get(exercise.id) || 0;
+      const allBenefits = getAllResearchBenefits(exercise.id);
+      
+      return {
+        exercise: {
+          id: exercise.id,
+          name: exercise.name,
+          category: exercise.category
+        },
+        proficiency: proficiency?.proficiency || 0,
+        currentTier,
+        availableTiers: allBenefits.map(tier => ({
+          tier: tier.tier,
+          cost: tier.cost,
+          benefits: tier.benefits,
+          canUnlock: canUnlockTier(exercise.id, tier.tier, currentTier) && 
+                     (proficiency?.proficiency || 0) >= 1000
+        }))
+      };
+    });
+    
+    res.json(availableResearch);
+  } catch (error) {
+    logger.error('Get available research error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

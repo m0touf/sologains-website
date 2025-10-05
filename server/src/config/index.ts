@@ -3,3 +3,4 @@ export * from './energy';
 export * from './xp';
 export * from './proficiency';
 export * from './skills';
+export * from './research';

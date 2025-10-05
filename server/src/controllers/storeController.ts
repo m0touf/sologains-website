@@ -3,13 +3,14 @@ import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { computeEnergyFloat, getCappedEnergy } from '../config/energy';
 import { AuthenticatedRequest } from '../middleware/auth';
+import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
 
 // XP Curve System (same as gameController)
-const LMAX = 50;
+const LMAX = 100;
 const BASE_REQ = 20;
-const GROWTH = 1.092795;
+const GROWTH = 1.048900;
 
 function xpToNext(n: number) {
   return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
@@ -120,7 +121,7 @@ export const getShopItems = async (req: AuthenticatedRequest, res: Response) => 
 
     res.json(rotatedItems);
   } catch (error) {
-    console.error('Error fetching shop items:', error);
+    logger.error('Error fetching shop items:', error);
     res.status(500).json({ error: 'Failed to fetch shop items' });
   }
 };
@@ -218,7 +219,7 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
     let newStrength = save.strength;
     let newStamina = save.stamina;
     let newMobility = save.mobility;
-    let newMaxEnergy = save.maxEnergy || 180;
+    let newMaxEnergy = save.maxEnergy || 150;
     let newXp = save.xp;
     let newXpBoostRemaining = save.xpBoostRemaining || 0;
     let newProficiencyBoostRemaining = save.proficiencyBoostRemaining || 0;
@@ -334,7 +335,7 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
     });
 
   } catch (error) {
-    console.error('Error purchasing item:', error);
+    logger.error('Error purchasing item:', error);
     res.status(500).json({ error: 'Failed to purchase item' });
   }
 };
@@ -364,7 +365,7 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
     }
 
     // Reset energy to max
-    const maxEnergy = save.maxEnergy || 180;
+    const maxEnergy = save.maxEnergy || 150;
     
     // Reset daily stat gains for all exercises
     await prisma.exerciseProficiency.updateMany({
@@ -412,7 +413,7 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
     });
 
   } catch (error) {
-    console.error('Error simulating new day:', error);
+    logger.error('Error simulating new day:', error);
     res.status(500).json({ error: 'Failed to simulate new day' });
   }
 };
@@ -420,10 +421,8 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
 // Test endpoint to simulate different dates (for testing daily resets)
 export const simulateDate = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    console.log('simulateDate called with user:', req.user);
     const userId = req.user?.userId;
     if (!userId) {
-      console.log('No userId found in request');
       return res.status(401).json({ error: 'Unauthorized - no user ID' });
     }
 
@@ -432,7 +431,6 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
       return res.status(400).json({ error: 'Date required' });
     }
 
-    console.log(`Setting test date to ${date} for user ${userId}`);
 
     // Parse the date and set it as the last reset date
     const testDate = new Date(date);
@@ -448,7 +446,6 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
       }
     });
 
-    console.log(`Successfully set test date to ${testDate.toISOString().slice(0, 10)} for user ${userId}`);
 
     res.json({
       success: true,
@@ -457,7 +454,7 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
     });
 
   } catch (error) {
-    console.error('Error setting test date:', error);
+    logger.error('Error setting test date:', error);
     res.status(500).json({ error: 'Failed to set test date' });
   }
 };
@@ -514,7 +511,7 @@ export const autoCompleteAdventures = async (req: AuthenticatedRequest, res: Res
     });
 
   } catch (error) {
-    console.error('Error auto-completing adventures:', error);
+    logger.error('Error auto-completing adventures:', error);
     res.status(500).json({ error: 'Failed to auto-complete adventures' });
   }
 };
