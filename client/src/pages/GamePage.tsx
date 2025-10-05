@@ -102,7 +102,8 @@ export default function GamePage() {
         level: data.levelAfter,
         xp: data.xpAfter,
         proficiencyPoints: data.proficiencyPointsAfter,
-        fractionalEnergy: data.fractionalEnergyAfter
+        fractionalEnergy: data.fractionalEnergyAfter,
+        cash: data.cashReward ? useGameStore.getState().cash + data.cashReward : useGameStore.getState().cash
       });
 
         // Show stat gain information
@@ -113,6 +114,10 @@ export default function GamePage() {
         
         if (statGainMessage) {
           console.log(`Stat gains: ${statGainMessage}`);
+        }
+        
+        if (data.cashReward > 0) {
+          console.log(`💰 Cash reward: +$${data.cashReward}`);
         }
         
         if (data.dailyStatGainsUsed >= data.maxDailyStatGains) {

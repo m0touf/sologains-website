@@ -1,5 +1,5 @@
 // Proficiency System Configuration
-export const K = 2.2;                      // Base proficiency gain multiplier
+export const K = 5.0;                      // Base proficiency gain multiplier (increased from 2.2)
 export const MAX_PROFICIENCY = 1000;       // Maximum proficiency level
 
 /**
@@ -32,7 +32,7 @@ export function getGradeMultiplier(grade: "perfect"|"good"|"okay"|"miss"): numbe
  * @returns Diminishing returns multiplier
  */
 export function getDiminishingReturns(proficiency: number): number {
-  return 1 - Math.pow(proficiency / MAX_PROFICIENCY, 0.8);
+  return 1 - Math.pow(proficiency / MAX_PROFICIENCY, 0.5); // Reduced from 0.8 to 0.5 for less diminishing returns
 }
 
 /**
@@ -41,7 +41,7 @@ export function getDiminishingReturns(proficiency: number): number {
  * @returns Daily diminishing returns multiplier
  */
 export function getDailyDiminishingReturns(dailyEnergy: number): number {
-  return dailyEnergy <= 30 ? 1 : Math.sqrt(30 / dailyEnergy);
+  return dailyEnergy <= 60 ? 1 : Math.sqrt(60 / dailyEnergy); // Increased from 30 to 60 for less daily diminishing returns
 }
 
 /**
@@ -70,7 +70,7 @@ export function calculateProficiencyGain(
   const dailyDiminishingReturns = getDailyDiminishingReturns(dailyEnergy);
   
   const proficiencyGained = Math.max(
-    6, // Minimum gain
+    12, // Minimum gain (increased from 6)
     K * energySpent * intensityMul * gradeMul * diminishingReturns * dailyDiminishingReturns
   );
   

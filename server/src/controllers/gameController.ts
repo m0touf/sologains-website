@@ -238,17 +238,50 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     let xpGained = exercise.baseXp;
 
     // Apply research tier effects
-    const researchUpgrade = save.ResearchUpgrades[0]; // Should be only one active upgrade per exercise
+    const researchUpgrade = save.ResearchUpgrades.find(ru => ru.exerciseId === exercise.id);
+    let cashReward = 0;
+    
     if (researchUpgrade) {
+      // Get research benefits for this exercise and tier
+      const benefits = getResearchBenefits(exercise.id, researchUpgrade.tier);
       
-      // Tier 1: Energy Efficiency - 5% less energy cost
-      if (researchUpgrade.tier >= 1) {
-        energySpent = Math.round(energySpent * 0.95);
-      }
-      
-      // Tier 3: XP Yield - 10% more character XP
-      if (researchUpgrade.tier >= 3) {
-        xpGained = Math.round(xpGained * 1.1);
+      // Apply each benefit
+      for (const benefit of benefits) {
+        switch (benefit.type) {
+          case 'monetary':
+            // Add cash reward (value is average, add some randomness)
+            const minCash = Math.round(benefit.value * 0.5);
+            const maxCash = Math.round(benefit.value * 1.5);
+            cashReward += Math.floor(Math.random() * (maxCash - minCash + 1)) + minCash;
+            break;
+          case 'energy':
+            // Reduce energy cost
+            if (benefit.isPercentage) {
+              energySpent = Math.round(energySpent * (1 - benefit.value / 100));
+            }
+            break;
+          case 'xp':
+            // Increase XP gain
+            if (benefit.isPercentage) {
+              xpGained = Math.round(xpGained * (1 + benefit.value / 100));
+            }
+            break;
+          case 'stat':
+            // Stat bonuses are handled separately in stat gain logic
+            break;
+          case 'bonus':
+            // Adventure bonus rewards - handled in adventure system
+            break;
+          case 'adventure':
+            // Extra adventure attempts - handled in adventure system
+            break;
+          case 'utility':
+            // Max energy increases - handled when research is purchased
+            break;
+          case 'quality':
+            // Energy regeneration speed - handled when research is purchased
+            break;
+        }
       }
     }
 
@@ -304,18 +337,18 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       // Use exercise's stat gain amount instead of calculating from reps
       let statGainAmount = exercise.statGainAmount;
       
-      // Apply Tier 2: Output Boost - 5% more stat gain
-      if (researchUpgrade && researchUpgrade.tier >= 2) {
-        statGainAmount = Math.round(statGainAmount * 1.05);
+      // Apply research benefits for stat gains
+      if (researchUpgrade) {
+        const benefits = getResearchBenefits(exercise.id, researchUpgrade.tier);
+        for (const benefit of benefits) {
+          if (benefit.type === 'stat') {
+            // Add extra stat gain from research
+            const originalAmount = statGainAmount;
+            statGainAmount += benefit.value;
+            logger.info(`Research stat bonus: ${exercise.name} tier ${researchUpgrade.tier} - ${originalAmount} + ${benefit.value} = ${statGainAmount}`);
+          }
+        }
       }
-      
-      // Use centralized stat gain calculation
-      const calculatedGains = calculateAllStatGains(
-        energySpent,
-        intensity,
-        grade,
-        { strength: save.strength, stamina: save.stamina, mobility: save.mobility }
-      );
       
       // Apply the stat gain amount to the appropriate stat
       switch (exercise.statType) {
@@ -404,6 +437,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
               stamina: newStamina,
               mobility: newMobility,
               proficiencyPoints: newProficiencyPoints,
+              cash: currentSave.cash + cashReward, // Add cash reward from research
               xpBoostRemaining: save.xpBoostRemaining && save.xpBoostRemaining > 0 ? save.xpBoostRemaining - 1 : 0,
               proficiencyBoostRemaining: save.proficiencyBoostRemaining && save.proficiencyBoostRemaining > 0 ? save.proficiencyBoostRemaining - 1 : 0,
               lastEnergyUpdate: now,
@@ -466,6 +500,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           statGains,
           dailyStatGainsUsed: newDailyStatGains,
           maxDailyStatGains: 5,
+          cashReward: cashReward, // Add cash reward to response
           statsAfter: {
             strength: newStrength,
             stamina: newStamina,
@@ -631,11 +666,27 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     }
     
     await prisma.$transaction(async (tx) => {
-      // Deduct proficiency points
+      // Get benefits for this tier to apply utility/quality effects
+      const benefits = getResearchBenefits(exerciseId, tier);
+      let maxEnergyIncrease = 0;
+      let energyRegenIncrease = 0;
+      
+      // Calculate utility and quality benefits
+      for (const benefit of benefits) {
+        if (benefit.type === 'utility') {
+          maxEnergyIncrease += benefit.value;
+        } else if (benefit.type === 'quality') {
+          energyRegenIncrease += benefit.value;
+        }
+      }
+      
+      // Deduct proficiency points and apply utility/quality benefits
       await tx.save.update({
         where: { userId },
         data: {
-          proficiencyPoints: save.proficiencyPoints - cost
+          proficiencyPoints: save.proficiencyPoints - cost,
+          maxEnergy: save.maxEnergy + maxEnergyIncrease,
+          // Note: energyRegenIncrease would need to be stored and applied in energy calculation
         }
       });
       

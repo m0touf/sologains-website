@@ -112,3 +112,86 @@
 {"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was null)","timestamp":"2025-10-05T20:44:23.280Z"}
 {"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T20:44:37.830Z"}
 {"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T20:44:37.831Z"}
+{"clientVersion":"6.16.3","code":"P1017","level":"error","message":"Get save error: \nInvalid `prisma.save.findUnique()` invocation in\n/Users/georget/Desktop/Personal Projects/sologains-website/server/src/controllers/gameController.ts:36:36\n\n  33 export const getSave = async (req: AuthenticatedRequest, res: Response) => {\n  34   try {\n  35     const userId = req.user!.userId;\n→ 36     const save = await prisma.save.findUnique(\nServer has closed the connection.","meta":{"modelName":"Save"},"name":"PrismaClientKnownRequestError","stack":"PrismaClientKnownRequestError: \nInvalid `prisma.save.findUnique()` invocation in\n/Users/georget/Desktop/Personal Projects/sologains-website/server/src/controllers/gameController.ts:36:36\n\n  33 export const getSave = async (req: AuthenticatedRequest, res: Response) => {\n  34   try {\n  35     const userId = req.user!.userId;\n→ 36     const save = await prisma.save.findUnique(\nServer has closed the connection.\n    at ei.handleRequestError (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/@prisma/client/src/runtime/RequestHandler.ts:228:13)\n    at ei.handleAndLogRequestError (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)\n    at ei.request (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)\n    at a (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)\n    at getSave (/Users/georget/Desktop/Personal Projects/sologains-website/server/src/controllers/gameController.ts:36:18)","timestamp":"2025-10-05T21:00:49.876Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:00:58.580Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:00:58.580Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:04:46.846Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:03.160Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:03.160Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:03.160Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:03.160Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:03.160Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:03.160Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:05.962Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:05.962Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:05.963Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:05.964Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:05.963Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:05.963Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:09.996Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:09.996Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:09.997Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:09.997Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:09.997Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:09.997Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:14.227Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:14.228Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:14.227Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:14.227Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:14.229Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:14.230Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:18.694Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:18.694Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:18.694Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:18.694Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:07:18.696Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:07:18.697Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:08:19.175Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:22.738Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:22.737Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:22.737Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:22.738Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:22.738Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:22.738Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:40.965Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:40.965Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:40.965Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:40.965Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:40.972Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:40.972Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:52.942Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:52.942Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:52.948Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:52.948Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:10:52.951Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:10:52.952Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:11:00.733Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:11:00.733Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:11:00.735Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:11:00.736Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:11:00.737Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:11:00.737Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:11:04.136Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:11:04.137Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:11:04.137Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:11:04.137Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:11:04.140Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:11:04.141Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:12:44.836Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:13:21.824Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:14:18.927Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:14:18.927Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:14:18.927Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:14:18.927Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:14:18.927Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:14:18.927Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:15:10.321Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:17:21.427Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:17:21.427Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T21:17:21.427Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:17:21.428Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:17:21.428Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T21:17:21.428Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:18:37.500Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:18:51.109Z"}
+{"level":"info","message":"Daily reset for user cmgcy7tgg0004uxd0dyidy2l3: 2025-10-05 (was 2025-10-06)","timestamp":"2025-10-05T21:21:10.142Z"}
