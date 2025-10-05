@@ -1,6 +1,7 @@
 import { useGameStore } from '../game/store';
 import { useState, useRef } from 'react';
 import LoadingScreen from './LoadingScreen';
+import CharacterAnimation from './CharacterAnimation';
 
 interface GymScreenProps {
   onBack: () => void;
@@ -236,12 +237,22 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
                     CHARACTER
                   </h3>
                   <div className="mx-auto mb-4 flex items-center justify-center">
-                    <div className="w-40 h-40 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300" style={{ imageRendering: 'pixelated' }}>
-                      <div className="text-3xl text-amber-600 font-black" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>?</div>
+                    <div className="w-40 h-40 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+                      <CharacterAnimation 
+                        width={160} 
+                        height={160} 
+                        debug={false}
+                        frameWidth={64}
+                        frameHeight={64}
+                        frameCount={2}
+                        frameRate={4}
+                        startFrame={4}
+                        onEmote={() => console.log('Character emoted!')}
+                      />
                     </div>
                   </div>
                   <div className="text-sm text-gray-800 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-                    Character coming soon
+                    Your Character
                   </div>
                 </div>
 
