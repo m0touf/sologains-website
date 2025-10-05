@@ -127,3 +127,4 @@ server/logs/
 server/logs/combined.log
 server/logs/error.log
 server/logs/error.log
+*.log
