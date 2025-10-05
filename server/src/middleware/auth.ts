@@ -26,3 +26,16 @@ export const authenticateToken = async (req: AuthenticatedRequest, res: Response
   next();
 };
 
+export const optionalAuth = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token) {
+    const payload = verifyAccessToken(token);
+    if (payload) {
+      req.user = payload;
+    }
+  }
+
+  next();
+};

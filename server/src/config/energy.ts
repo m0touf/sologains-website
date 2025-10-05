@@ -48,3 +48,16 @@ export function scaleXpReward(rawXp: number): number {
   return Math.max(1, Math.round(rawXp * XP_ENERGY_SCALE));
 }
 
+/**
+ * Get time until next energy point (in minutes)
+ * @param currentEnergy Current energy value
+ * @returns Minutes until next energy point
+ */
+export function getMinutesToNextEnergy(currentEnergy: number): number {
+  const fractionalPart = currentEnergy % 1;
+  if (fractionalPart === 0) {
+    return 12; // 60 minutes / 5 energy per hour = 12 minutes per energy
+  }
+  const energyNeeded = 1 - fractionalPart;
+  return Math.ceil(energyNeeded * 12); // 12 minutes per energy point
+}
