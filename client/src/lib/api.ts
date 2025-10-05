@@ -55,6 +55,13 @@ class ApiClient {
     });
   }
 
+  async changePassword(data: { currentPassword: string; newPassword: string }) {
+    return this.request('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   // Game endpoints
   async getSave() {
     return this.request('/save');

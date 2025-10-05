@@ -10,6 +10,7 @@ export interface JWTPayload {
 }
 
 export const hashPassword = async (password: string): Promise<string> => {
+  // Use 12 salt rounds for strong security (higher than default 10)
   return bcrypt.hash(password, 12);
 };
 

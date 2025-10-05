@@ -267,3 +267,54 @@
 {"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:19:21.209Z"}
 {"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:19:29.694Z"}
 {"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:19:29.695Z"}
+{"level":"info","message":"Database info: Starting a postgresql pool with 29 connections.","target":"quaint::pooled","timestamp":"2025-10-05T23:32:05.596Z"}
+{"level":"info","message":"Database connected successfully","timestamp":"2025-10-05T23:32:05.800Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:32:05.801Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:32:05.801Z"}
+{"level":"info","message":"Received SIGTERM, shutting down gracefully...","timestamp":"2025-10-05T23:32:23.970Z"}
+{"level":"info","message":"Database disconnected successfully","timestamp":"2025-10-05T23:32:23.970Z"}
+{"level":"info","message":"Database info: Starting a postgresql pool with 29 connections.","target":"quaint::pooled","timestamp":"2025-10-05T23:32:24.103Z"}
+{"level":"info","message":"Database connected successfully","timestamp":"2025-10-05T23:32:24.296Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:32:24.299Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:32:24.299Z"}
+{"level":"info","message":"Received SIGTERM, shutting down gracefully...","timestamp":"2025-10-05T23:32:37.158Z"}
+{"level":"info","message":"Database disconnected successfully","timestamp":"2025-10-05T23:32:37.158Z"}
+{"level":"info","message":"Database info: Starting a postgresql pool with 29 connections.","target":"quaint::pooled","timestamp":"2025-10-05T23:32:37.277Z"}
+{"level":"info","message":"Database connected successfully","timestamp":"2025-10-05T23:32:37.479Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:32:37.480Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:32:37.480Z"}
+{"level":"info","message":"Received SIGTERM, shutting down gracefully...","timestamp":"2025-10-05T23:32:47.610Z"}
+{"level":"info","message":"Database disconnected successfully","timestamp":"2025-10-05T23:32:47.611Z"}
+{"level":"info","message":"Database info: Starting a postgresql pool with 29 connections.","target":"quaint::pooled","timestamp":"2025-10-05T23:32:47.727Z"}
+{"level":"info","message":"Database connected successfully","timestamp":"2025-10-05T23:32:47.919Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:32:47.920Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:32:47.920Z"}
+{"level":"info","message":"Received SIGTERM, shutting down gracefully...","timestamp":"2025-10-05T23:33:13.719Z"}
+{"level":"info","message":"Database info: Starting a postgresql pool with 29 connections.","target":"quaint::pooled","timestamp":"2025-10-05T23:33:13.863Z"}
+{"level":"info","message":"Database connected successfully","timestamp":"2025-10-05T23:33:14.054Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:33:14.055Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:33:14.056Z"}
+{"ip":"::1","level":"error","message":"Error occurred: Too many requests, please try again later","method":"POST","stack":"Error: Too many requests, please try again later\n    at /Users/georget/Desktop/Personal Projects/sologains-website/server/src/middleware/rateLimiter.ts:24:13\n    at Layer.handleRequest (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/lib/layer.js:152:17)\n    at trimPrefix (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:342:13)\n    at /Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:297:9\n    at processParams (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:582:12)\n    at next (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:291:5)\n    at router.handle (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:186:3)\n    at router (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:60:12)\n    at Layer.handleRequest (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/lib/layer.js:152:17)\n    at trimPrefix (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:342:13)","statusCode":429,"timestamp":"2025-10-05T23:33:25.743Z","url":"/api/auth/login","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"error","message":"Error occurred: Too many requests, please try again later","method":"POST","stack":"Error: Too many requests, please try again later\n    at /Users/georget/Desktop/Personal Projects/sologains-website/server/src/middleware/rateLimiter.ts:24:13\n    at Layer.handleRequest (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/lib/layer.js:152:17)\n    at trimPrefix (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:342:13)\n    at /Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:297:9\n    at processParams (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:582:12)\n    at next (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:291:5)\n    at router.handle (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:186:3)\n    at router (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:60:12)\n    at Layer.handleRequest (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/lib/layer.js:152:17)\n    at trimPrefix (/Users/georget/Desktop/Personal Projects/sologains-website/server/node_modules/router/index.js:342:13)","statusCode":429,"timestamp":"2025-10-05T23:33:38.769Z","url":"/api/auth/login","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"}
+{"level":"info","message":"Received SIGTERM, shutting down gracefully...","timestamp":"2025-10-05T23:34:07.286Z"}
+{"level":"info","message":"Database disconnected successfully","timestamp":"2025-10-05T23:34:07.287Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:34:07.623Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:34:07.624Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:35:21.715Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:35:21.715Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:35:25.092Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:35:25.093Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:35:28.715Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:35:28.716Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:35:35.145Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:35:35.146Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:35:41.769Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:35:41.769Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:35:50.952Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:35:50.952Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:36:05.523Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:36:05.523Z"}
+{"level":"info","message":"Daily reset for user cmgeccizb0000uxv6xhektjhy: 2025-10-05 (was null)","timestamp":"2025-10-05T23:36:34.104Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-05T23:37:22.310Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-05T23:37:22.310Z"}
+{"level":"info","message":"Daily reset for user cmgecf8iy0000uxxlyo3hmi13: 2025-10-05 (was null)","timestamp":"2025-10-05T23:38:40.752Z"}
