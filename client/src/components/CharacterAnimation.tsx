@@ -71,12 +71,10 @@ export default function CharacterAnimation({
           
           // Add error handling
           this.load.on('loaderror', (file: any) => {
-            console.error('Failed to load sprite sheet:', file.key);
+            // Silently handle sprite loading errors
           });
         },
         create: function() {
-          console.log('Creating character animation with:', { frameWidth, frameHeight, frameCount, frameRate });
-          
           // Determine which sprite sheet to use based on startFrame
           let spriteKey = 'idle';
           if (startFrame >= 18) {
@@ -87,7 +85,6 @@ export default function CharacterAnimation({
           
           // Check if the texture loaded successfully
           if (!this.textures.exists(spriteKey)) {
-            console.error(`${spriteKey} texture not found!`);
             // Create a fallback colored rectangle
             this.add.rectangle(width / 2, height / 2, 32, 32, 0xff0000);
             this.add.text(width / 2, height / 2 + 20, 'Sprite Error', { 
@@ -101,20 +98,16 @@ export default function CharacterAnimation({
           const character = this.add.sprite(width / 2, height / 2, spriteKey);
           
           // Scale the character to fit the container
-          const scale = Math.min(width / frameWidth, height / frameHeight) * 0.9; // 0.7 for better centering
+          const scale = Math.min(width / frameWidth, height / frameHeight) * 0.9;
           character.setScale(scale);
           
           // Center the character more precisely
           character.setOrigin(0.5, 0.58);
           
-          console.log('Character scale:', scale);
-          console.log('Texture info:', this.textures.get(spriteKey));
-          
           // Debug mode: Show individual frames or play animation
           if (debug) {
             // Show frame 0 to check alignment
             character.setFrame(0);
-            console.log('Debug mode: Showing frame 0 only');
             
             // Add frame counter and controls for debugging
             this.add.text(10, 10, 'Frame: 0', { 
@@ -140,7 +133,6 @@ export default function CharacterAnimation({
               if (key >= '1' && key <= '8') {
                 const frameNum = parseInt(key) - 1;
                 character.setFrame(frameNum);
-                console.log(`Switched to frame ${frameNum}`);
               }
             });
           } else {
@@ -161,8 +153,6 @@ export default function CharacterAnimation({
               repeat: 0 // Play once
             });
             
-            console.log('Animation created, playing...');
-            
             // Play the animation
             character.play(animationKey);
             
@@ -170,12 +160,10 @@ export default function CharacterAnimation({
             if (spriteKey !== 'emote') {
               character.setInteractive();
               character.on('pointerdown', () => {
-                console.log('Character clicked, playing emote...');
                 character.play('emote');
                 
                 // Return to original animation after emote completes
                 character.once('animationcomplete', () => {
-                  console.log('Emote complete, returning to original animation...');
                   character.play(animationKey);
                 });
                 
@@ -186,11 +174,6 @@ export default function CharacterAnimation({
               });
             }
           }
-          
-          // Debug: Log animation info
-          character.on('animationcomplete', () => {
-            console.log('Animation cycle complete');
-          });
         }
       }
     };

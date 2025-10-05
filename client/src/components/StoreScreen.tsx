@@ -45,7 +45,7 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
       const items = await apiClient.getStoreItems() as any;
       setShopItems(items);
     } catch (error) {
-      console.error("Failed to load shop items:", error);
+      
     } finally {
       setLoading(false);
     }
@@ -100,10 +100,10 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
         setShopItems(updatedShopItems);
       }
 
-      console.log(`Purchased ${item.name}!`);
+      
       onPurchase?.(item.name, item.cost);
     } catch (error) {
-      console.error("Failed to purchase item:", error);
+      
     } finally {
       setPurchasing(null);
     }

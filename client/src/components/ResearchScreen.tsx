@@ -62,13 +62,10 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
   };
 
   const handleUpgrade = async (exerciseId: string, tier: number) => {
-    console.log(`Attempting to upgrade ${exerciseId} to tier ${tier}`);
     try {
       await upgradeExercise(exerciseId, tier);
-      console.log('Upgrade successful');
       // Upgrade successful - no popup needed
     } catch (error: any) {
-      console.error('Upgrade failed:', error);
       alert(`❌ Upgrade failed. ${error.message || 'Please try again.'}`);
     }
   };

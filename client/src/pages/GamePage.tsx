@@ -68,7 +68,7 @@ export default function GamePage() {
         setInitialized(true);
         setLoading(false);
       } catch (error) {
-        console.error("Failed to load game state:", error);
+        
         setLoading(false);
       }
     };
@@ -113,15 +113,15 @@ export default function GamePage() {
           .join(', ');
         
         if (statGainMessage) {
-          console.log(`Stat gains: ${statGainMessage}`);
+          
         }
         
         if (data.cashReward > 0) {
-          console.log(`💰 Cash reward: +$${data.cashReward}`);
+          
         }
         
         if (data.dailyStatGainsUsed >= data.maxDailyStatGains) {
-          console.log(`Daily stat gain limit reached for this exercise (${data.dailyStatGainsUsed}/${data.maxDailyStatGains})`);
+          
         }
       
       // Reload full game state to get updated proficiencies
@@ -156,7 +156,7 @@ export default function GamePage() {
         });
       }
     } catch (error) {
-      console.error("Network error:", error);
+      
     }
   };
 
@@ -169,7 +169,7 @@ export default function GamePage() {
     try {
       const data = await apiClient.resetEnergy() as any;
       setFromServer({ energy: data.energy, fractionalEnergy: data.fractionalEnergy, lastEnergyUpdate: new Date().toISOString() });
-      console.log("Energy reset to 100%");
+      
       
       // Reload full game state to ensure everything is in sync
       const save = await apiClient.getSave() as any;
@@ -192,7 +192,7 @@ export default function GamePage() {
         ResearchUpgrades: save.ResearchUpgrades || []
       });
     } catch (error) {
-      console.error("Network error:", error);
+      
     }
   };
 

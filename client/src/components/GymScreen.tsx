@@ -41,19 +41,16 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
     
     // Prevent rapid clicking (minimum 1 second between workouts)
     if (timeSinceLastWorkout < 1000) {
-      console.log('Workout cooldown active, please wait...');
       return;
     }
     
     // Prevent multiple simultaneous workouts
     if (isWorkingOut) {
-      console.log('Already working out, please wait...');
       return;
     }
     
     // Check energy
     if (energy < exercise.baseEnergy) {
-      console.log('Not enough energy');
       return;
     }
     
@@ -247,7 +244,7 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
                         frameCount={2}
                         frameRate={4}
                         startFrame={4}
-                        onEmote={() => console.log('Character emoted!')}
+                        onEmote={() => {}}
                       />
                     </div>
                   </div>

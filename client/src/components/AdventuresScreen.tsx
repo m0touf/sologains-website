@@ -24,20 +24,15 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     const loadAdventures = async () => {
       try {
         const token = useAuthStore.getState().token;
-        console.log('Token found:', !!token);
         if (!token) {
-          console.log('No token found, skipping adventure load');
           setLoading(false);
           return;
         }
 
-        console.log('Loading adventures...');
         const dailyAdventures = await apiClient.getDailyAdventures() as any;
-        console.log('Loaded adventures:', dailyAdventures.length);
-        console.log('Sample adventure:', dailyAdventures[0]);
         setAdventures(dailyAdventures);
       } catch (error) {
-        console.error("Failed to load adventures:", showUserError(error, "Loading adventures"));
+        // Handle error silently
       } finally {
         setLoading(false);
       }
@@ -97,7 +92,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       const save = await apiClient.getSave() as any;
       setDailyAttempts(save.dailyAdventureAttempts || 0);
     } catch (error) {
-      console.error('Error loading save data:', error);
+      
     }
   };
 
@@ -114,7 +109,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       );
       setInProgressAdventures(inProgress);
     } catch (error) {
-      console.error('Error loading in-progress adventures:', error);
+      
     }
   };
 
@@ -130,7 +125,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
       );
       setReadyToClaimAdventures(readyToClaim);
     } catch (error) {
-      console.error('Error loading ready to claim adventures:', error);
+      
     }
   };
 
@@ -146,7 +141,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
         loadReadyToClaimAdventures();
       }
     } catch (error) {
-      console.error('Error checking ready to claim adventures:', error);
+      
     }
   };
 
@@ -193,7 +188,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
         loadCurrentSave();
       }
     } catch (error) {
-      console.error('Error claiming adventure rewards:', error);
+      
     }
   };
 
@@ -229,7 +224,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
           
           setCompletedAdventures(completed);
         } catch (error) {
-          console.error('Error loading completed adventures:', error);
+          
         }
       };
 

@@ -205,11 +205,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   upgradeExercise: async (exerciseId, tier) => {
     const token = useAuthStore.getState().token;
     if (!token) {
-      console.error("No token found");
       return;
     }
-    
-    console.log(`Attempting upgrade: ${exerciseId} to tier ${tier}`);
     
     try {
       const res = await fetch("http://localhost:4000/api/upgrade-exercise", {
@@ -223,13 +220,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       
       if (!res.ok) {
         const error = await res.json();
-        console.error("Upgrade failed:", error);
         alert(`Upgrade failed: ${error.error}`);
         return;
       }
       
       const data = await res.json();
-      console.log("Upgrade successful:", data);
       const state = get();
       
       // Update proficiency points
@@ -257,23 +252,15 @@ export const useGameStore = create<GameState>((set, get) => ({
       });
       if (saveRes.ok) {
         const save = await saveRes.json();
-        console.log("Reloaded save data:", save);
-        console.log("ResearchUpgrades:", save.ResearchUpgrades);
-        console.log("ResearchUpgrades length:", save.ResearchUpgrades?.length);
         set({
           proficiencyPoints: save.proficiencyPoints,
           ResearchUpgrades: save.ResearchUpgrades || []
         });
-        console.log("Game state reloaded successfully");
-        // Test getResearchTier immediately after setting
-        const testTier = get().getResearchTier(exerciseId);
-        console.log(`Test getResearchTier for ${exerciseId}:`, testTier);
         
         // Reload available research to get updated benefits
         await get().loadAvailableResearch();
       }
     } catch (error) {
-      console.error("Network error:", error);
       alert(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   },
@@ -283,10 +270,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   loadAvailableResearch: async () => {
     try {
       const token = useAuthStore.getState().token;
-      if (!token) {
-        console.error("No token found");
-        return;
-      }
+    if (!token) {
+      return;
+    }
       
       const res = await fetch("http://localhost:4000/api/available-research", {
         headers: { 
@@ -296,14 +282,13 @@ export const useGameStore = create<GameState>((set, get) => ({
       });
       
       if (!res.ok) {
-        console.error("Failed to load available research");
         return;
       }
       
       const data = await res.json();
       set({ availableResearch: data });
     } catch (error) {
-      console.error("Error loading available research:", error);
+      // Handle error silently
     }
   },
   attemptAdventure: async (adventureId) => {
@@ -338,7 +323,6 @@ export const useGameStore = create<GameState>((set, get) => ({
 
       return data;
     } catch (error) {
-      console.error("Adventure attempt error:", error);
       alert(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   },

@@ -51,7 +51,7 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
           }
         }
       } catch {
-        console.error('Failed to update energy');
+        
       }
     }, 10000); // Update every 10 seconds
 
