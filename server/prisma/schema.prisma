@@ -52,19 +52,8 @@ model Save {
   @@index([lastEnergyUpdate])
 }
 
-model Workout {
-  id           BigInt   @id @default(autoincrement())
-  userId       String
-  exerciseId   String
-  type         String
-  reps         Int
-  energySpent  Int
-  xpGained     Int
-  statGains    Json
-  performedAt  DateTime @default(now())
-
-  @@index([userId, performedAt])
-}
+// Workout model removed for performance optimization
+// All necessary data is tracked in Save and ExerciseProficiency tables
 
 model Exercise {
   id              String   @id @default(cuid())

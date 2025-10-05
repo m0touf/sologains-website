@@ -2,6 +2,7 @@ import { useGameStore } from '../game/store';
 import { useAuthStore } from '../stores/authStore';
 import { useEffect, useState } from 'react';
 import LoadingScreen from './LoadingScreen';
+import CharacterAnimation from './CharacterAnimation';
 
 interface HomeScreenProps {
   onNavigate: (section: 'gym' | 'store' | 'adventures' | 'research') => void;
@@ -256,12 +257,21 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   CHARACTER
                 </h2>
                 <div className="mx-auto mb-4 flex items-center justify-center">
-                  <div className="w-64 h-64 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300" style={{ imageRendering: 'pixelated' }}>
-                    <div className="text-3xl text-amber-600 font-black" style={{ fontFamily: 'monospace', textShadow: '2px 2px 0px #000' }}>?</div>
+                  <div className="w-64 h-64 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+                    <CharacterAnimation 
+                      width={256} 
+                      height={256} 
+                      debug={false}
+                      frameWidth={64}
+                      frameHeight={64}
+                      frameCount={9}
+                      frameRate={6}
+                      startFrame={18}
+                    />
                   </div>
                 </div>
                 <div className="text-sm text-gray-800 font-bold mt-6" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
-                  Character coming soon
+                  Your Character
                 </div>
               </div>
 

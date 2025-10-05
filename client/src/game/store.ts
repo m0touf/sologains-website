@@ -235,6 +235,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       // Update proficiency points
       set({ proficiencyPoints: data.proficiencyPoints });
       
+      // Update max energy if provided
+      if (data.maxEnergy) {
+        set({ maxEnergy: data.maxEnergy });
+      }
+      
       // Update proficiency for the exercise
       const updatedProficiencies = state.ExerciseProficiencies.map(p => 
         p.exerciseId === exerciseId 
