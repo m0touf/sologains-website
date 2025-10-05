@@ -172,8 +172,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     return upgrade?.tier || 0;
   },
   upgradeExercise: async (exerciseId, tier) => {
-    const accessToken = useAuthStore.getState().accessToken;
-    if (!accessToken) {
+    const token = useAuthStore.getState().token;
+    if (!token) {
       console.error("No token found");
       return;
     }
@@ -184,7 +184,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       const res = await fetch("http://localhost:4000/api/upgrade-exercise", {
         method: "POST",
         headers: { 
-          "Authorization": `Bearer ${accessToken}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ exerciseId, tier })
@@ -215,7 +215,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       // Reload full game state to get updated research upgrades
       const saveRes = await fetch("http://localhost:4000/api/save", {
         headers: { 
-          "Authorization": `Bearer ${useAuthStore.getState().accessToken}`,
+          "Authorization": `Bearer ${useAuthStore.getState().token}`,
           "Content-Type": "application/json"
         }
       });
@@ -243,8 +243,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   setInitialized: (initialized) => set({ isInitialized: initialized }),
   attemptAdventure: async (adventureId) => {
     try {
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) {
+      const token = useAuthStore.getState().token;
+      if (!token) {
         alert("You must be logged in to attempt adventures");
         return;
       }
@@ -252,7 +252,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       const response = await fetch("http://localhost:4000/api/attempt-adventure", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${accessToken}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ adventureId }),

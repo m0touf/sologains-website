@@ -23,9 +23,9 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   useEffect(() => {
     const loadAdventures = async () => {
       try {
-        const accessToken = useAuthStore.getState().accessToken;
-        console.log('Token found:', !!accessToken);
-        if (!accessToken) {
+        const token = useAuthStore.getState().token;
+        console.log('Token found:', !!token);
+        if (!token) {
           console.log('No token found, skipping adventure load');
           setLoading(false);
           return;
@@ -91,8 +91,8 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   // Load current save data to get daily attempts
   const loadCurrentSave = async () => {
     try {
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) return;
+      const token = useAuthStore.getState().token;
+      if (!token) return;
 
       const save = await apiClient.getSave() as any;
       setDailyAttempts(save.dailyAdventureAttempts || 0);
@@ -104,8 +104,8 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   // Load in-progress adventures
   const loadInProgressAdventures = async () => {
     try {
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) return;
+      const token = useAuthStore.getState().token;
+      if (!token) return;
 
         const attempts = await apiClient.getAdventureHistory() as any;
       const inProgress = attempts.filter((attempt: any) => 
@@ -121,8 +121,8 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   // Load ready to claim adventures
   const loadReadyToClaimAdventures = async () => {
     try {
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) return;
+      const token = useAuthStore.getState().token;
+      if (!token) return;
 
         const attempts = await apiClient.getAdventureHistory() as any;
       const readyToClaim = attempts.filter((attempt: any) => 
@@ -137,8 +137,8 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   // Check for ready to claim adventures
   const checkReadyToClaimAdventures = async () => {
     try {
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) return;
+      const token = useAuthStore.getState().token;
+      if (!token) return;
 
       const result = await apiClient.checkAdventureCompletions() as any;
       if (result.readyAdventures && result.readyAdventures.length > 0) {
@@ -153,8 +153,8 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
   // Claim adventure rewards
   const handleClaimAdventureRewards = async (adventureAttemptId: string) => {
     try {
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) return;
+      const token = useAuthStore.getState().token;
+      if (!token) return;
 
         const result = await apiClient.claimAdventureRewards({ adventureAttemptId }) as any;
       if (result.success) {
@@ -214,8 +214,8 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     useEffect(() => {
       const loadCompletedAdventures = async () => {
         try {
-          const accessToken = useAuthStore.getState().accessToken;
-          if (!accessToken) return;
+          const token = useAuthStore.getState().token;
+          if (!token) return;
 
           const history = await apiClient.getAdventureHistory() as any;
           const completed = history

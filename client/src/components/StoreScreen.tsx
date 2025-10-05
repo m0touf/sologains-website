@@ -39,8 +39,8 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
   const loadShopItems = async () => {
     try {
       setLoading(true);
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) return;
+      const token = useAuthStore.getState().token;
+      if (!token) return;
 
       const items = await apiClient.getStoreItems() as any;
       setShopItems(items);
@@ -65,8 +65,8 @@ export default function StoreScreen({ onBack, onPurchase }: StoreScreenProps) {
   const handlePurchase = async (item: ShopItem) => {
     setPurchasing(item.id);
     try {
-      const accessToken = useAuthStore.getState().accessToken;
-      if (!accessToken) return;
+      const token = useAuthStore.getState().token;
+      if (!token) return;
 
       const result = await apiClient.purchaseItem({ itemId: item.id }) as any;
       

@@ -31,11 +31,11 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
     const interval = setInterval(async () => {
       // Fetch fresh energy data from server
       try {
-        const { accessToken } = useAuthStore.getState();
-        if (accessToken) {
+        const { token } = useAuthStore.getState();
+        if (token) {
           const response = await fetch('http://localhost:4000/api/save', {
             headers: {
-              'Authorization': `Bearer ${accessToken}`,
+              'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           });
@@ -70,9 +70,9 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
         }
       } else if (event.key.toLowerCase() === 'p') {
         event.preventDefault();
-        const { accessToken } = useAuthStore.getState();
+        const { token } = useAuthStore.getState();
         
-        if (!accessToken) {
+        if (!token) {
           showNotification('No authentication token found', 'error');
           return;
         }
@@ -85,7 +85,7 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
           const response = await fetch("http://localhost:4000/api/store/test-date", {
             method: 'POST',
             headers: { 
-              "Authorization": `Bearer ${accessToken}`,
+              "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json"
             },
             body: JSON.stringify({ date: dateStr })
@@ -108,9 +108,9 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
       } else if (event.key === ']') {
         event.preventDefault();
         // Auto-complete all in-progress adventures
-        const { accessToken } = useAuthStore.getState();
+        const { token } = useAuthStore.getState();
         
-        if (!accessToken) {
+        if (!token) {
           showNotification('No authentication token found', 'error');
           return;
         }
@@ -119,7 +119,7 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
           const response = await fetch("http://localhost:4000/api/store/auto-complete-adventures", {
             method: 'POST',
             headers: { 
-              "Authorization": `Bearer ${accessToken}`,
+              "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json"
             }
           });

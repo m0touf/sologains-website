@@ -1,26 +1,18 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
-import { 
-  hashPassword, 
-  verifyPassword, 
-  generateAccessToken, 
-  generateRefreshToken,
-  validatePasswordStrength,
-  verifyAccessToken,
-  verifyRefreshToken
-} from '../utils/auth';
+import { hashPassword, verifyPassword, generateToken } from '../utils/auth';
 
 const prisma = new PrismaClient();
 
 const signupSchema = z.object({
-  email: z.string().email().toLowerCase(),
-  username: z.string().min(3).max(20).regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
-  password: z.string().min(8).max(128),
+  email: z.string().email(),
+  username: z.string().min(3).max(20),
+  password: z.string().min(6),
 });
 
 const loginSchema = z.object({
-  email: z.string().email().toLowerCase(),
+  email: z.string().email(),
   password: z.string(),
 });
 
@@ -32,15 +24,6 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     const { email, username, password } = parse.data;
-
-    // Validate password strength
-    const passwordValidation = validatePasswordStrength(password);
-    if (!passwordValidation.isValid) {
-      return res.status(400).json({ 
-        error: 'Password does not meet requirements',
-        details: passwordValidation.errors
-      });
-    }
 
     // Check if user already exists
     const existingUser = await prisma.user.findFirst({
@@ -87,18 +70,15 @@ export const signup = async (req: Request, res: Response) => {
       return newUser;
     });
 
-    // Generate tokens
-    const accessToken = generateAccessToken({
+    // Generate token
+    const token = generateToken({
       userId: user.id,
       email: user.email,
       username: user.username,
     });
-    
-    const refreshToken = generateRefreshToken(user.id);
 
     res.status(201).json({
-      accessToken,
-      refreshToken,
+      token,
       user: {
         id: user.id,
         email: user.email,
@@ -135,18 +115,15 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Generate tokens
-    const accessToken = generateAccessToken({
+    // Generate token
+    const token = generateToken({
       userId: user.id,
       email: user.email,
       username: user.username,
     });
-    
-    const refreshToken = generateRefreshToken(user.id);
 
     res.json({
-      accessToken,
-      refreshToken,
+      token,
       user: {
         id: user.id,
         email: user.email,
@@ -155,61 +132,6 @@ export const login = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-export const refreshToken = async (req: Request, res: Response) => {
-  try {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-      return res.status(401).json({ error: 'Refresh token required' });
-    }
-
-    // Verify refresh token
-    const decoded = verifyRefreshToken(refreshToken);
-    if (!decoded) {
-      return res.status(401).json({ error: 'Invalid refresh token' });
-    }
-
-    // Find user
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-    });
-
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
-    }
-
-    // Generate new access token
-    const newAccessToken = generateAccessToken({
-      userId: user.id,
-      email: user.email,
-      username: user.username,
-    });
-
-    res.json({
-      accessToken: newAccessToken,
-      user: {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-      },
-    });
-  } catch (error) {
-    console.error('Refresh token error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-export const logout = async (req: Request, res: Response) => {
-  try {
-    // In a production app, you might want to blacklist the refresh token
-    // For now, we'll just return a success response
-    res.json({ message: 'Logged out successfully' });
-  } catch (error) {
-    console.error('Logout error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

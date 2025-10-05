@@ -40,7 +40,7 @@ export default function SignupPage() {
       }
 
       const data = await res.json();
-      useAuthStore.getState().login(data.accessToken, data.refreshToken, data.user);
+      useAuthStore.getState().login(data.token, data.user);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -57,9 +57,6 @@ export default function SignupPage() {
               SOLO GAINS
             </h1>
             <p className="text-gray-700 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>Start your fitness journey today!</p>
-            <div className="text-xs text-gray-600 mt-2" style={{ fontFamily: 'monospace' }}>
-              Password must be 8+ characters with uppercase, lowercase, number, and special character
-            </div>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -118,16 +115,6 @@ export default function SignupPage() {
             {error && (
               <div className="bg-red-200 border-2 border-red-500 rounded-lg p-3 ring-2 ring-red-300">
                 <p className="text-red-700 text-sm text-center font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>{error}</p>
-                {error.includes('Password does not meet requirements') && (
-                  <div className="mt-2 text-xs text-red-600">
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>At least 8 characters long</li>
-                      <li>Contains uppercase and lowercase letters</li>
-                      <li>Contains at least one number</li>
-                      <li>Contains at least one special character</li>
-                    </ul>
-                  </div>
-                )}
               </div>
             )}
             

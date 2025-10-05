@@ -22,12 +22,12 @@ export default function GamePage() {
     setLoading, 
     setInitialized 
   } = useGameStore();
-  const { accessToken } = useAuthStore();
+  const { token } = useAuthStore();
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
 
   // Load initial game state from server
   useEffect(() => {
-    if (!accessToken) return;
+    if (!token) return;
     
     const loadGameState = async () => {
       try {
@@ -73,7 +73,7 @@ export default function GamePage() {
       }
     };
     loadGameState();
-  }, [setFromServer, setExercises, setLoading, setInitialized, accessToken]);
+  }, [setFromServer, setExercises, setLoading, setInitialized, token]);
 
   const doWorkout = async (
     workoutType: 'strength' | 'endurance' | 'mobility', 
@@ -82,7 +82,7 @@ export default function GamePage() {
     intensity: 1|2|3|4|5 = 3,
     grade: "perfect"|"good"|"okay"|"miss" = "good"
   ) => {
-    if (!accessToken) return;
+    if (!token) return;
     
     try {
       const data = await apiClient.doWorkout({
@@ -122,7 +122,7 @@ export default function GamePage() {
       // Reload full game state to get updated proficiencies
       const saveRes = await fetch("http://localhost:4000/api/save", {
         headers: { 
-          "Authorization": `Bearer ${accessToken}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         }
       });
@@ -159,7 +159,7 @@ export default function GamePage() {
 
 
   const resetEnergy = async () => {
-    if (!accessToken) return;
+    if (!token) return;
     
     try {
       const data = await apiClient.resetEnergy() as any;
