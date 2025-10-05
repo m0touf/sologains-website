@@ -623,14 +623,14 @@ export const RESEARCH_BENEFITS: Record<string, ResearchTier[]> = {
     }
   ],
 
-  'jump_rope': [
+  'jumprope': [
     {
       tier: 1,
       cost: 2,
       requiredProficiency: 1000,
       benefits: [
         {
-          id: 'jump_rope_t1_xp',
+          id: 'jumprope_t1_xp',
           name: 'Rhythm Training',
           description: '+10% XP gain from all exercises',
           type: 'xp',
@@ -646,7 +646,7 @@ export const RESEARCH_BENEFITS: Record<string, ResearchTier[]> = {
       requiredProficiency: 1000,
       benefits: [
         {
-          id: 'jump_rope_t2_bonus',
+          id: 'jumprope_t2_bonus',
           name: 'Boxing Champion',
           description: '+18% bonus rewards from adventures',
           type: 'bonus',
@@ -662,7 +662,7 @@ export const RESEARCH_BENEFITS: Record<string, ResearchTier[]> = {
       requiredProficiency: 1000,
       benefits: [
         {
-          id: 'jump_rope_t3_adventure',
+          id: 'jumprope_t3_adventure',
           name: 'Agility Master',
           description: '+1 extra adventure attempt per day',
           type: 'adventure',
@@ -678,7 +678,7 @@ export const RESEARCH_BENEFITS: Record<string, ResearchTier[]> = {
       requiredProficiency: 1000,
       benefits: [
         {
-          id: 'jump_rope_t4_xp',
+          id: 'jumprope_t4_xp',
           name: 'Speed Rope',
           description: '+25% XP gain from all exercises',
           type: 'xp',

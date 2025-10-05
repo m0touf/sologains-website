@@ -8,8 +8,7 @@ import {
   getCappedEnergy, 
   scaleXpReward,
   levelFromXp,
-  calculateAdventureSuccessChance,
-  calculateAdventureRewards
+  getResearchBenefits
 } from '../config';
 
 const prisma = new PrismaClient();
@@ -137,9 +136,28 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
       }
     });
 
-    // Check daily adventure limit (2 per day)
-    if (save.dailyAdventureAttempts >= 2) {
-      return res.status(400).json({ error: 'You have reached your daily adventure limit (2 per day)' });
+    // Calculate daily adventure limit based on research benefits
+    let dailyLimit = 2; // Base limit
+    
+    // Get user's research upgrades to check for adventure attempt benefits
+    const researchUpgrades = await prisma.researchUpgrade.findMany({
+      where: { userId },
+      include: { Exercise: true }
+    });
+    
+    // Count adventure attempt benefits
+    for (const upgrade of researchUpgrades) {
+      const benefits = getResearchBenefits(upgrade.exerciseId, upgrade.tier);
+      for (const benefit of benefits) {
+        if (benefit.type === 'adventure') {
+          dailyLimit += benefit.value;
+        }
+      }
+    }
+    
+    // Check daily adventure limit
+    if (save.dailyAdventureAttempts >= dailyLimit) {
+      return res.status(400).json({ error: `You have reached your daily adventure limit (${dailyLimit} per day)` });
     }
 
       // Check if user has any in-progress adventures
@@ -197,29 +215,26 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
     // Calculate when adventure will complete
     const completionTime = new Date(currentTime.getTime() + adventureDurationMs);
     
-    // Calculate success chance using centralized function
-    const successChance = calculateAdventureSuccessChance(
-      { strength: save.strength, stamina: save.stamina, mobility: save.mobility },
-      { strengthReq: adventure.strengthReq, staminaReq: adventure.staminaReq }
-    );
-    
-    // Determine if adventure succeeds
-    const success = Math.random() < successChance;
+    // Adventures always succeed if requirements are met (no success/failure system)
+    const success = true;
 
-    // Calculate rewards using centralized function
-    const rewards = calculateAdventureRewards(
-      {
-        xpReward: adventure.xpReward,
-        cashReward: adventure.cashReward,
-        statReward: adventure.statReward as { strength: number, stamina: number, mobility: number }
-      },
-      success,
-      save.luckBoostPercent || 0
-    );
+    // Calculate base rewards (always full rewards since success is guaranteed)
+    const baseXpGained = scaleXpReward(adventure.xpReward);
+    const baseStatGains = adventure.statReward as { strength: number, stamina: number, mobility: number };
+    const baseCashGained = adventure.cashReward;
     
-    const xpGained = scaleXpReward(rewards.xpGained);
-    const statGains = rewards.statGains;
-    const cashGained = rewards.cashGained;
+    // Apply luck boost if applicable
+    let xpGained = baseXpGained;
+    let cashGained = baseCashGained;
+    let bonusReward = false;
+    
+    if (save.luckBoostPercent && save.luckBoostPercent > 0 && Math.random() < (save.luckBoostPercent / 100)) {
+      bonusReward = true;
+      xpGained = Math.round(baseXpGained * 1.5);
+      cashGained = Math.round(baseCashGained * 1.3);
+    }
+    
+    const statGains = baseStatGains;
 
     // Update user stats immediately (energy is spent now)
     const newEnergy = currentEnergy - adventure.energyCost;
@@ -389,20 +404,10 @@ export const claimAdventureRewards = async (req: AuthenticatedRequest, res: Resp
 
     const statGains = attempt.statGains as { strength: number, stamina: number, mobility: number };
     
-    // Apply luck boost using centralized function
-    const rewards = calculateAdventureRewards(
-      {
-        xpReward: attempt.xpGained,
-        cashReward: attempt.cashGained,
-        statReward: statGains
-      },
-      attempt.success,
-      save.luckBoostPercent || 0
-    );
-    
-    const xpGained = rewards.xpGained;
-    const cashGained = rewards.cashGained;
-    const bonusReward = rewards.bonusReward;
+    // Rewards are already calculated and stored in the attempt record
+    const xpGained = attempt.xpGained;
+    const cashGained = attempt.cashGained;
+    const bonusReward = false; // Bonus rewards are applied at attempt time, not claim time
 
     // Calculate new stats
     const newXp = save.xp + xpGained;
