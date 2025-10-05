@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
+import idleSprite from '../assets/spritesheets/idle.png';
+import emoteSprite from '../assets/spritesheets/emote.png';
+import walkSprite from '../assets/spritesheets/walk.png';
 
 interface CharacterAnimationProps {
   width?: number;
@@ -43,7 +46,7 @@ export default function CharacterAnimation({
         preload: function() {
           // Load the idle sprite sheet (128x256 with 32x32 frames = 4x8 grid)
           // Try different frame configurations to fix alignment
-          this.load.spritesheet('idle', '/spritesheets/idle.png', {
+          this.load.spritesheet('idle', idleSprite, {
             frameWidth: frameWidth,
             frameHeight: frameHeight,
             spacing: 0, // No spacing between frames
@@ -51,7 +54,7 @@ export default function CharacterAnimation({
           });
           
           // Load the emote sprite sheet (192x256 with 64x64 frames = 3x4 grid)
-          this.load.spritesheet('emote', '/spritesheets/emote.png', {
+          this.load.spritesheet('emote', emoteSprite, {
             frameWidth: frameWidth,
             frameHeight: frameHeight,
             spacing: 0,
@@ -59,7 +62,7 @@ export default function CharacterAnimation({
           });
           
           // Load the walk sprite sheet (576x256 with 64x64 frames = 9x4 grid)
-          this.load.spritesheet('walk', '/spritesheets/walk.png', {
+          this.load.spritesheet('walk', walkSprite, {
             frameWidth: frameWidth,
             frameHeight: frameHeight,
             spacing: 0,
