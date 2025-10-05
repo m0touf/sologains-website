@@ -444,18 +444,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             },
           });
 
-      // Create workout record
-      await tx.workout.create({
-        data: {
-          userId,
-          exerciseId: exercise.id,
-          type: exercise.category,
-          reps,
-          energySpent,
-          xpGained,
-          statGains: statGains,
-        },
-      });
+      // Workout record creation removed for performance optimization
+      // All necessary data is tracked in Save and ExerciseProficiency tables
 
       // Update or create exercise proficiency using new system
 
