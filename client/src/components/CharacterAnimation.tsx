@@ -70,7 +70,7 @@ export default function CharacterAnimation({
           });
           
           // Add error handling
-          this.load.on('loaderror', (file: any) => {
+          this.load.on('loaderror', (_file: any) => {
             // Silently handle sprite loading errors
           });
         },

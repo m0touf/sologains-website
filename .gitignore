@@ -114,6 +114,30 @@ build/
 dist/
 out/
 
+# TypeScript compiled files (but not source files)
+server/src/**/*.js
+server/src/**/*.js.map
+server/src/**/*.d.ts
+server/src/**/*.d.ts.map
+client/src/**/*.js
+client/src/**/*.js.map
+client/src/**/*.d.ts
+client/src/**/*.d.ts.map
+
+# Prisma build files
+server/prisma/**/*.js
+server/prisma/**/*.js.map
+server/prisma/**/*.d.ts
+server/prisma/**/*.d.ts.map
+
+# Client build files
+client/dist/
+client/build/
+
+# Server build files  
+server/dist/
+server/build/
+
 # Database
 *.db
 *.sqlite

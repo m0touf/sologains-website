@@ -3,7 +3,7 @@ import { useGameStore } from '../game/store';
 import { useAuthStore } from '../stores/authStore';
 import { apiClient } from '../lib/api';
 import { getTimeRemaining, getDifficultyColor, getDifficultyBg, getDifficultyIcon } from '../lib/utils';
-import { showUserError } from '../lib/errorHandler';
+// import { showUserError } from '../lib/errorHandler';
 import LoadingScreen from './LoadingScreen';
 
 interface AdventuresScreenProps {

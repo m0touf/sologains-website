@@ -209,7 +209,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
     
     try {
-      const res = await fetch("http://localhost:4000/api/upgrade-exercise", {
+      const res = await fetch("http://localhost:4000/api/research/upgrade", {
         method: "POST",
         headers: { 
           "Authorization": `Bearer ${token}`,
@@ -274,7 +274,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       return;
     }
       
-      const res = await fetch("http://localhost:4000/api/available-research", {
+      const res = await fetch("http://localhost:4000/api/research/available", {
         headers: { 
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"

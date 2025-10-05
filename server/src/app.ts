@@ -4,6 +4,8 @@ import cors from "cors";
 import authRoutes from "./routes/auth";
 import gameRoutes from "./routes/game";
 import storeRoutes from "./routes/store";
+import exerciseRoutes from "./routes/exercises";
+import researchRoutes from "./routes/research";
 
 const app = express();
 
@@ -23,5 +25,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api", gameRoutes);
 app.use("/api/store", storeRoutes);
+app.use("/api/exercises", exerciseRoutes);
+app.use("/api/research", researchRoutes);
 
 export default app;

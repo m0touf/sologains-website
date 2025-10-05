@@ -85,18 +85,22 @@ class ApiClient {
   }
 
   async getProficiencies() {
-    return this.request('/proficiencies');
+    return this.request('/exercises/proficiencies');
   }
 
   async upgradeExercise(data: { exerciseId: string; tier: number }) {
-    return this.request('/upgrade-exercise', {
+    return this.request('/research/upgrade', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async getResearchUpgrades() {
-    return this.request('/research-upgrades');
+    return this.request('/research/upgrades');
+  }
+
+  async getAvailableResearch() {
+    return this.request('/research/available');
   }
 
   // Adventure endpoints

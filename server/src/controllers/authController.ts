@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { hashPassword, verifyPassword, generateToken } from '../utils/auth';
+import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
 
