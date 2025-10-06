@@ -324,6 +324,18 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                 <div className="text-sm text-gray-800 font-bold mt-6" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #fff' }}>
                   Your Character
                 </div>
+                
+                {/* Daily Reset Timer */}
+                <div className="mt-4 pt-4 border-t-2 border-black">
+                  <div className="text-center">
+                    <div className="text-xs font-bold text-gray-700 mb-2" style={{ fontFamily: 'monospace' }}>
+                      DAILY RESET IN
+                    </div>
+                    <div className="text-lg font-black text-orange-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                      {timeUntilReset}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Stats Section */}
@@ -414,18 +426,6 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT ENERGY</span>
                     <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
-                  </div>
-                </div>
-
-                {/* Daily Reset Timer */}
-                <div className="mt-6 pt-4 border-t-2 border-black">
-                  <div className="text-center">
-                    <div className="text-xs font-bold text-gray-700 mb-2" style={{ fontFamily: 'monospace' }}>
-                      DAILY RESET IN
-                    </div>
-                    <div className="text-lg font-black text-orange-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                      {timeUntilReset}
-                    </div>
                   </div>
                 </div>
               </div>
