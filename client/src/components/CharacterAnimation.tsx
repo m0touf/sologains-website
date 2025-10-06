@@ -41,7 +41,7 @@ export default function CharacterAnimation({
       width: width,
       height: height,
       parent: containerRef.current,
-      backgroundColor: '#fef3c7', // Light amber background to match theme
+      backgroundColor: 'fffbeb', // Light amber background to match theme
       scene: {
         preload: function() {
           // Load the idle sprite sheet (128x256 with 32x32 frames = 4x8 grid)

@@ -234,7 +234,7 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
                     CHARACTER
                   </h3>
                   <div className="mx-auto mb-4 flex items-center justify-center">
-                    <div className="w-40 h-40 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+                    <div className="w-40 h-40 bg-gradient-to-br from-amber-100 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
                       <CharacterAnimation 
                         width={160} 
                         height={160} 

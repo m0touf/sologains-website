@@ -257,7 +257,7 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   CHARACTER
                 </h2>
                 <div className="mx-auto mb-4 flex items-center justify-center">
-                  <div className="w-64 h-64 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+                  <div className="w-64 h-64 bg-gradient-to-br from-amber-100 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
                     <CharacterAnimation 
                       width={256} 
                       height={256} 
