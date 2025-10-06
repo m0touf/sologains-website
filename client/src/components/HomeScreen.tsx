@@ -4,6 +4,34 @@ import { useEffect, useState } from 'react';
 import LoadingScreen from './LoadingScreen';
 import CharacterAnimation from './CharacterAnimation';
 
+// Utility function to calculate next daily reset time
+const getNextResetTime = () => {
+  // Create a date for next 11:00 AM UTC
+  const nextResetUTC = new Date();
+  nextResetUTC.setUTCHours(11, 0, 0, 0);
+  
+  // If it's already past 11 AM UTC today, set for tomorrow
+  if (nextResetUTC.getTime() <= Date.now()) {
+    nextResetUTC.setUTCDate(nextResetUTC.getUTCDate() + 1);
+  }
+  
+  return nextResetUTC;
+};
+
+// Utility function to format time remaining
+const formatTimeRemaining = (targetTime: Date) => {
+  const now = new Date();
+  const diff = targetTime.getTime() - now.getTime();
+  
+  if (diff <= 0) return "00:00:00";
+  
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+};
+
 interface HomeScreenProps {
   onNavigate: (section: 'gym' | 'store' | 'adventures' | 'research') => void;
   onResetEnergy: () => void;
@@ -15,6 +43,8 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
   const xpProgress = getXpProgress();
   const energyRegenProgress = getEnergyRegenProgress();
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [timeUntilReset, setTimeUntilReset] = useState<string>('00:00:00');
+  const [nextResetTime, setNextResetTime] = useState<Date>(getNextResetTime());
   
   // Show loading if not initialized
   if (!isInitialized) {
@@ -57,6 +87,27 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
 
     return () => clearInterval(interval);
   }, []);
+
+  // Timer to update daily reset countdown every second
+  useEffect(() => {
+    const updateTimer = () => {
+      const timeRemaining = formatTimeRemaining(nextResetTime);
+      setTimeUntilReset(timeRemaining);
+      
+      // If reset time has passed, calculate next reset
+      if (timeRemaining === "00:00:00") {
+        setNextResetTime(getNextResetTime());
+      }
+    };
+
+    // Update immediately
+    updateTimer();
+    
+    // Then update every second
+    const interval = setInterval(updateTimer, 1000);
+    
+    return () => clearInterval(interval);
+  }, [nextResetTime]);
 
   // Key bindings
   useEffect(() => {
@@ -363,6 +414,18 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT ENERGY</span>
                     <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
+                  </div>
+                </div>
+
+                {/* Daily Reset Timer */}
+                <div className="mt-6 pt-4 border-t-2 border-black">
+                  <div className="text-center">
+                    <div className="text-xs font-bold text-gray-700 mb-2" style={{ fontFamily: 'monospace' }}>
+                      DAILY RESET IN
+                    </div>
+                    <div className="text-lg font-black text-orange-600" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
+                      {timeUntilReset}
+                    </div>
                   </div>
                 </div>
               </div>

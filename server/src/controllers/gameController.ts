@@ -102,14 +102,31 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     // Check if we need to reset daily limits (automatic daily reset)
-    const today = new Date();
-    const todayKey = today.toISOString().slice(0, 10);
-    const lastDailyResetDate = save.lastDailyReset ? new Date(save.lastDailyReset).toISOString().slice(0, 10) : null;
+    // Create a date for 11:00 AM UTC today
+    const today11AMUTC = new Date();
+    today11AMUTC.setUTCHours(11, 0, 0, 0);
     
+    // Determine which day's reset we should be on
+    const currentDayKey = now >= today11AMUTC ? 
+      now.toISOString().slice(0, 10) : // After 11 AM UTC, use today
+      new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10); // Before 11 AM UTC, use yesterday
     
-    // If it's a new day, automatically reset daily limits and rotate content
-    if (todayKey !== lastDailyResetDate) {
-      logger.info(`Daily reset for user ${userId}: ${todayKey} (was ${lastDailyResetDate})`);
+    const lastDailyResetDate = save.lastDailyReset ? 
+      new Date(save.lastDailyReset).toISOString().slice(0, 10) : null;
+    
+    // Only reset if it's actually a new day (not just a new request)
+    // Add extra logging to debug timezone issues
+    if (currentDayKey !== lastDailyResetDate) {
+      logger.info(`Daily reset triggered for user ${userId}:`);
+      logger.info(`  Current date: ${currentDayKey} (UTC)`);
+      logger.info(`  Last reset: ${lastDailyResetDate} (UTC)`);
+      logger.info(`  Server time: ${now.toISOString()}`);
+      logger.info(`  Last reset time: ${save.lastDailyReset?.toISOString()}`);
+      
+      // Double-check: only proceed if we haven't already reset today
+      if (save.lastDailyReset && new Date(save.lastDailyReset).toISOString().slice(0, 10) === currentDayKey) {
+        logger.warn(`Daily reset already performed today for user ${userId}, skipping`);
+      } else {
       
       // Reset daily stat gains for all exercises
       await prisma.exerciseProficiency.updateMany({
@@ -117,7 +134,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
         data: {
           dailyStatGains: 0,
           dailyEnergy: 0,
-          lastDailyReset: today
+          lastDailyReset: now
         }
       });
 
@@ -134,16 +151,16 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
         await prisma.save.update({
           where: { userId },
           data: {
-            lastDailyReset: today,
+            lastDailyReset: now,
             shopRotationSeed: newShopRotationSeed,
-            lastShopRotation: today,
+            lastShopRotation: now,
             adventureRotationSeed: newAdventureRotationSeed,
-            lastAdventureRotation: today,
+            lastAdventureRotation: now,
             dailyAdventureAttempts: 0,
-            lastAdventureReset: today
+            lastAdventureReset: now
           }
         });
-
+      }
     }
     
     
@@ -318,11 +335,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     const currentDailyEnergy = existingProficiency?.dailyEnergy || 0;
     const currentDailyStatGains = existingProficiency?.dailyStatGains || 0;
     
-    // Check if we need to reset daily tracking
-    const todayKey = now.toISOString().slice(0, 10);
-    const lastReset = existingProficiency?.lastDailyReset ? new Date(existingProficiency.lastDailyReset) : null;
-    const lastResetKey = lastReset ? lastReset.toISOString().slice(0, 10) : null;
-    const shouldResetDaily = todayKey !== lastResetKey;
+    // Daily reset is now handled centrally in getSave function
+    // No need for exercise-specific reset logic here
     
     // Check if user has exceeded daily stat gain limit (5 per exercise)
     const maxDailyStatGains = 5;
@@ -374,11 +388,10 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     const ppGained = newLevel > oldLevel ? calculateProficiencyPointsGained(newLevel) : 0;
     const newProficiencyPoints = save.proficiencyPoints + ppGained;
     
-    // Calculate base proficiency gain (use reset daily values if needed)
-    const dailyEnergyForCalc = shouldResetDaily ? 0 : currentDailyEnergy;
+    // Calculate base proficiency gain (daily reset is handled centrally)
     let proficiencyResult = calculateProficiencyGain(
       currentProficiency,
-      dailyEnergyForCalc,
+      currentDailyEnergy,
       energySpent,
       intensity,
       grade
@@ -396,10 +409,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       proficiencyResult.newProficiency = Math.min(1000, currentProficiency + proficiencyResult.proficiencyGained);
     }
 
-    // Calculate new daily stat gains for response
-    const newDailyStatGains = shouldResetDaily ? 
-      (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0) :
-      (currentDailyStatGains + (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0));
+    // Calculate new daily stat gains for response (daily reset handled centrally)
+    const newDailyStatGains = currentDailyStatGains + (statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0);
 
     const result = await prisma.$transaction(async (tx) => {
       // CRITICAL: Re-check energy inside transaction to prevent race conditions
@@ -451,9 +462,9 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           where: { id: existingProficiency.id },
           data: {
             proficiency: proficiencyResult.newProficiency,
-            dailyEnergy: shouldResetDaily ? energySpent : proficiencyResult.newDailyEnergy,
+            dailyEnergy: proficiencyResult.newDailyEnergy,
             dailyStatGains: newDailyStatGains,
-            lastDailyReset: shouldResetDaily ? now : existingProficiency.lastDailyReset,
+            lastDailyReset: existingProficiency.lastDailyReset, // Keep existing reset date
             totalReps: existingProficiency.totalReps + reps,
           }
         });
