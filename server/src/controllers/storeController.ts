@@ -67,8 +67,8 @@ export const getShopItems = async (req: AuthenticatedRequest, res: Response) => 
     // Use user's shop rotation seed for consistent rotation
     const seed = save.shopRotationSeed || 12345;
     
-    // Get today's date for filtering purchased special items
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+    // Get current reset count for filtering purchased items
+    const currentResetCount = save.dailyResetCount || 0;
     
     // Get all shop items grouped by category
     const allItems = await prisma.shopItem.findMany({
@@ -77,7 +77,7 @@ export const getShopItems = async (req: AuthenticatedRequest, res: Response) => 
         DailyPurchases: {
           where: {
             userId,
-            purchaseDate: today
+            purchaseResetCount: currentResetCount
           }
         }
       },
@@ -189,19 +189,19 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
     }
 
     // Check daily purchase limits for all categories
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
     const dailyLimits = {
       energy_boosters: 3,
       supplements: 3,
       special_items: 1
     };
 
-    // Count how many times this specific item has been purchased today
+    // Count how many times this specific item has been purchased in current reset cycle
+    const currentResetCount = save.dailyResetCount || 0;
     const itemPurchasesToday = await prisma.dailyPurchase.count({
       where: {
         userId,
         shopItemId: itemId,
-        purchaseDate: today
+        purchaseResetCount: currentResetCount
       }
     });
 
@@ -309,7 +309,7 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
         data: {
           userId,
           shopItemId: itemId,
-          purchaseDate: today
+          purchaseResetCount: currentResetCount
         }
       });
     });
@@ -343,7 +343,9 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
 // Simulate a new day (reset energy, daily limits, rotate content)
 export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    logger.info('simulateNewDay function called');
     const userId = req.user?.userId;
+    logger.info(`simulateNewDay called for user ${userId}`);
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -364,6 +366,8 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
       return res.status(404).json({ error: 'Save data not found' });
     }
 
+    logger.info(`Current dailyAdventureAttempts before reset: ${save.dailyAdventureAttempts}`);
+
     // Reset energy to max
     const maxEnergy = save.maxEnergy || 150;
     
@@ -382,6 +386,61 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
       where: { userId }
     });
 
+    // Auto-claim any unclaimed adventures from the previous day
+    const unclaimedAdventures = await prisma.adventureAttempt.findMany({
+      where: {
+        userId,
+        status: "ready_to_claim"
+      },
+      include: {
+        Adventure: true
+      }
+    });
+
+    // Auto-claim rewards for unclaimed adventures
+    for (const attempt of unclaimedAdventures) {
+      const adventure = attempt.Adventure;
+      
+      // Calculate rewards
+      const xpReward = adventure.xpReward;
+      const cashReward = adventure.cashReward;
+      const statRewards = adventure.statReward as { strength: number; stamina: number; mobility: number };
+      
+      // Update save with rewards
+      await prisma.save.update({
+        where: { userId },
+        data: {
+          xp: save.xp + xpReward,
+          cash: save.cash + cashReward,
+          strength: save.strength + (statRewards?.strength || 0),
+          stamina: save.stamina + (statRewards?.stamina || 0),
+          mobility: save.mobility + (statRewards?.mobility || 0)
+        }
+      });
+      
+      // Mark adventure as completed
+      await prisma.adventureAttempt.update({
+        where: { id: attempt.id },
+        data: {
+          status: "completed",
+          completedAt: new Date(),
+          completedResetCount: (save.dailyResetCount || 0) + 1
+        }
+      });
+    }
+
+    // Invalidate any in-progress adventures from the previous day
+    await prisma.adventureAttempt.updateMany({
+      where: {
+        userId,
+        status: "in_progress"
+      },
+      data: {
+        status: "failed",
+        completedAt: new Date()
+      }
+    });
+
     // Generate new rotation seed for shop and adventures
     const newShopRotationSeed = Math.floor(Math.random() * 1000000);
     const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);
@@ -395,7 +454,10 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
         shopRotationSeed: newShopRotationSeed,
         lastShopRotation: new Date(),
         adventureRotationSeed: newAdventureRotationSeed,
-        lastAdventureRotation: new Date()
+        lastAdventureRotation: new Date(),
+        dailyAdventureAttempts: 0,
+        lastAdventureReset: new Date(),
+        dailyResetCount: (save.dailyResetCount || 0) + 1
       },
       include: {
         ExerciseProficiencies: true,
@@ -431,26 +493,53 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
       return res.status(400).json({ error: 'Date required' });
     }
 
-
     // Parse the date and set it as the last reset date
     const testDate = new Date(date);
     if (isNaN(testDate.getTime())) {
       return res.status(400).json({ error: 'Invalid date format' });
     }
 
-    // Update the save with the test date as last daily reset
-    await prisma.save.update({
+    // Actually perform the daily reset (not just set the date)
+    const now = new Date();
+    
+    // Reset daily stat gains for all exercises
+    await prisma.exerciseProficiency.updateMany({
       where: { userId },
       data: {
-        lastDailyReset: testDate
+        dailyStatGains: 0,
+        dailyEnergy: 0,
+        lastDailyReset: now
       }
     });
 
+    // Clear daily purchases (shop items become available again)
+    await prisma.dailyPurchase.deleteMany({
+      where: { userId }
+    });
+
+    // Generate new rotation seeds for shop and adventures
+    const newShopRotationSeed = Math.floor(Math.random() * 1000000);
+    const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);
+
+    // Update save data with new rotation seeds and test date
+    await prisma.save.update({
+      where: { userId },
+      data: {
+        lastDailyReset: testDate, // Set to the test date
+        shopRotationSeed: newShopRotationSeed,
+        lastShopRotation: now,
+        adventureRotationSeed: newAdventureRotationSeed,
+        lastAdventureRotation: now,
+        dailyAdventureAttempts: 0,
+        lastAdventureReset: now
+      }
+    });
 
     res.json({
       success: true,
-      message: `Set test date to ${testDate.toISOString().slice(0, 10)}`,
-      testDate: testDate.toISOString().slice(0, 10)
+      message: `Daily reset performed and test date set to ${testDate.toISOString().slice(0, 10)}`,
+      testDate: testDate.toISOString().slice(0, 10),
+      dailyLimitsReset: true
     });
 
   } catch (error) {

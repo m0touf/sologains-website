@@ -10,13 +10,20 @@ interface GymScreenProps {
 
 
 export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
-  const { energy, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, permanentEnergy, maxEnergy, isInitialized, stats } = useGameStore();
+  const { energy, xp, exercises, getProficiency, getDailyStatGains, getXpProgress, getCurrentLevel, proficiencyPoints, permanentEnergy, maxEnergy, isInitialized, stats, ExerciseProficiencies } = useGameStore();
+  // ExerciseProficiencies is used to subscribe to changes for re-rendering when daily limits update
+  // This ensures the component re-renders when daily limits change
   const [selectedCategory, setSelectedCategory] = useState<'strength' | 'endurance' | 'mobility'>('strength');
   const [isWorkingOut, setIsWorkingOut] = useState<string | null>(null);
   const lastWorkoutTime = useRef<number>(0);
   
   // Show loading if not initialized
   if (!isInitialized) {
+    return <LoadingScreen />;
+  }
+  
+  // Ensure we have proficiency data loaded
+  if (ExerciseProficiencies.length === 0 && exercises.length > 0) {
     return <LoadingScreen />;
   }
   
@@ -234,7 +241,7 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
                     CHARACTER
                   </h3>
                   <div className="mx-auto mb-4 flex items-center justify-center">
-                    <div className="w-40 h-40 bg-gradient-to-br from-amber-100 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+                    <div className="w-40 h-40 bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center shadow-lg ring-3 ring-black rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
                       <CharacterAnimation 
                         width={160} 
                         height={160} 

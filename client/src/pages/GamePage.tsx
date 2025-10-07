@@ -16,7 +16,9 @@ export default function GamePage() {
     spendEnergy, 
     setFromServer, 
     setExercises, 
+    setAdventures,
     addProficiencyPoints, 
+    updateExerciseProficiency,
     isLoading, 
     isInitialized, 
     setLoading, 
@@ -33,11 +35,12 @@ export default function GamePage() {
       try {
         setLoading(true);
         
-        // Load save data and exercises in parallel
-        const [save, exercises] = await Promise.all([
+        // Load save data, exercises, and adventures in parallel
+        const [save, exercises, adventures] = await Promise.all([
           apiClient.getSave(),
-          apiClient.getExercises()
-        ]) as [any, any];
+          apiClient.getExercises(),
+          apiClient.getDailyAdventures()
+        ]) as [any, any, any];
 
         // Set all data at once to prevent flashing
         setFromServer({
@@ -58,11 +61,13 @@ export default function GamePage() {
           luckBoostPercent: save.luckBoostPercent || 0,
           lastEnergyUpdate: save.lastEnergyUpdate,
           fractionalEnergy: save.fractionalEnergy,
+          dailyAdventureAttempts: save.dailyAdventureAttempts || 0,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
           ResearchUpgrades: save.ResearchUpgrades || []
         });
 
         setExercises(exercises);
+        setAdventures(adventures);
         
         // Mark as initialized and stop loading
         setInitialized(true);
@@ -93,15 +98,20 @@ export default function GamePage() {
         grade
       }) as any;
       
-      spendEnergy(data.energySpent);
       if (data.ppGained > 0) {
         addProficiencyPoints(data.ppGained);
       }
+      
+      // Update the specific exercise proficiency
+      updateExerciseProficiency(exerciseId, data.proficiencyGained, data.dailyStatGainsUsed);
+      
+      // Update all the data from the workout response
       setFromServer({ 
         stats: data.statsAfter,
         level: data.levelAfter,
         xp: data.xpAfter,
         proficiencyPoints: data.proficiencyPointsAfter,
+        energy: data.energyAfter, // Use the energyAfter value directly
         fractionalEnergy: data.fractionalEnergyAfter,
         cash: data.cashReward ? useGameStore.getState().cash + data.cashReward : useGameStore.getState().cash
       });
@@ -124,37 +134,8 @@ export default function GamePage() {
           
         }
       
-      // Reload full game state to get updated proficiencies
-      const saveRes = await fetch("http://localhost:4000/api/save", {
-        headers: { 
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-      if (saveRes.ok) {
-        const save = await saveRes.json() as any;
-        setFromServer({
-          energy: save.energy,
-          xp: save.xp,
-          level: save.level,
-          stats: {
-            strength: save.strength,
-            stamina: save.stamina,
-            mobility: save.mobility,
-            level: save.level,
-            xp: save.xp
-          },
-          proficiencyPoints: save.proficiencyPoints,
-          cash: save.cash,
-          permanentEnergy: save.permanentEnergy || 0,
-          maxEnergy: save.maxEnergy,
-          luckBoostPercent: save.luckBoostPercent || 0,
-          lastEnergyUpdate: save.lastEnergyUpdate,
-          fractionalEnergy: save.fractionalEnergy,
-          ExerciseProficiencies: save.ExerciseProficiencies || [],
-          ResearchUpgrades: save.ResearchUpgrades || []
-        });
-      }
+      // Only reload proficiencies, not the entire save state to avoid energy conflicts
+      // The workout response already contains all the necessary data
     } catch (error) {
       
     }
@@ -168,29 +149,13 @@ export default function GamePage() {
     
     try {
       const data = await apiClient.resetEnergy() as any;
-      setFromServer({ energy: data.energy, fractionalEnergy: data.fractionalEnergy, lastEnergyUpdate: new Date().toISOString() });
-      
-      
-      // Reload full game state to ensure everything is in sync
-      const save = await apiClient.getSave() as any;
-      setFromServer({
-        energy: save.energy,
-        xp: save.xp,
-        level: save.level,
-        stats: {
-          strength: save.strength,
-          stamina: save.stamina,
-          mobility: save.mobility,
-          level: save.level,
-          xp: save.xp
-        },
-        proficiencyPoints: save.proficiencyPoints,
-        cash: save.cash,
-        permanentEnergy: save.permanentEnergy || 0,
-        luckBoostPercent: save.luckBoostPercent || 0,
-        ExerciseProficiencies: save.ExerciseProficiencies || [],
-        ResearchUpgrades: save.ResearchUpgrades || []
+      setFromServer({ 
+        energy: data.energy, 
+        fractionalEnergy: data.fractionalEnergy, 
+        lastEnergyUpdate: new Date().toISOString() 
       });
+      
+      // No need to reload full game state - the reset response contains the correct data
     } catch (error) {
       
     }

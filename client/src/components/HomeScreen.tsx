@@ -112,7 +112,8 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
   // Key bindings
   useEffect(() => {
     const handleKeyPress = async (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === 'o') {
+      console.log('Key pressed:', event.key);
+      if (event.key === '1') {
         event.preventDefault();
         try {
           await onResetEnergy();
@@ -120,8 +121,15 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
         } catch {
           showNotification('Failed to reset energy', 'error');
         }
-      } else if (event.key.toLowerCase() === 'p') {
+      } else if (event.key === '2') {
         event.preventDefault();
+        // Add 1000 cash
+        const currentCash = useGameStore.getState().cash;
+        useGameStore.getState().setFromServer({ cash: currentCash + 1000 });
+        showNotification('Added 1000 cash!', 'success');
+      } else if (event.key === '3') {
+        event.preventDefault();
+        console.log('Cheat code 3 pressed - triggering daily reset');
         const { token } = useAuthStore.getState();
         
         if (!token) {
@@ -129,35 +137,87 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
           return;
         }
 
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const dateStr = tomorrow.toISOString().slice(0, 10);
-        
         try {
-          const response = await fetch("http://localhost:4000/api/store/test-date", {
+          console.log('Calling /api/store/new-day endpoint');
+          // Use the new-day endpoint instead of test-date
+          const response = await fetch("http://localhost:4000/api/store/new-day", {
             method: 'POST',
             headers: { 
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ date: dateStr })
+            body: JSON.stringify({ simulate: true })
           });
           
+          console.log('Response received:', response.status, response.statusText);
+          
           if (response.ok) {
-            showNotification(`Test date set to tomorrow (${dateStr})`, 'success');
-          } else {
-            showNotification('Failed to set test date', 'error');
+            const responseData = await response.json();
+            console.log('Response data:', responseData);
+            showNotification('Daily reset performed successfully!', 'success');
+            
+            // Refresh the game state to update daily limits and adventures
+            console.log('Fetching updated save data...');
+            const saveResponse = await fetch("http://localhost:4000/api/save", {
+              headers: { 
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+              }
+            });
+            
+            if (saveResponse.ok) {
+              const save = await saveResponse.json();
+              console.log('Save data received:', save.dailyAdventureAttempts);
+              useGameStore.getState().setFromServer({
+                energy: save.energy,
+                xp: save.xp,
+                level: save.level,
+                stats: {
+                  strength: save.strength,
+                  stamina: save.stamina,
+                  mobility: save.mobility,
+                  level: save.level,
+                  xp: save.xp
+                },
+                proficiencyPoints: save.proficiencyPoints,
+                cash: save.cash,
+                permanentEnergy: save.permanentEnergy || 0,
+                maxEnergy: save.maxEnergy,
+                luckBoostPercent: save.luckBoostPercent || 0,
+                lastEnergyUpdate: save.lastEnergyUpdate,
+                fractionalEnergy: save.fractionalEnergy,
+                dailyAdventureAttempts: save.dailyAdventureAttempts || 0,
+                ExerciseProficiencies: save.ExerciseProficiencies || [],
+                ResearchUpgrades: save.ResearchUpgrades || []
+              });
+              
+              // Refresh adventures after daily reset
+              try {
+                const adventuresResponse = await fetch("http://localhost:4000/api/adventures", {
+                  headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                  }
+                });
+                
+                if (adventuresResponse.ok) {
+                  const adventures = await adventuresResponse.json();
+                  useGameStore.getState().setAdventures(adventures);
+                }
+              } catch {
+                // Handle adventure refresh error silently
+              }
+            }
+            } else {
+              const errorText = await response.text();
+              console.log('Error response:', errorText);
+              showNotification('Failed to perform daily reset', 'error');
+            }
+          } catch (error) {
+            console.log('Network error:', error);
+            showNotification('Network error', 'error');
           }
-        } catch {
-          showNotification('Network error', 'error');
-        }
-      } else if (event.key === '[') {
-        event.preventDefault();
-        // Add 1000 cash
-        const currentCash = useGameStore.getState().cash;
-        useGameStore.getState().setFromServer({ cash: currentCash + 1000 });
-        showNotification('Added 1000 cash!', 'success');
-      } else if (event.key === ']') {
+      } else if (event.key === '4') {
         event.preventDefault();
         // Auto-complete all in-progress adventures
         const { token } = useAuthStore.getState();

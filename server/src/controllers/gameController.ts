@@ -90,6 +90,14 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
     // For regeneration, cap at 150. Overcap only applies to manual actions
     const cappedEnergy = getCappedEnergy(currentEnergy);
     
+    // Add debugging for energy calculation
+    logger.info(`Energy calculation for user ${userId}:`);
+    logger.info(`  Previous energy: ${save.energy}`);
+    logger.info(`  Current energy: ${currentEnergy}`);
+    logger.info(`  Capped energy: ${cappedEnergy}`);
+    logger.info(`  Last update: ${save.lastEnergyUpdate}`);
+    logger.info(`  Current time: ${now}`);
+    
     // Update energy in database if it changed
     if (Math.abs(currentEnergy - save.energy) > 0.01) {
       await prisma.save.update({
@@ -99,6 +107,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
           lastEnergyUpdate: now
         }
       });
+      logger.info(`  Energy updated in database to: ${currentEnergy}`);
     }
 
     // Check if we need to reset daily limits (automatic daily reset)
@@ -124,28 +133,83 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       logger.info(`  Last reset time: ${save.lastDailyReset?.toISOString()}`);
       
       // Double-check: only proceed if we haven't already reset today
+      // This check should happen BEFORE any reset logic to prevent multiple resets
       if (save.lastDailyReset && new Date(save.lastDailyReset).toISOString().slice(0, 10) === currentDayKey) {
         logger.warn(`Daily reset already performed today for user ${userId}, skipping`);
       } else {
-      
-      // Reset daily stat gains for all exercises
-      await prisma.exerciseProficiency.updateMany({
-        where: { userId },
-        data: {
-          dailyStatGains: 0,
-          dailyEnergy: 0,
-          lastDailyReset: now
+        // Reset daily stat gains for all exercises
+        await prisma.exerciseProficiency.updateMany({
+          where: { userId },
+          data: {
+            dailyStatGains: 0,
+            dailyEnergy: 0,
+            lastDailyReset: now
+          }
+        });
+
+        // Clear daily purchases (shop items become available again)
+        await prisma.dailyPurchase.deleteMany({
+          where: { userId }
+        });
+
+        // Auto-claim any unclaimed adventures from the previous day
+        const unclaimedAdventures = await prisma.adventureAttempt.findMany({
+          where: {
+            userId,
+            status: "ready_to_claim"
+          },
+          include: {
+            Adventure: true
+          }
+        });
+
+        // Auto-claim rewards for unclaimed adventures
+        for (const attempt of unclaimedAdventures) {
+          const adventure = attempt.Adventure;
+          
+          // Calculate rewards
+          const xpReward = adventure.xpReward;
+          const cashReward = adventure.cashReward;
+          const statRewards = adventure.statReward as { strength: number; stamina: number; mobility: number };
+          
+          // Update save with rewards
+          await prisma.save.update({
+            where: { userId },
+            data: {
+              xp: save.xp + xpReward,
+              cash: save.cash + cashReward,
+              strength: save.strength + (statRewards?.strength || 0),
+              stamina: save.stamina + (statRewards?.stamina || 0),
+              mobility: save.mobility + (statRewards?.mobility || 0)
+            }
+          });
+          
+          // Mark adventure as completed
+          await prisma.adventureAttempt.update({
+            where: { id: attempt.id },
+            data: {
+              status: "completed",
+              completedAt: now,
+              completedResetCount: (save.dailyResetCount || 0) + 1
+            }
+          });
         }
-      });
 
-      // Clear daily purchases (shop items become available again)
-      await prisma.dailyPurchase.deleteMany({
-        where: { userId }
-      });
+        // Invalidate any in-progress adventures from the previous day
+        await prisma.adventureAttempt.updateMany({
+          where: {
+            userId,
+            status: "in_progress"
+          },
+          data: {
+            status: "failed",
+            completedAt: now
+          }
+        });
 
-      // Generate new rotation seeds for shop and adventures
-      const newShopRotationSeed = Math.floor(Math.random() * 1000000);
-      const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);
+        // Generate new rotation seeds for shop and adventures
+        const newShopRotationSeed = Math.floor(Math.random() * 1000000);
+        const newAdventureRotationSeed = Math.floor(Math.random() * 1000000);
 
         // Update save data with new rotation seeds (no energy reset)
         await prisma.save.update({
@@ -157,7 +221,8 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
             adventureRotationSeed: newAdventureRotationSeed,
             lastAdventureRotation: now,
             dailyAdventureAttempts: 0,
-            lastAdventureReset: now
+            lastAdventureReset: now,
+            dailyResetCount: (save.dailyResetCount || 0) + 1
           }
         });
       }
@@ -180,6 +245,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
         }
       }
     });
+    
     
     res.json({
       ...updatedSave,
@@ -250,6 +316,13 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     const reps = parse.data.reps || exercise.baseReps;
     let energySpent = exercise.baseEnergy;
     let xpGained = exercise.baseXp;
+    
+    // Add debugging for exercise energy calculation
+    logger.info(`Workout energy calculation for ${exercise.name}:`);
+    logger.info(`  Base energy cost: ${exercise.baseEnergy}`);
+    logger.info(`  Current energy: ${energy}`);
+    logger.info(`  Max energy: ${save.maxEnergy || (150 + (save.permanentEnergy || 0))}`);
+    logger.info(`  Energy before workout: ${currentEnergy} (capped: ${cappedEnergy})`);
 
     // Apply research tier effects
     const researchUpgrade = save.ResearchUpgrades.find(ru => ru.exerciseId === exercise.id);
@@ -271,7 +344,9 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           case 'energy':
             // Reduce energy cost
             if (benefit.isPercentage) {
+              const oldEnergySpent = energySpent;
               energySpent = Math.round(energySpent * (1 - benefit.value / 100));
+              logger.info(`  Energy reduction: ${oldEnergySpent} -> ${energySpent} (${benefit.value}% reduction)`);
             }
             break;
           case 'xp':
@@ -433,6 +508,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       
       // Recalculate final energy using transaction values
       const finalNewEnergy = transactionEnergy - energySpent;
+      
+      logger.info(`  Energy after workout: ${finalNewEnergy} (spent: ${energySpent})`);
       
       // Update save
       await tx.save.update({

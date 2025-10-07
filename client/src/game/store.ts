@@ -90,6 +90,7 @@ type Save = {
   luckBoostPercent: number;
   lastEnergyUpdate?: string;
   fractionalEnergy?: number; // Store the actual fractional energy from server
+  dailyAdventureAttempts?: number; // Track daily adventure attempts
   ExerciseProficiencies: ExerciseProficiency[];
   ResearchUpgrades: ResearchUpgrade[];
 };
@@ -106,6 +107,7 @@ type GameState = Save & {
   addProficiencyPoints: (pp: number) => void;
   setFromServer: (s: Partial<Save>) => void;
   setExercises: (exercises: Exercise[]) => void;
+  updateExerciseProficiency: (exerciseId: string, proficiencyGained: number, dailyStatGainsUsed: number) => void;
   getProficiency: (exerciseId: string) => number;
   getDailyStatGains: (exerciseId: string) => number;
   getXpProgress: () => { current: number; needed: number; progress: number };
@@ -129,6 +131,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   cash: 0,
   permanentEnergy: 0,
   luckBoostPercent: 0,
+  dailyAdventureAttempts: 0,
   ExerciseProficiencies: [],
   ResearchUpgrades: [],
   exercises: [],
@@ -148,6 +151,17 @@ export const useGameStore = create<GameState>((set, get) => ({
   addProficiencyPoints: (pp) => set((s) => ({ proficiencyPoints: s.proficiencyPoints + pp })),
   setFromServer: (partial) => set((s) => ({ ...s, ...partial })),
   setExercises: (exercises) => set({ exercises }),
+  updateExerciseProficiency: (exerciseId, proficiencyGained, dailyStatGainsUsed) => set((s) => ({
+    ExerciseProficiencies: s.ExerciseProficiencies.map(p => 
+      p.exerciseId === exerciseId 
+        ? { 
+            ...p, 
+            proficiency: Math.min(1000, p.proficiency + proficiencyGained),
+            dailyStatGains: dailyStatGainsUsed
+          }
+        : p
+    )
+  })),
   getProficiency: (exerciseId) => {
     const state = get();
     const proficiency = state.ExerciseProficiencies.find(p => p.exerciseId === exerciseId);

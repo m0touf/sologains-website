@@ -172,16 +172,13 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
         return res.status(400).json({ error: 'You already have an adventure in progress. Complete it before starting another.' });
       }
 
-      // Check if user has already attempted this adventure today
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      // Check if user has already attempted this adventure in the current reset cycle
+      const currentResetCount = save.dailyResetCount || 0;
       const existingAttempt = await prisma.adventureAttempt.findFirst({
         where: {
           userId,
           adventureId: adventure.id,
-          attemptedAt: {
-            gte: today
-          }
+          completedResetCount: currentResetCount
         }
       });
 
@@ -271,6 +268,7 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
       success: true,
       energyAfter: Math.floor(newEnergy),
       adventureStarted: true,
+      dailyAdventureAttempts: save.dailyAdventureAttempts + 1,
       completionTime: completionTime.toISOString(),
       durationMinutes: adventure.durationMinutes,
       message: `Adventure started! It will complete at ${completionTime.toLocaleTimeString()}`,
@@ -438,7 +436,8 @@ export const claimAdventureRewards = async (req: AuthenticatedRequest, res: Resp
       await tx.adventureAttempt.update({
         where: { id: attempt.id },
         data: {
-          status: "completed"
+          status: "completed",
+          completedResetCount: save.dailyResetCount || 0
         }
       });
 

@@ -40,6 +40,7 @@ model Save {
   lastAdventureRotation DateTime?
   dailyAdventureAttempts Int   @default(0) // how many adventures attempted today
   lastAdventureReset   DateTime? // when daily adventure count was last reset
+  dailyResetCount      Int     @default(0) // counter for daily resets
   xpBoostRemaining    Int     @default(0) // remaining XP boost workouts
   proficiencyBoostRemaining Int @default(0) // remaining proficiency boost workouts
   luckBoostPercent    Int     @default(0) // luck boost percentage
@@ -149,6 +150,7 @@ model AdventureAttempt {
   cashGained  Int      @default(0)
   attemptedAt DateTime @default(now())
   completedAt DateTime? // when the adventure was completed (null if still in progress)
+  completedResetCount Int? // the daily reset count when this adventure was completed
   status      String   @default("in_progress") // "in_progress", "ready_to_claim", "completed", "failed"
   
   Save        Save     @relation(fields: [userId], references: [userId], onDelete: Cascade)
@@ -185,11 +187,11 @@ model DailyPurchase {
   userId      String
   shopItemId  String
   purchasedAt DateTime @default(now())
-  purchaseDate String  // YYYY-MM-DD format for easy daily filtering
+  purchaseResetCount Int // the daily reset count when this item was purchased
   
   User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   ShopItem    ShopItem @relation(fields: [shopItemId], references: [id], onDelete: Cascade)
   
-  @@index([userId, purchaseDate])
-  @@index([userId, shopItemId, purchaseDate])
+  @@index([userId, purchaseResetCount])
+  @@index([userId, shopItemId, purchaseResetCount])
 }
