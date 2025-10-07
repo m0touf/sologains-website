@@ -38,7 +38,7 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProps) {
-  const { energy, xp, stats, getXpProgress, getCurrentLevel, getEnergyRegenProgress, proficiencyPoints, cash, permanentEnergy, maxEnergy, luckBoostPercent, fractionalEnergy, isInitialized } = useGameStore();
+  const { energy, xp, stats, getXpProgress, getCurrentLevel, getEnergyRegenProgress, proficiencyPoints, cash, permanentEnergy, maxEnergy, luckBoostPercent, permanentXpGain, fractionalEnergy, isInitialized } = useGameStore();
   const level = getCurrentLevel();
   const xpProgress = getXpProgress();
   const energyRegenProgress = getEnergyRegenProgress();
@@ -486,6 +486,11 @@ export default function HomeScreen({ onNavigate, onResetEnergy }: HomeScreenProp
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT ENERGY</span>
                     <span className="text-purple-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>+{permanentEnergy}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-bold text-sm" style={{ fontFamily: 'monospace' }}>PERMANENT XP GAIN</span>
+                    <span className="text-indigo-500 font-black text-sm" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>{permanentXpGain || 0}%</span>
                   </div>
                 </div>
               </div>

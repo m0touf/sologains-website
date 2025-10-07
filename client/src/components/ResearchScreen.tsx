@@ -29,6 +29,7 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
       loadResearch();
     }
   }, [isInitialized, loadAvailableResearch]);
+
   
   // Show loading if not initialized or research is still loading
   if (!isInitialized || isLoadingResearch) {

@@ -75,11 +75,17 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
     try {
       const result = await apiClient.attemptAdventure({ adventureId }) as any;
       if (result) {
-        // Always update the daily attempts counter
+        // Update the daily attempts counter and energy
+        const updates: any = {};
         if (result.dailyAdventureAttempts !== undefined) {
-          setFromServer({
-            dailyAdventureAttempts: result.dailyAdventureAttempts
-          });
+          updates.dailyAdventureAttempts = result.dailyAdventureAttempts;
+        }
+        if (result.energyAfter !== undefined) {
+          updates.energy = result.energyAfter;
+        }
+        
+        if (Object.keys(updates).length > 0) {
+          setFromServer(updates);
         }
         
         if (result.adventureStarted) {

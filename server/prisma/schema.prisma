@@ -44,6 +44,7 @@ model Save {
   xpBoostRemaining    Int     @default(0) // remaining XP boost workouts
   proficiencyBoostRemaining Int @default(0) // remaining proficiency boost workouts
   luckBoostPercent    Int     @default(0) // luck boost percentage
+  permanentXpGain     Int     @default(0) // permanent XP gain percentage from research
   updatedAt            DateTime @updatedAt
   ExerciseProficiencies ExerciseProficiency[]
   ResearchUpgrades     ResearchUpgrade[]

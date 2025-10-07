@@ -59,6 +59,7 @@ export default function GamePage() {
           permanentEnergy: save.permanentEnergy || 0,
           maxEnergy: save.maxEnergy,
           luckBoostPercent: save.luckBoostPercent || 0,
+          permanentXpGain: save.permanentXpGain || 0,
           lastEnergyUpdate: save.lastEnergyUpdate,
           fractionalEnergy: save.fractionalEnergy,
           dailyAdventureAttempts: save.dailyAdventureAttempts || 0,

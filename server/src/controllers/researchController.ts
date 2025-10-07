@@ -40,19 +40,41 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       return res.status(404).json({ error: 'Save not found' });
     }
 
+    // Get exercise and proficiency information first
+    const exercise = await prisma.exercise.findUnique({
+      where: { id: exerciseId }
+    });
+
+    if (!exercise) {
+      return res.status(404).json({ error: 'Exercise not found' });
+    }
+
+    // Convert exercise name to research benefits key
+    let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    
+    // Handle special cases where research benefits use different keys
+    const specialMappings: Record<string, string> = {
+      'jump_rope': 'jumprope',
+      'pullups': 'pull_ups',
+      'hip_flexor_stretch': 'hip_flexor',
+      'shoulder_roll_stretch': 'shoulder_roll',
+      'cat_cow_stretch': 'cat_cow',
+    };
+    
+    nameKey = specialMappings[nameKey] || nameKey;
+
     // Check if user has enough proficiency points
-    const tierCost = getTierCost(exerciseId, tier);
+    const tierCost = getTierCost(nameKey, tier);
     if (save.proficiencyPoints < tierCost) {
       return res.status(400).json({ error: 'Not enough proficiency points' });
     }
 
     // Check if tier can be unlocked
     const currentTier = save.ResearchUpgrades.find(ru => ru.exerciseId === exerciseId)?.tier || 0;
-    if (!canUnlockTier(exerciseId, tier, currentTier)) {
+    if (!canUnlockTier(nameKey, tier, currentTier)) {
       return res.status(400).json({ error: 'Cannot unlock this tier' });
     }
 
-    // Get exercise proficiency
     const proficiency = await prisma.exerciseProficiency.findUnique({
       where: {
         userId_exerciseId: {
@@ -86,11 +108,49 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
         }
       });
 
-      // Deduct proficiency points
+      // Calculate total permanent XP gain from all research upgrades
+      const allResearchUpgrades = await tx.researchUpgrade.findMany({
+        where: { userId },
+        include: {
+          Exercise: true
+        }
+      });
+
+      // Calculate current permanent XP gain from ALL research upgrades
+      let totalPermanentXpGain = 0;
+      for (const upgrade of allResearchUpgrades) {
+        if (upgrade.Exercise) {
+          let nameKey = upgrade.Exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+          const specialMappings: Record<string, string> = {
+            'jump_rope': 'jumprope',
+            'pullups': 'pull_ups',
+            'hip_flexor_stretch': 'hip_flexor',
+            'shoulder_roll_stretch': 'shoulder_roll',
+            'cat_cow_stretch': 'cat_cow',
+          };
+          nameKey = specialMappings[nameKey] || nameKey;
+          
+          const benefits = getAllResearchBenefits(nameKey);
+          const tierBenefits = benefits.find(t => t.tier === upgrade.tier);
+          if (tierBenefits) {
+            for (const benefit of tierBenefits.benefits) {
+              if (benefit.type === 'xp' && benefit.isPercentage) {
+                totalPermanentXpGain += benefit.value;
+                logger.info(`  Adding ${benefit.value}% XP gain from ${upgrade.Exercise.name} T${upgrade.tier} (${benefit.name})`);
+              }
+            }
+          }
+        }
+      }
+      
+      logger.info(`  Total permanent XP gain: ${totalPermanentXpGain}%`);
+
+      // Deduct proficiency points and update permanent XP gain
       const updatedSave = await tx.save.update({
         where: { userId },
         data: {
-          proficiencyPoints: save.proficiencyPoints - tierCost
+          proficiencyPoints: save.proficiencyPoints - tierCost,
+          permanentXpGain: totalPermanentXpGain
         }
       });
 
@@ -98,8 +158,8 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     });
 
     // Get research benefits for response
-    const benefits = getResearchBenefits(exerciseId, tier);
-    const allBenefits = getAllResearchBenefits(exerciseId);
+    const benefits = getResearchBenefits(nameKey, tier);
+    const allBenefits = getAllResearchBenefits(nameKey);
 
     res.json({
       success: true,
@@ -158,7 +218,31 @@ export const getAvailableResearch = async (req: AuthenticatedRequest, res: Respo
     const availableResearch = exercises.map(exercise => {
       const proficiency = exercise.ExerciseProficiencies[0];
       const currentTier = upgradeMap.get(exercise.id) || 0;
-      const allBenefits = getAllResearchBenefits(exercise.id);
+      // Use exercise name for research benefits lookup
+      let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+      
+      // Handle special cases where research benefits use different keys
+      const specialMappings: Record<string, string> = {
+        'jump_rope': 'jumprope',
+        'pullups': 'pull_ups',
+        'hip_flexor_stretch': 'hip_flexor',
+        'shoulder_roll_stretch': 'shoulder_roll',
+        'cat_cow_stretch': 'cat_cow',
+      };
+      
+      nameKey = specialMappings[nameKey] || nameKey;
+      const allBenefits = getAllResearchBenefits(nameKey);
+
+      // Debug logging
+      logger.info(`Research for ${exercise.name}:`, {
+        exerciseId: exercise.id,
+        nameKey,
+        proficiency: proficiency?.proficiency || 0,
+        currentTier,
+        benefitsCount: allBenefits.length,
+        benefits: allBenefits.map(t => ({ tier: t.tier, benefitsCount: t.benefits.length }))
+      });
+      
 
       return {
         exercise: {
@@ -172,7 +256,7 @@ export const getAvailableResearch = async (req: AuthenticatedRequest, res: Respo
           tier: tier.tier,
           cost: tier.cost,
           benefits: tier.benefits,
-          canUnlock: canUnlockTier(exercise.id, tier.tier, currentTier) && 
+          canUnlock: canUnlockTier(nameKey, tier.tier, currentTier) && 
                      (proficiency?.proficiency || 0) >= 1000
         }))
       };

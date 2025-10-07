@@ -62,6 +62,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
           proficiencyPoints: 0,
           cash: 500,
           maxEnergy: 150.0,
+          permanentXpGain: 0,
         },
         include: {
           ExerciseProficiencies: {
@@ -330,7 +331,21 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     
     if (researchUpgrade) {
       // Get research benefits for this exercise and tier
-      const benefits = getResearchBenefits(exercise.id, researchUpgrade.tier);
+      let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+      
+      // Handle special cases where research benefits use different keys
+      const specialMappings: Record<string, string> = {
+        'jump_rope': 'jumprope',
+        'pullups': 'pull_ups',
+        'hip_flexor_stretch': 'hip_flexor',
+        'shoulder_roll_stretch': 'shoulder_roll',
+        'cat_cow_stretch': 'cat_cow',
+      };
+      
+      nameKey = specialMappings[nameKey] || nameKey;
+      const benefits = getResearchBenefits(nameKey, researchUpgrade.tier);
+      
+      logger.info(`  Research benefits for ${exercise.name} (tier ${researchUpgrade.tier}):`, benefits);
       
       // Apply each benefit
       for (const benefit of benefits) {
@@ -350,10 +365,8 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             }
             break;
           case 'xp':
-            // Increase XP gain
-            if (benefit.isPercentage) {
-              xpGained = Math.round(xpGained * (1 + benefit.value / 100));
-            }
+            // XP benefits are now handled by permanent XP gain system
+            // Individual exercise XP benefits are applied through the permanent XP gain stat
             break;
           case 'stat':
             // Stat bonuses are handled separately in stat gain logic
@@ -377,6 +390,13 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     // Apply XP boost if available
     if (save.xpBoostRemaining && save.xpBoostRemaining > 0) {
       xpGained = Math.round(xpGained * 2); // Double XP
+    }
+
+    // Apply permanent XP gain bonus
+    if (save.permanentXpGain && save.permanentXpGain > 0) {
+      const oldXp = xpGained;
+      xpGained = Math.round(xpGained * (1 + save.permanentXpGain / 100));
+      logger.info(`  Permanent XP gain: ${oldXp} -> ${xpGained} (+${save.permanentXpGain}% bonus)`);
     }
 
     // Scale XP to maintain 6-month pacing with new energy system
@@ -429,7 +449,19 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       
       // Apply research benefits for stat gains
       if (researchUpgrade) {
-        const benefits = getResearchBenefits(exercise.id, researchUpgrade.tier);
+        let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+        
+        // Handle special cases where research benefits use different keys
+        const specialMappings: Record<string, string> = {
+          'jump_rope': 'jumprope',
+          'pullups': 'pull_ups',
+          'hip_flexor_stretch': 'hip_flexor',
+          'shoulder_roll_stretch': 'shoulder_roll',
+          'cat_cow_stretch': 'cat_cow',
+        };
+        
+        nameKey = specialMappings[nameKey] || nameKey;
+        const benefits = getResearchBenefits(nameKey, researchUpgrade.tier);
         for (const benefit of benefits) {
           if (benefit.type === 'stat') {
             // Add extra stat gain from research

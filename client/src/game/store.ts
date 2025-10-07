@@ -88,6 +88,7 @@ type Save = {
   permanentEnergy: number;
   maxEnergy?: number;
   luckBoostPercent: number;
+  permanentXpGain: number;
   lastEnergyUpdate?: string;
   fractionalEnergy?: number; // Store the actual fractional energy from server
   dailyAdventureAttempts?: number; // Track daily adventure attempts
@@ -131,6 +132,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   cash: 0,
   permanentEnergy: 0,
   luckBoostPercent: 0,
+  permanentXpGain: 0,
   dailyAdventureAttempts: 0,
   ExerciseProficiencies: [],
   ResearchUpgrades: [],

@@ -1,7 +1,7 @@
-// Curve params (baseline 8-month plan)
+// Curve params (balanced progression plan)
 export const LMAX = 100;
-export const BASE_REQ = 20;           // A
-export const GROWTH = 1.048900;       // r (≈ 8 months at 200 XP/day)
+export const BASE_REQ = 80;           // A
+export const GROWTH = 1.032;          // r (≈ 9 months at 200 XP/day)
 
 // XP to go from level n -> n+1
 export function xpToNext(n: number) {

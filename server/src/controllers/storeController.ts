@@ -9,8 +9,8 @@ const prisma = new PrismaClient();
 
 // XP Curve System (same as gameController)
 const LMAX = 100;
-const BASE_REQ = 20;
-const GROWTH = 1.048900;
+const BASE_REQ = 80;
+const GROWTH = 1.032;
 
 function xpToNext(n: number) {
   return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
