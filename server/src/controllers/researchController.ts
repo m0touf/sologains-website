@@ -126,7 +126,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
             'pullups': 'pull_ups',
             'hip_flexor_stretch': 'hip_flexor',
             'shoulder_roll_stretch': 'shoulder_roll',
-            'cat_cow_stretch': 'cat_cow',
+            'catcow_stretch': 'cat_cow',
           };
           nameKey = specialMappings[nameKey] || nameKey;
           
@@ -145,12 +145,42 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       
       logger.info(`  Total permanent XP gain: ${totalPermanentXpGain}%`);
 
-      // Deduct proficiency points and update permanent XP gain
+      // Calculate total daily adventure limit from ALL research upgrades
+      let totalDailyAdventureLimit = 2; // Base limit
+      for (const upgrade of allResearchUpgrades) {
+        if (upgrade.Exercise) {
+          let nameKey = upgrade.Exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+          const specialMappings: Record<string, string> = {
+            'jump_rope': 'jumprope',
+            'pullups': 'pull_ups',
+            'hip_flexor_stretch': 'hip_flexor',
+            'shoulder_roll_stretch': 'shoulder_roll',
+            'catcow_stretch': 'cat_cow',
+          };
+          nameKey = specialMappings[nameKey] || nameKey;
+          
+          const benefits = getAllResearchBenefits(nameKey);
+          const tierBenefits = benefits.find(t => t.tier === upgrade.tier);
+          if (tierBenefits) {
+            for (const benefit of tierBenefits.benefits) {
+              if (benefit.type === 'adventure') {
+                totalDailyAdventureLimit += benefit.value;
+                logger.info(`  Adding ${benefit.value} adventure attempts from ${upgrade.Exercise.name} T${upgrade.tier} (${benefit.name})`);
+              }
+            }
+          }
+        }
+      }
+      
+      logger.info(`  Total daily adventure limit: ${totalDailyAdventureLimit}`);
+
+      // Deduct proficiency points and update permanent XP gain and daily adventure limit
       const updatedSave = await tx.save.update({
         where: { userId },
         data: {
           proficiencyPoints: save.proficiencyPoints - tierCost,
-          permanentXpGain: totalPermanentXpGain
+          permanentXpGain: totalPermanentXpGain,
+          dailyAdventureLimit: totalDailyAdventureLimit
         }
       });
 
@@ -227,7 +257,7 @@ export const getAvailableResearch = async (req: AuthenticatedRequest, res: Respo
         'pullups': 'pull_ups',
         'hip_flexor_stretch': 'hip_flexor',
         'shoulder_roll_stretch': 'shoulder_roll',
-        'cat_cow_stretch': 'cat_cow',
+        'catcow_stretch': 'cat_cow',
       };
       
       nameKey = specialMappings[nameKey] || nameKey;

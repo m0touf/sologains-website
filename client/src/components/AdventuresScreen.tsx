@@ -11,7 +11,7 @@ interface AdventuresScreenProps {
 }
 
 export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
-  const { energy, adventures, setAdventures, setFromServer, maxEnergy, permanentEnergy, dailyAdventureAttempts } = useGameStore();
+  const { energy, adventures, setAdventures, setFromServer, maxEnergy, permanentEnergy, dailyAdventureAttempts, dailyAdventureLimit } = useGameStore();
   const [loading, setLoading] = useState(true);
   const [attempting, setAttempting] = useState<string | null>(null);
   const [inProgressAdventures, setInProgressAdventures] = useState<any[]>([]);
@@ -314,12 +314,12 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                     DAILY ADVENTURES
                   </div>
                   <div className="text-red-200 font-black text-xl" style={{ fontFamily: 'monospace', textShadow: '1px 1px 0px #000' }}>
-                    {dailyAdventureAttempts || 0}/2 attempts used today
+                    {dailyAdventureAttempts || 0}/{dailyAdventureLimit || 2} attempts used today
                   </div>
                   <div className="w-full bg-red-700 rounded-full h-2 mt-2">
                     <div 
                       className="bg-red-300 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${((dailyAdventureAttempts || 0) / 2) * 100}%` }}
+                      style={{ width: `${((dailyAdventureAttempts || 0) / (dailyAdventureLimit || 2)) * 100}%` }}
                     ></div>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                         ? 'bg-yellow-300 border-yellow-500 cursor-pointer hover:brightness-110'
                         : isAdventureInProgress(adventure.id)
                           ? `${getDifficultyBg(adventure.difficulty)} cursor-default`
-                          : adventure.canAttempt && energy >= adventure.energyCost && (dailyAdventureAttempts || 0) < 2 && inProgressAdventures.length === 0
+                          : adventure.canAttempt && energy >= adventure.energyCost && (dailyAdventureAttempts || 0) < (dailyAdventureLimit || 2) && inProgressAdventures.length === 0
                             ? `${getDifficultyBg(adventure.difficulty)} cursor-pointer hover:brightness-110`
                             : 'bg-gray-300 border-gray-500 opacity-60 cursor-not-allowed'
                   }`}
@@ -451,9 +451,9 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                   ) : !isAdventureInProgress(adventure.id) && (
                     <button
                       onClick={() => handleAttemptAdventure(adventure.id)}
-                      disabled={!adventure.canAttempt || energy < adventure.energyCost || attempting === adventure.id || (dailyAdventureAttempts || 0) >= 2 || inProgressAdventures.length > 0 || isAdventureCompleted(adventure.id)}
+                      disabled={!adventure.canAttempt || energy < adventure.energyCost || attempting === adventure.id || (dailyAdventureAttempts || 0) >= (dailyAdventureLimit || 2) || inProgressAdventures.length > 0 || isAdventureCompleted(adventure.id)}
                       className={`w-full py-3 px-4 rounded-xl font-black transition-all duration-300 ring-2 ring-black mt-auto transform hover:scale-105 ${
-                        adventure.canAttempt && energy >= adventure.energyCost && attempting !== adventure.id && (dailyAdventureAttempts || 0) < 2 && inProgressAdventures.length === 0 && !isAdventureCompleted(adventure.id)
+                        adventure.canAttempt && energy >= adventure.energyCost && attempting !== adventure.id && (dailyAdventureAttempts || 0) < (dailyAdventureLimit || 2) && inProgressAdventures.length === 0 && !isAdventureCompleted(adventure.id)
                           ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white hover:shadow-xl hover:ring-blue-300'
                           : 'bg-gray-500 text-gray-300 cursor-not-allowed opacity-60'
                       }`}
@@ -465,7 +465,7 @@ export default function AdventuresScreen({ onBack }: AdventuresScreenProps) {
                           ? 'COMPLETED'
                           : inProgressAdventures.length > 0
                             ? 'ADVENTURE IN PROGRESS'
-                            : (dailyAdventureAttempts || 0) >= 2
+                            : (dailyAdventureAttempts || 0) >= (dailyAdventureLimit || 2)
                               ? 'DAILY LIMIT REACHED'
                               : !adventure.canAttempt 
                                 ? 'REQUIREMENTS NOT MET'

@@ -63,6 +63,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
           cash: 500,
           maxEnergy: 150.0,
           permanentXpGain: 0,
+          dailyAdventureLimit: 2,
         },
         include: {
           ExerciseProficiencies: {
@@ -334,13 +335,13 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
       
       // Handle special cases where research benefits use different keys
-      const specialMappings: Record<string, string> = {
-        'jump_rope': 'jumprope',
-        'pullups': 'pull_ups',
-        'hip_flexor_stretch': 'hip_flexor',
-        'shoulder_roll_stretch': 'shoulder_roll',
-        'cat_cow_stretch': 'cat_cow',
-      };
+        const specialMappings: Record<string, string> = {
+          'jump_rope': 'jumprope',
+          'pullups': 'pull_ups',
+          'hip_flexor_stretch': 'hip_flexor',
+          'shoulder_roll_stretch': 'shoulder_roll',
+          'catcow_stretch': 'cat_cow',
+        };
       
       nameKey = specialMappings[nameKey] || nameKey;
       const benefits = getResearchBenefits(nameKey, researchUpgrade.tier);
@@ -457,7 +458,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
           'pullups': 'pull_ups',
           'hip_flexor_stretch': 'hip_flexor',
           'shoulder_roll_stretch': 'shoulder_roll',
-          'cat_cow_stretch': 'cat_cow',
+          'catcow_stretch': 'cat_cow',
         };
         
         nameKey = specialMappings[nameKey] || nameKey;

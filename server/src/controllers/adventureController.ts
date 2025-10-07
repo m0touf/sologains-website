@@ -7,8 +7,7 @@ import {
   computeEnergyFloat, 
   getCappedEnergy, 
   scaleXpReward,
-  levelFromXp,
-  getResearchBenefits
+  levelFromXp
 } from '../config';
 
 const prisma = new PrismaClient();
@@ -136,41 +135,8 @@ export const attemptAdventure = async (req: AuthenticatedRequest, res: Response)
       }
     });
 
-    // Calculate daily adventure limit based on research benefits
-    let dailyLimit = 2; // Base limit
-    
-    // Get user's research upgrades to check for adventure attempt benefits
-    const researchUpgrades = await prisma.researchUpgrade.findMany({
-      where: { userId },
-      include: { Exercise: true }
-    });
-    
-    // Count adventure attempt benefits
-    for (const upgrade of researchUpgrades) {
-      const exercise = upgrade.Exercise;
-      if (exercise) {
-        let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-        
-        // Handle special cases where research benefits use different keys
-        const specialMappings: Record<string, string> = {
-          'jump_rope': 'jumprope',
-          'pullups': 'pull_ups',
-          'hip_flexor_stretch': 'hip_flexor',
-          'shoulder_roll_stretch': 'shoulder_roll',
-          'cat_cow_stretch': 'cat_cow',
-        };
-        
-        nameKey = specialMappings[nameKey] || nameKey;
-        const benefits = getResearchBenefits(nameKey, upgrade.tier);
-        for (const benefit of benefits) {
-          if (benefit.type === 'adventure') {
-            dailyLimit += benefit.value;
-          }
-        }
-      }
-    }
-    
-    // Check daily adventure limit
+    // Check daily adventure limit using stored limit
+    const dailyLimit = save.dailyAdventureLimit || 2;
     if (save.dailyAdventureAttempts >= dailyLimit) {
       return res.status(400).json({ error: `You have reached your daily adventure limit (${dailyLimit} per day)` });
     }
