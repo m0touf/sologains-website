@@ -3666,3 +3666,803 @@
 {"level":"info","message":"  Last update: Tue Oct 07 2025 14:19:11 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:20.968Z"}
 {"level":"info","message":"  Current time: Tue Oct 07 2025 14:19:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:20.968Z"}
 {"level":"info","message":"  Energy updated in database to: 150.05862222222217","timestamp":"2025-10-07T18:19:21.012Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:19:31.004Z"}
+{"level":"info","message":"  Previous energy: 150.0586222222222","timestamp":"2025-10-07T18:19:31.005Z"}
+{"level":"info","message":"  Current energy: 150.07256249999998","timestamp":"2025-10-07T18:19:31.005Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:19:31.005Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:19:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:31.005Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:19:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:31.005Z"}
+{"level":"info","message":"  Energy updated in database to: 150.07256249999998","timestamp":"2025-10-07T18:19:31.043Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:19:40.956Z"}
+{"level":"info","message":"  Previous energy: 150.0725625","timestamp":"2025-10-07T18:19:40.956Z"}
+{"level":"info","message":"  Current energy: 150.08638472222222","timestamp":"2025-10-07T18:19:40.956Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:19:40.956Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:19:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:40.956Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:19:40 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:40.956Z"}
+{"level":"info","message":"  Energy updated in database to: 150.08638472222222","timestamp":"2025-10-07T18:19:41.004Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:19:51.006Z"}
+{"level":"info","message":"  Previous energy: 150.0863847222222","timestamp":"2025-10-07T18:19:51.007Z"}
+{"level":"info","message":"  Current energy: 150.10034305555553","timestamp":"2025-10-07T18:19:51.007Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:19:51.007Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:19:40 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:51.007Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:19:51 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:19:51.007Z"}
+{"level":"info","message":"  Energy updated in database to: 150.10034305555553","timestamp":"2025-10-07T18:19:51.054Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:20:00.966Z"}
+{"level":"info","message":"  Previous energy: 150.1003430555555","timestamp":"2025-10-07T18:20:00.967Z"}
+{"level":"info","message":"  Current energy: 150.11417638888884","timestamp":"2025-10-07T18:20:00.967Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:20:00.967Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:19:51 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:00.967Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:20:00 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:00.967Z"}
+{"level":"info","message":"  Energy updated in database to: 150.11417638888884","timestamp":"2025-10-07T18:20:01.012Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:20:11.008Z"}
+{"level":"info","message":"  Previous energy: 150.1141763888888","timestamp":"2025-10-07T18:20:11.008Z"}
+{"level":"info","message":"  Current energy: 150.12812361111102","timestamp":"2025-10-07T18:20:11.008Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:20:11.008Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:20:00 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:11.009Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:20:11 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:11.009Z"}
+{"level":"info","message":"  Energy updated in database to: 150.12812361111102","timestamp":"2025-10-07T18:20:11.061Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:20:20.958Z"}
+{"level":"info","message":"  Previous energy: 150.128123611111","timestamp":"2025-10-07T18:20:20.958Z"}
+{"level":"info","message":"  Current energy: 150.14194166666655","timestamp":"2025-10-07T18:20:20.958Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:20:20.958Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:20:11 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:20.958Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:20:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:20.958Z"}
+{"level":"info","message":"  Energy updated in database to: 150.14194166666655","timestamp":"2025-10-07T18:20:21.011Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:20:31.012Z"}
+{"level":"info","message":"  Previous energy: 150.1419416666666","timestamp":"2025-10-07T18:20:31.012Z"}
+{"level":"info","message":"  Current energy: 150.15590694444438","timestamp":"2025-10-07T18:20:31.012Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:20:31.012Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:20:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:31.012Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:20:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:31.012Z"}
+{"level":"info","message":"  Energy updated in database to: 150.15590694444438","timestamp":"2025-10-07T18:20:31.059Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:20:40.957Z"}
+{"level":"info","message":"  Previous energy: 150.1559069444444","timestamp":"2025-10-07T18:20:40.957Z"}
+{"level":"info","message":"  Current energy: 150.1697194444444","timestamp":"2025-10-07T18:20:40.957Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:20:40.957Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:20:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:40.957Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:20:40 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:40.957Z"}
+{"level":"info","message":"  Energy updated in database to: 150.1697194444444","timestamp":"2025-10-07T18:20:41.004Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:20:50.996Z"}
+{"level":"info","message":"  Previous energy: 150.1697194444444","timestamp":"2025-10-07T18:20:50.996Z"}
+{"level":"info","message":"  Current energy: 150.18366249999997","timestamp":"2025-10-07T18:20:50.996Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:20:50.996Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:20:40 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:50.996Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:20:50 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:20:50.996Z"}
+{"level":"info","message":"  Energy updated in database to: 150.18366249999997","timestamp":"2025-10-07T18:20:51.041Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:21:00.964Z"}
+{"level":"info","message":"  Previous energy: 150.1836625","timestamp":"2025-10-07T18:21:00.965Z"}
+{"level":"info","message":"  Current energy: 150.19750694444443","timestamp":"2025-10-07T18:21:00.965Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:21:00.965Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:20:50 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:21:00.965Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:21:00 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:21:00.965Z"}
+{"level":"info","message":"  Energy updated in database to: 150.19750694444443","timestamp":"2025-10-07T18:21:01.013Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:25.890Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:25.890Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:25.890Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:25.890Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:21:32.497Z"}
+{"level":"info","message":"  Previous energy: 150.1975069444444","timestamp":"2025-10-07T18:21:32.498Z"}
+{"level":"info","message":"  Current energy: 150.24130277777772","timestamp":"2025-10-07T18:21:32.498Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:21:32.498Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:21:00 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:21:32.498Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:21:32 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:21:32.498Z"}
+{"level":"info","message":"  Energy updated in database to: 150.24130277777772","timestamp":"2025-10-07T18:21:32.588Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:33.332Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:33.333Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:33.342Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:33.343Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:38.246Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:38.246Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:38.246Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:38.246Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:43.201Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:43.201Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:43.201Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:43.201Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:54.666Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:54.666Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:54.668Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:54.669Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:58.828Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:58.828Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:21:58.828Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:21:58.829Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:07.810Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:07.810Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:07.810Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:07.810Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:14.116Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:14.117Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:14.116Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:14.117Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:25.806Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:25.806Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:25.806Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:25.806Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:22:32.540Z"}
+{"level":"info","message":"  Previous energy: 150.2413027777777","timestamp":"2025-10-07T18:22:32.540Z"}
+{"level":"info","message":"  Current energy: 150.32469444444436","timestamp":"2025-10-07T18:22:32.540Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:22:32.541Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:21:32 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:22:32.541Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:22:32 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:22:32.541Z"}
+{"level":"info","message":"  Energy updated in database to: 150.32469444444436","timestamp":"2025-10-07T18:22:32.637Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:22:47.996Z"}
+{"level":"info","message":"  Previous energy: 150.3246944444444","timestamp":"2025-10-07T18:22:47.996Z"}
+{"level":"info","message":"  Current energy: 150.34616249999993","timestamp":"2025-10-07T18:22:47.996Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:22:47.996Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:22:32 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:22:47.996Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:22:47 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:22:47.996Z"}
+{"level":"info","message":"  Energy updated in database to: 150.34616249999993","timestamp":"2025-10-07T18:22:48.036Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:57.453Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:22:57.453Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:57.453Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:22:57.453Z"}
+{"level":"info","message":"simulateNewDay function called","timestamp":"2025-10-07T18:23:06.811Z"}
+{"level":"info","message":"simulateNewDay called for user cmgeckr700001uxxlmffov3d9","timestamp":"2025-10-07T18:23:06.811Z"}
+{"level":"info","message":"Current dailyAdventureAttempts before reset: 0","timestamp":"2025-10-07T18:23:07.383Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:23:09.122Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:23:09.122Z"}
+{"level":"info","message":"  Current energy: 150.00162916666667","timestamp":"2025-10-07T18:23:09.122Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:23:09.123Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:23:07 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:09.123Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:23:09 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:09.123Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:23:16.968Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:23:16.969Z"}
+{"level":"info","message":"  Current energy: 150.0125263888889","timestamp":"2025-10-07T18:23:16.969Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:23:16.969Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:23:07 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:16.970Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:23:16 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:16.970Z"}
+{"level":"info","message":"  Energy updated in database to: 150.0125263888889","timestamp":"2025-10-07T18:23:17.063Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:23:27.010Z"}
+{"level":"info","message":"  Previous energy: 150.0125263888889","timestamp":"2025-10-07T18:23:27.011Z"}
+{"level":"info","message":"  Current energy: 150.0264736111111","timestamp":"2025-10-07T18:23:27.011Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:23:27.011Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:23:16 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:27.012Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:23:27 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:27.012Z"}
+{"level":"info","message":"  Energy updated in database to: 150.0264736111111","timestamp":"2025-10-07T18:23:27.057Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:23:36.959Z"}
+{"level":"info","message":"  Previous energy: 150.0264736111111","timestamp":"2025-10-07T18:23:36.959Z"}
+{"level":"info","message":"  Current energy: 150.04029305555554","timestamp":"2025-10-07T18:23:36.960Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:23:36.960Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:23:27 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:36.960Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:23:36 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:36.960Z"}
+{"level":"info","message":"  Energy updated in database to: 150.04029305555554","timestamp":"2025-10-07T18:23:37.008Z"}
+{"level":"info","message":"Workout energy calculation for Bench Press:","timestamp":"2025-10-07T18:23:39.645Z"}
+{"level":"info","message":"  Base energy cost: 30","timestamp":"2025-10-07T18:23:39.645Z"}
+{"level":"info","message":"  Current energy: 150","timestamp":"2025-10-07T18:23:39.646Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:23:39.646Z"}
+{"level":"info","message":"  Energy before workout: 150.04395833333328 (capped: 150)","timestamp":"2025-10-07T18:23:39.646Z"}
+{"level":"info","message":"  Energy after workout: 120.04428888888887 (spent: 30)","timestamp":"2025-10-07T18:23:39.836Z"}
+{"level":"info","message":"simulateNewDay function called","timestamp":"2025-10-07T18:23:44.131Z"}
+{"level":"info","message":"simulateNewDay called for user cmgeckr700001uxxlmffov3d9","timestamp":"2025-10-07T18:23:44.131Z"}
+{"level":"info","message":"Current dailyAdventureAttempts before reset: 0","timestamp":"2025-10-07T18:23:44.282Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:23:45.144Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:23:45.144Z"}
+{"level":"info","message":"  Current energy: 150.00067638888888","timestamp":"2025-10-07T18:23:45.144Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:23:45.144Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:23:44 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:45.144Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:23:45 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:23:45.145Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:10.598Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:10.598Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:10.599Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:10.599Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:17.916Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:17.917Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:17.921Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:17.921Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:22.951Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:22.950Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:22.951Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:22.951Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:48.402Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:24:48.402Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:48.403Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:24:48.402Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:25:35.443Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:25:35.443Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:25:35.443Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:25:35.444Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:25:38.574Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:25:38.575Z"}
+{"level":"info","message":"  Current energy: 150.15821944444446","timestamp":"2025-10-07T18:25:38.575Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:25:38.575Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:23:44 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:38.575Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:25:38 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:38.575Z"}
+{"level":"info","message":"  Energy updated in database to: 150.15821944444446","timestamp":"2025-10-07T18:25:38.669Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:25:39.053Z"}
+{"level":"info","message":"  Previous energy: 150.1582194444445","timestamp":"2025-10-07T18:25:39.053Z"}
+{"level":"info","message":"  Current energy: 150.1588847222223","timestamp":"2025-10-07T18:25:39.053Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:25:39.053Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:25:38 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:39.053Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:25:39 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:39.053Z"}
+{"level":"info","message":"simulateNewDay function called","timestamp":"2025-10-07T18:25:46.677Z"}
+{"level":"info","message":"simulateNewDay called for user cmgeckr700001uxxlmffov3d9","timestamp":"2025-10-07T18:25:46.677Z"}
+{"level":"info","message":"Current dailyAdventureAttempts before reset: 0","timestamp":"2025-10-07T18:25:46.824Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:25:47.856Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:25:47.857Z"}
+{"level":"info","message":"  Current energy: 150.00078055555556","timestamp":"2025-10-07T18:25:47.857Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:25:47.857Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:25:47 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:47.857Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:25:47 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:47.857Z"}
+{"level":"info","message":"simulateNewDay function called","timestamp":"2025-10-07T18:25:50.398Z"}
+{"level":"info","message":"simulateNewDay called for user cmgeckr700001uxxlmffov3d9","timestamp":"2025-10-07T18:25:50.399Z"}
+{"level":"info","message":"Current dailyAdventureAttempts before reset: 0","timestamp":"2025-10-07T18:25:50.495Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:25:51.281Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:25:51.282Z"}
+{"level":"info","message":"  Current energy: 150.00064166666667","timestamp":"2025-10-07T18:25:51.282Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:25:51.282Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:25:50 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:51.282Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:25:51 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:25:51.282Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:25:59.999Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:25:59.999Z"}
+{"level":"info","message":"  Current energy: 150.01275","timestamp":"2025-10-07T18:26:00.000Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:26:00.000Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:25:50 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:00.000Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:25:59 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:00.001Z"}
+{"level":"info","message":"  Energy updated in database to: 150.01275","timestamp":"2025-10-07T18:26:00.056Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:26:09.970Z"}
+{"level":"info","message":"  Previous energy: 150.01275","timestamp":"2025-10-07T18:26:09.970Z"}
+{"level":"info","message":"  Current energy: 150.02659722222222","timestamp":"2025-10-07T18:26:09.970Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:26:09.971Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:25:59 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:09.971Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:26:09 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:09.971Z"}
+{"level":"info","message":"  Energy updated in database to: 150.02659722222222","timestamp":"2025-10-07T18:26:10.017Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:26:20.005Z"}
+{"level":"info","message":"  Previous energy: 150.0265972222222","timestamp":"2025-10-07T18:26:20.005Z"}
+{"level":"info","message":"  Current energy: 150.0405347222222","timestamp":"2025-10-07T18:26:20.005Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:26:20.006Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:26:09 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:20.006Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:26:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:20.006Z"}
+{"level":"info","message":"  Energy updated in database to: 150.0405347222222","timestamp":"2025-10-07T18:26:20.054Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:26:29.962Z"}
+{"level":"info","message":"  Previous energy: 150.0405347222222","timestamp":"2025-10-07T18:26:29.962Z"}
+{"level":"info","message":"  Current energy: 150.05436388888884","timestamp":"2025-10-07T18:26:29.963Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:26:29.963Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:26:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:29.963Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:26:29 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:29.963Z"}
+{"level":"info","message":"  Energy updated in database to: 150.05436388888884","timestamp":"2025-10-07T18:26:30.009Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:26:39.994Z"}
+{"level":"info","message":"  Previous energy: 150.0543638888888","timestamp":"2025-10-07T18:26:39.995Z"}
+{"level":"info","message":"  Current energy: 150.068298611111","timestamp":"2025-10-07T18:26:39.995Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:26:39.995Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:26:29 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:39.995Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:26:39 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:39.996Z"}
+{"level":"info","message":"  Energy updated in database to: 150.068298611111","timestamp":"2025-10-07T18:26:40.043Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:26:49.963Z"}
+{"level":"info","message":"  Previous energy: 150.068298611111","timestamp":"2025-10-07T18:26:49.964Z"}
+{"level":"info","message":"  Current energy: 150.08214305555543","timestamp":"2025-10-07T18:26:49.964Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:26:49.964Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:26:39 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:49.964Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:26:49 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:26:49.964Z"}
+{"level":"info","message":"  Energy updated in database to: 150.08214305555543","timestamp":"2025-10-07T18:26:50.009Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:27:32.012Z"}
+{"level":"info","message":"  Previous energy: 150.0821430555554","timestamp":"2025-10-07T18:27:32.012Z"}
+{"level":"info","message":"  Current energy: 150.1405444444443","timestamp":"2025-10-07T18:27:32.013Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:27:32.013Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:26:49 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:27:32.013Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:27:32 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:27:32.013Z"}
+{"level":"info","message":"  Energy updated in database to: 150.1405444444443","timestamp":"2025-10-07T18:27:32.059Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:28:12.925Z"}
+{"level":"info","message":"  Previous energy: 150.1405444444443","timestamp":"2025-10-07T18:28:12.925Z"}
+{"level":"info","message":"  Current energy: 150.1973694444443","timestamp":"2025-10-07T18:28:12.926Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:28:12.926Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:27:32 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:28:12.926Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:28:12 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:28:12.926Z"}
+{"level":"info","message":"  Energy updated in database to: 150.1973694444443","timestamp":"2025-10-07T18:28:12.968Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:28:13.392Z"}
+{"level":"info","message":"  Previous energy: 150.1973694444443","timestamp":"2025-10-07T18:28:13.392Z"}
+{"level":"info","message":"  Current energy: 150.1980180555554","timestamp":"2025-10-07T18:28:13.392Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:28:13.393Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:28:12 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:28:13.393Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:28:13 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:28:13.393Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:29:17.863Z"}
+{"level":"info","message":"  Previous energy: 150.1973694444443","timestamp":"2025-10-07T18:29:17.864Z"}
+{"level":"info","message":"  Current energy: 150.28756111111096","timestamp":"2025-10-07T18:29:17.864Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:29:17.864Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:28:12 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:17.864Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:29:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:17.864Z"}
+{"level":"info","message":"  Energy updated in database to: 150.28756111111096","timestamp":"2025-10-07T18:29:17.913Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:29:27.888Z"}
+{"level":"info","message":"  Previous energy: 150.287561111111","timestamp":"2025-10-07T18:29:27.889Z"}
+{"level":"info","message":"  Current energy: 150.3014847222221","timestamp":"2025-10-07T18:29:27.889Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:29:27.889Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:29:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:27.889Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:29:27 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:27.890Z"}
+{"level":"info","message":"  Energy updated in database to: 150.3014847222221","timestamp":"2025-10-07T18:29:27.933Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:29:38.085Z"}
+{"level":"info","message":"  Previous energy: 150.3014847222221","timestamp":"2025-10-07T18:29:38.086Z"}
+{"level":"info","message":"  Current energy: 150.3156472222221","timestamp":"2025-10-07T18:29:38.086Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:29:38.086Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:29:27 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:38.086Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:29:38 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:38.086Z"}
+{"level":"info","message":"  Energy updated in database to: 150.3156472222221","timestamp":"2025-10-07T18:29:38.247Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:29:48.128Z"}
+{"level":"info","message":"  Previous energy: 150.3156472222221","timestamp":"2025-10-07T18:29:48.129Z"}
+{"level":"info","message":"  Current energy: 150.32959583333323","timestamp":"2025-10-07T18:29:48.129Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:29:48.129Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:29:38 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:48.129Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:29:48 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:48.129Z"}
+{"level":"info","message":"  Energy updated in database to: 150.32959583333323","timestamp":"2025-10-07T18:29:48.174Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:29:57.848Z"}
+{"level":"info","message":"  Previous energy: 150.3295958333332","timestamp":"2025-10-07T18:29:57.848Z"}
+{"level":"info","message":"  Current energy: 150.34309444444432","timestamp":"2025-10-07T18:29:57.848Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:29:57.848Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:29:48 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:57.849Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:29:57 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:29:57.849Z"}
+{"level":"info","message":"  Energy updated in database to: 150.34309444444432","timestamp":"2025-10-07T18:29:57.900Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:30:07.965Z"}
+{"level":"info","message":"  Previous energy: 150.3430944444443","timestamp":"2025-10-07T18:30:07.966Z"}
+{"level":"info","message":"  Current energy: 150.35714722222207","timestamp":"2025-10-07T18:30:07.966Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:30:07.966Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:29:57 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:30:07.966Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:30:07 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:30:07.966Z"}
+{"level":"info","message":"  Energy updated in database to: 150.35714722222207","timestamp":"2025-10-07T18:30:08.009Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:30:25.905Z"}
+{"level":"info","message":"  Previous energy: 150.3571472222221","timestamp":"2025-10-07T18:30:25.906Z"}
+{"level":"info","message":"  Current energy: 150.38206388888875","timestamp":"2025-10-07T18:30:25.906Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:30:25.906Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:30:07 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:30:25.907Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:30:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:30:25.907Z"}
+{"level":"info","message":"  Energy updated in database to: 150.38206388888875","timestamp":"2025-10-07T18:30:26.036Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:31:25.888Z"}
+{"level":"info","message":"  Previous energy: 150.3820638888888","timestamp":"2025-10-07T18:31:25.888Z"}
+{"level":"info","message":"  Current energy: 150.46537222222213","timestamp":"2025-10-07T18:31:25.889Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:31:25.889Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:30:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:31:25.889Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:31:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:31:25.889Z"}
+{"level":"info","message":"  Energy updated in database to: 150.46537222222213","timestamp":"2025-10-07T18:31:25.936Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:32:26.399Z"}
+{"level":"info","message":"  Previous energy: 150.4653722222221","timestamp":"2025-10-07T18:32:26.399Z"}
+{"level":"info","message":"  Current energy: 150.54941666666656","timestamp":"2025-10-07T18:32:26.399Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:32:26.399Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:31:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:32:26.399Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:32:26 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:32:26.399Z"}
+{"level":"info","message":"  Energy updated in database to: 150.54941666666656","timestamp":"2025-10-07T18:32:26.495Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:33:25.894Z"}
+{"level":"info","message":"  Previous energy: 150.5494166666666","timestamp":"2025-10-07T18:33:25.894Z"}
+{"level":"info","message":"  Current energy: 150.63204861111103","timestamp":"2025-10-07T18:33:25.894Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:33:25.894Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:32:26 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:33:25.894Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:33:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:33:25.895Z"}
+{"level":"info","message":"  Energy updated in database to: 150.63204861111103","timestamp":"2025-10-07T18:33:25.942Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:34:25.905Z"}
+{"level":"info","message":"  Previous energy: 150.632048611111","timestamp":"2025-10-07T18:34:25.905Z"}
+{"level":"info","message":"  Current energy: 150.71539722222212","timestamp":"2025-10-07T18:34:25.905Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:34:25.905Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:33:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:34:25.905Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:34:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:34:25.905Z"}
+{"level":"info","message":"  Energy updated in database to: 150.71539722222212","timestamp":"2025-10-07T18:34:25.956Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:35:25.848Z"}
+{"level":"info","message":"  Previous energy: 150.7153972222221","timestamp":"2025-10-07T18:35:25.849Z"}
+{"level":"info","message":"  Current energy: 150.79865138888877","timestamp":"2025-10-07T18:35:25.849Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:35:25.850Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:34:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:35:25.850Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:35:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:35:25.850Z"}
+{"level":"info","message":"  Energy updated in database to: 150.79865138888877","timestamp":"2025-10-07T18:35:25.890Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:36:25.836Z"}
+{"level":"info","message":"  Previous energy: 150.7986513888888","timestamp":"2025-10-07T18:36:25.837Z"}
+{"level":"info","message":"  Current energy: 150.88196805555546","timestamp":"2025-10-07T18:36:25.837Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:36:25.837Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:35:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:25.837Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:36:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:25.837Z"}
+{"level":"info","message":"  Energy updated in database to: 150.88196805555546","timestamp":"2025-10-07T18:36:25.892Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:36:28.001Z"}
+{"level":"info","message":"  Previous energy: 150.8819680555555","timestamp":"2025-10-07T18:36:28.001Z"}
+{"level":"info","message":"  Current energy: 150.88497499999994","timestamp":"2025-10-07T18:36:28.001Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:36:28.001Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:36:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:28.001Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:36:28 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:28.001Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:36:29.285Z"}
+{"level":"info","message":"  Previous energy: 150.8819680555555","timestamp":"2025-10-07T18:36:29.285Z"}
+{"level":"info","message":"  Current energy: 150.88675833333326","timestamp":"2025-10-07T18:36:29.286Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:36:29.286Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:36:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:29.286Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:36:29 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:29.286Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:36:29.558Z"}
+{"level":"info","message":"  Previous energy: 150.8819680555555","timestamp":"2025-10-07T18:36:29.558Z"}
+{"level":"info","message":"  Current energy: 150.88713749999994","timestamp":"2025-10-07T18:36:29.558Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:36:29.558Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:36:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:29.558Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:36:29 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:36:29.558Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:17.706Z"}
+{"level":"info","message":"  Previous energy: 150.8819680555555","timestamp":"2025-10-07T18:38:17.706Z"}
+{"level":"info","message":"  Current energy: 151.03734305555548","timestamp":"2025-10-07T18:38:17.706Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:17.706Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:36:25 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:17.706Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:17.706Z"}
+{"level":"info","message":"  Energy updated in database to: 151.03734305555548","timestamp":"2025-10-07T18:38:17.797Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:18.087Z"}
+{"level":"info","message":"  Previous energy: 151.0373430555555","timestamp":"2025-10-07T18:38:18.088Z"}
+{"level":"info","message":"  Current energy: 151.03787222222218","timestamp":"2025-10-07T18:38:18.088Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:18.088Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:18.088Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:18 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:18.088Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:18.426Z"}
+{"level":"info","message":"  Previous energy: 151.0373430555555","timestamp":"2025-10-07T18:38:18.426Z"}
+{"level":"info","message":"  Current energy: 151.03834305555552","timestamp":"2025-10-07T18:38:18.426Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:18.426Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:18.426Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:18 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:18.426Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:18.712Z"}
+{"level":"info","message":"  Previous energy: 151.0373430555555","timestamp":"2025-10-07T18:38:18.712Z"}
+{"level":"info","message":"  Current energy: 151.03873888888884","timestamp":"2025-10-07T18:38:18.712Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:18.712Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:18.712Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:18 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:18.712Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:34.751Z"}
+{"level":"info","message":"  Previous energy: 151.0373430555555","timestamp":"2025-10-07T18:38:34.751Z"}
+{"level":"info","message":"  Current energy: 151.06101666666663","timestamp":"2025-10-07T18:38:34.751Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:34.751Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:34.751Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:34 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:34.752Z"}
+{"level":"info","message":"  Energy updated in database to: 151.06101666666663","timestamp":"2025-10-07T18:38:34.794Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:35.055Z"}
+{"level":"info","message":"  Previous energy: 151.0610166666666","timestamp":"2025-10-07T18:38:35.055Z"}
+{"level":"info","message":"  Current energy: 151.06143888888883","timestamp":"2025-10-07T18:38:35.055Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:35.055Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:34 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:35.055Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:35 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:35.055Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:40.130Z"}
+{"level":"info","message":"  Previous energy: 151.0610166666666","timestamp":"2025-10-07T18:38:40.130Z"}
+{"level":"info","message":"  Current energy: 151.06848749999995","timestamp":"2025-10-07T18:38:40.130Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:40.130Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:34 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:40.131Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:40 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:40.131Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:40.404Z"}
+{"level":"info","message":"  Previous energy: 151.0610166666666","timestamp":"2025-10-07T18:38:40.404Z"}
+{"level":"info","message":"  Current energy: 151.0688680555555","timestamp":"2025-10-07T18:38:40.404Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:40.404Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:34 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:40.405Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:40 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:40.405Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:54.481Z"}
+{"level":"info","message":"  Previous energy: 151.0610166666666","timestamp":"2025-10-07T18:38:54.481Z"}
+{"level":"info","message":"  Current energy: 151.08841944444438","timestamp":"2025-10-07T18:38:54.482Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:54.482Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:34 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:54.482Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:54 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:54.482Z"}
+{"level":"info","message":"  Energy updated in database to: 151.08841944444438","timestamp":"2025-10-07T18:38:54.540Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:38:54.795Z"}
+{"level":"info","message":"  Previous energy: 151.0884194444444","timestamp":"2025-10-07T18:38:54.795Z"}
+{"level":"info","message":"  Current energy: 151.0888555555555","timestamp":"2025-10-07T18:38:54.795Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:38:54.795Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:54 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:54.795Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:38:54 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:38:54.795Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:39:03.237Z"}
+{"level":"info","message":"  Previous energy: 151.0884194444444","timestamp":"2025-10-07T18:39:03.237Z"}
+{"level":"info","message":"  Current energy: 151.10057916666665","timestamp":"2025-10-07T18:39:03.237Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:39:03.237Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:38:54 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:39:03.237Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:39:03 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:39:03.237Z"}
+{"level":"info","message":"  Energy updated in database to: 151.10057916666665","timestamp":"2025-10-07T18:39:03.282Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:39:03.549Z"}
+{"level":"info","message":"  Previous energy: 151.1005791666666","timestamp":"2025-10-07T18:39:03.550Z"}
+{"level":"info","message":"  Current energy: 151.10101388888882","timestamp":"2025-10-07T18:39:03.550Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:39:03.550Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:39:03 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:39:03.550Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:39:03 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:39:03.550Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:40:26.196Z"}
+{"level":"info","message":"  Previous energy: 151.1005791666666","timestamp":"2025-10-07T18:40:26.196Z"}
+{"level":"info","message":"  Current energy: 151.21580138888882","timestamp":"2025-10-07T18:40:26.196Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:40:26.196Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:39:03 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:40:26.196Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:40:26 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:40:26.196Z"}
+{"level":"info","message":"  Energy updated in database to: 151.21580138888882","timestamp":"2025-10-07T18:40:26.251Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:40:26.498Z"}
+{"level":"info","message":"  Previous energy: 151.2158013888888","timestamp":"2025-10-07T18:40:26.498Z"}
+{"level":"info","message":"  Current energy: 151.21621944444433","timestamp":"2025-10-07T18:40:26.498Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:40:26.498Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:40:26 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:40:26.498Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:40:26 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:40:26.498Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:41:02.997Z"}
+{"level":"info","message":"  Previous energy: 151.2158013888888","timestamp":"2025-10-07T18:41:02.997Z"}
+{"level":"info","message":"  Current energy: 151.26691388888878","timestamp":"2025-10-07T18:41:02.998Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:41:02.998Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:40:26 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:02.998Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:41:02 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:02.998Z"}
+{"level":"info","message":"  Energy updated in database to: 151.26691388888878","timestamp":"2025-10-07T18:41:03.043Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:41:03.327Z"}
+{"level":"info","message":"  Previous energy: 151.2669138888888","timestamp":"2025-10-07T18:41:03.327Z"}
+{"level":"info","message":"  Current energy: 151.26737083333325","timestamp":"2025-10-07T18:41:03.327Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:41:03.327Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:41:02 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:03.327Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:41:03 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:03.327Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:41:20.695Z"}
+{"level":"info","message":"  Previous energy: 151.2669138888888","timestamp":"2025-10-07T18:41:20.695Z"}
+{"level":"info","message":"  Current energy: 151.29149305555546","timestamp":"2025-10-07T18:41:20.695Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:41:20.695Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:41:02 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:20.695Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:41:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:20.695Z"}
+{"level":"info","message":"  Energy updated in database to: 151.29149305555546","timestamp":"2025-10-07T18:41:20.758Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:41:21.037Z"}
+{"level":"info","message":"  Previous energy: 151.2914930555555","timestamp":"2025-10-07T18:41:21.037Z"}
+{"level":"info","message":"  Current energy: 151.2919694444444","timestamp":"2025-10-07T18:41:21.037Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:41:21.037Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:41:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:21.037Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:41:21 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:21.038Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:41:30.260Z"}
+{"level":"info","message":"  Previous energy: 151.2914930555555","timestamp":"2025-10-07T18:41:30.261Z"}
+{"level":"info","message":"  Current energy: 151.3047791666666","timestamp":"2025-10-07T18:41:30.261Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:41:30.261Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:41:20 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:30.261Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:41:30 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:30.261Z"}
+{"level":"info","message":"  Energy updated in database to: 151.3047791666666","timestamp":"2025-10-07T18:41:30.317Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:41:30.588Z"}
+{"level":"info","message":"  Previous energy: 151.3047791666666","timestamp":"2025-10-07T18:41:30.589Z"}
+{"level":"info","message":"  Current energy: 151.30523333333326","timestamp":"2025-10-07T18:41:30.589Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:41:30.589Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:41:30 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:30.589Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:41:30 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:41:30.589Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:01.355Z"}
+{"level":"info","message":"  Previous energy: 151.3047791666666","timestamp":"2025-10-07T18:42:01.356Z"}
+{"level":"info","message":"  Current energy: 151.3479666666666","timestamp":"2025-10-07T18:42:01.356Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:42:01.356Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:41:30 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:01.356Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:01 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:01.356Z"}
+{"level":"info","message":"  Energy updated in database to: 151.3479666666666","timestamp":"2025-10-07T18:42:01.392Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:01.688Z"}
+{"level":"info","message":"  Previous energy: 151.3479666666666","timestamp":"2025-10-07T18:42:01.689Z"}
+{"level":"info","message":"  Current energy: 151.3484291666666","timestamp":"2025-10-07T18:42:01.689Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:42:01.689Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:01 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:01.689Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:01 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:01.689Z"}
+{"level":"info","message":"Workout energy calculation for Ab Crunches:","timestamp":"2025-10-07T18:42:06.455Z"}
+{"level":"info","message":"  Base energy cost: 15","timestamp":"2025-10-07T18:42:06.455Z"}
+{"level":"info","message":"  Current energy: 150","timestamp":"2025-10-07T18:42:06.455Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:42:06.455Z"}
+{"level":"info","message":"  Energy before workout: 151.35498055555547 (capped: 150)","timestamp":"2025-10-07T18:42:06.455Z"}
+{"level":"info","message":"  Energy after workout: 136.3552916666666 (spent: 15)","timestamp":"2025-10-07T18:42:06.629Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:14.259Z"}
+{"level":"info","message":"  Previous energy: 136.3552916666666","timestamp":"2025-10-07T18:42:14.259Z"}
+{"level":"info","message":"  Current energy: 136.36619999999994","timestamp":"2025-10-07T18:42:14.260Z"}
+{"level":"info","message":"  Capped energy: 136.36619999999994","timestamp":"2025-10-07T18:42:14.260Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:06 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:14.260Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:14 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:14.260Z"}
+{"level":"info","message":"  Energy updated in database to: 136.36619999999994","timestamp":"2025-10-07T18:42:14.299Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:14.651Z"}
+{"level":"info","message":"  Previous energy: 136.3661999999999","timestamp":"2025-10-07T18:42:14.651Z"}
+{"level":"info","message":"  Current energy: 136.36674444444435","timestamp":"2025-10-07T18:42:14.651Z"}
+{"level":"info","message":"  Capped energy: 136.36674444444435","timestamp":"2025-10-07T18:42:14.651Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:14 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:14.651Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:14 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:14.651Z"}
+{"level":"info","message":"Workout energy calculation for Ab Crunches:","timestamp":"2025-10-07T18:42:16.934Z"}
+{"level":"info","message":"  Base energy cost: 15","timestamp":"2025-10-07T18:42:16.934Z"}
+{"level":"info","message":"  Current energy: 136","timestamp":"2025-10-07T18:42:16.934Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:42:16.935Z"}
+{"level":"info","message":"  Energy before workout: 136.36984444444434 (capped: 136.36984444444434)","timestamp":"2025-10-07T18:42:16.935Z"}
+{"level":"info","message":"  Energy after workout: 121.37009722222209 (spent: 15)","timestamp":"2025-10-07T18:42:17.065Z"}
+{"level":"info","message":"Workout energy calculation for Ab Crunches:","timestamp":"2025-10-07T18:42:18.461Z"}
+{"level":"info","message":"  Base energy cost: 15","timestamp":"2025-10-07T18:42:18.461Z"}
+{"level":"info","message":"  Current energy: 121","timestamp":"2025-10-07T18:42:18.461Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:42:18.462Z"}
+{"level":"info","message":"  Energy before workout: 121.37222361111098 (capped: 121.37222361111098)","timestamp":"2025-10-07T18:42:18.462Z"}
+{"level":"info","message":"  Energy after workout: 106.37247777777766 (spent: 15)","timestamp":"2025-10-07T18:42:18.598Z"}
+{"level":"info","message":"Workout energy calculation for Bench Press:","timestamp":"2025-10-07T18:42:19.768Z"}
+{"level":"info","message":"  Base energy cost: 30","timestamp":"2025-10-07T18:42:19.769Z"}
+{"level":"info","message":"  Current energy: 106","timestamp":"2025-10-07T18:42:19.769Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:42:19.769Z"}
+{"level":"info","message":"  Energy before workout: 106.37429722222215 (capped: 106.37429722222215)","timestamp":"2025-10-07T18:42:19.769Z"}
+{"level":"info","message":"  Energy after workout: 76.3745333333333 (spent: 30)","timestamp":"2025-10-07T18:42:19.894Z"}
+{"level":"info","message":"Workout energy calculation for Bench Press:","timestamp":"2025-10-07T18:42:23.395Z"}
+{"level":"info","message":"  Base energy cost: 30","timestamp":"2025-10-07T18:42:23.395Z"}
+{"level":"info","message":"  Current energy: 76","timestamp":"2025-10-07T18:42:23.396Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:42:23.396Z"}
+{"level":"info","message":"  Energy before workout: 76.37954305555553 (capped: 76.37954305555553)","timestamp":"2025-10-07T18:42:23.396Z"}
+{"level":"info","message":"  Energy after workout: 46.37981388888886 (spent: 30)","timestamp":"2025-10-07T18:42:23.527Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:31.636Z"}
+{"level":"info","message":"  Previous energy: 46.37981388888886","timestamp":"2025-10-07T18:42:31.636Z"}
+{"level":"info","message":"  Current energy: 46.391348611111084","timestamp":"2025-10-07T18:42:31.636Z"}
+{"level":"info","message":"  Capped energy: 46.391348611111084","timestamp":"2025-10-07T18:42:31.636Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:23 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:31.636Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:31.636Z"}
+{"level":"info","message":"  Energy updated in database to: 46.391348611111084","timestamp":"2025-10-07T18:42:31.692Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:32.087Z"}
+{"level":"info","message":"  Previous energy: 46.39134861111108","timestamp":"2025-10-07T18:42:32.087Z"}
+{"level":"info","message":"  Current energy: 46.39197361111108","timestamp":"2025-10-07T18:42:32.087Z"}
+{"level":"info","message":"  Capped energy: 46.39197361111108","timestamp":"2025-10-07T18:42:32.087Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:32.087Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:32 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:32.087Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:37.866Z"}
+{"level":"info","message":"  Previous energy: 46.39134861111108","timestamp":"2025-10-07T18:42:37.867Z"}
+{"level":"info","message":"  Current energy: 46.40000138888885","timestamp":"2025-10-07T18:42:37.867Z"}
+{"level":"info","message":"  Capped energy: 46.40000138888885","timestamp":"2025-10-07T18:42:37.867Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:37.867Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:37 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:37.867Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:38.225Z"}
+{"level":"info","message":"  Previous energy: 46.39134861111108","timestamp":"2025-10-07T18:42:38.226Z"}
+{"level":"info","message":"  Current energy: 46.400499999999965","timestamp":"2025-10-07T18:42:38.226Z"}
+{"level":"info","message":"  Capped energy: 46.400499999999965","timestamp":"2025-10-07T18:42:38.226Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:38.226Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:38 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:38.226Z"}
+{"level":"info","message":"🚀 Server running on port 4000","timestamp":"2025-10-07T18:42:42.507Z"}
+{"level":"info","message":"📊 Health check: http://localhost:4000/api/health","timestamp":"2025-10-07T18:42:42.507Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:48.293Z"}
+{"level":"info","message":"  Previous energy: 46.39134861111108","timestamp":"2025-10-07T18:42:48.294Z"}
+{"level":"info","message":"  Current energy: 46.4144833333333","timestamp":"2025-10-07T18:42:48.294Z"}
+{"level":"info","message":"  Capped energy: 46.4144833333333","timestamp":"2025-10-07T18:42:48.294Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:31 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:48.294Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:48 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:48.294Z"}
+{"level":"info","message":"  Energy updated in database to: 46.4144833333333","timestamp":"2025-10-07T18:42:48.389Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:42:48.748Z"}
+{"level":"info","message":"  Previous energy: 46.4144833333333","timestamp":"2025-10-07T18:42:48.748Z"}
+{"level":"info","message":"  Current energy: 46.415115277777744","timestamp":"2025-10-07T18:42:48.748Z"}
+{"level":"info","message":"  Capped energy: 46.415115277777744","timestamp":"2025-10-07T18:42:48.748Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:42:48 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:48.748Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:42:48 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:42:48.748Z"}
+{"level":"info","message":"Workout energy calculation for Bench Press:","timestamp":"2025-10-07T18:42:51.081Z"}
+{"level":"info","message":"  Base energy cost: 30","timestamp":"2025-10-07T18:42:51.082Z"}
+{"level":"info","message":"  Current energy: 46","timestamp":"2025-10-07T18:42:51.082Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:42:51.082Z"}
+{"level":"info","message":"  Energy before workout: 46.41828749999997 (capped: 46.41828749999997)","timestamp":"2025-10-07T18:42:51.082Z"}
+{"level":"info","message":"  Energy after workout: 16.4186208333333 (spent: 30)","timestamp":"2025-10-07T18:42:51.273Z"}
+{"level":"info","message":"Workout energy calculation for Ab Crunches:","timestamp":"2025-10-07T18:42:52.746Z"}
+{"level":"info","message":"  Base energy cost: 15","timestamp":"2025-10-07T18:42:52.746Z"}
+{"level":"info","message":"  Current energy: 16","timestamp":"2025-10-07T18:42:52.746Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:42:52.746Z"}
+{"level":"info","message":"  Energy before workout: 16.4209333333333 (capped: 16.4209333333333)","timestamp":"2025-10-07T18:42:52.746Z"}
+{"level":"info","message":"  Energy after workout: 1.4211916666666333 (spent: 15)","timestamp":"2025-10-07T18:42:52.883Z"}
+{"level":"info","message":"Workout energy calculation for Bench Press:","timestamp":"2025-10-07T18:43:14.232Z"}
+{"level":"info","message":"  Base energy cost: 30","timestamp":"2025-10-07T18:43:14.233Z"}
+{"level":"info","message":"  Current energy: 150","timestamp":"2025-10-07T18:43:14.233Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:43:14.233Z"}
+{"level":"info","message":"  Energy before workout: 150.00341111111112 (capped: 150)","timestamp":"2025-10-07T18:43:14.233Z"}
+{"level":"info","message":"  Energy after workout: 120.00365555555553 (spent: 30)","timestamp":"2025-10-07T18:43:14.373Z"}
+{"level":"info","message":"Workout energy calculation for Dumbbell Curls:","timestamp":"2025-10-07T18:43:16.062Z"}
+{"level":"info","message":"  Base energy cost: 20","timestamp":"2025-10-07T18:43:16.063Z"}
+{"level":"info","message":"  Current energy: 120","timestamp":"2025-10-07T18:43:16.063Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:43:16.063Z"}
+{"level":"info","message":"  Energy before workout: 120.00617222222216 (capped: 120.00617222222216)","timestamp":"2025-10-07T18:43:16.063Z"}
+{"level":"info","message":"  Energy after workout: 100.00644583333332 (spent: 20)","timestamp":"2025-10-07T18:43:16.206Z"}
+{"level":"info","message":"Workout energy calculation for Bench Press:","timestamp":"2025-10-07T18:43:19.437Z"}
+{"level":"info","message":"  Base energy cost: 30","timestamp":"2025-10-07T18:43:19.437Z"}
+{"level":"info","message":"  Current energy: 100","timestamp":"2025-10-07T18:43:19.437Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:43:19.437Z"}
+{"level":"info","message":"  Energy before workout: 100.01114166666663 (capped: 100.01114166666663)","timestamp":"2025-10-07T18:43:19.437Z"}
+{"level":"info","message":"  Energy after workout: 70.0113666666666 (spent: 30)","timestamp":"2025-10-07T18:43:19.551Z"}
+{"level":"info","message":"Workout energy calculation for Dumbbell Curls:","timestamp":"2025-10-07T18:43:24.556Z"}
+{"level":"info","message":"  Base energy cost: 20","timestamp":"2025-10-07T18:43:24.556Z"}
+{"level":"info","message":"  Current energy: 150","timestamp":"2025-10-07T18:43:24.557Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:43:24.557Z"}
+{"level":"info","message":"  Energy before workout: 150.00420277777778 (capped: 150)","timestamp":"2025-10-07T18:43:24.557Z"}
+{"level":"info","message":"  Energy after workout: 130.00446805555558 (spent: 20)","timestamp":"2025-10-07T18:43:24.705Z"}
+{"level":"info","message":"Workout energy calculation for Shoulder Press:","timestamp":"2025-10-07T18:43:26.407Z"}
+{"level":"info","message":"  Base energy cost: 28","timestamp":"2025-10-07T18:43:26.408Z"}
+{"level":"info","message":"  Current energy: 130","timestamp":"2025-10-07T18:43:26.408Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:43:26.408Z"}
+{"level":"info","message":"  Energy before workout: 130.00702500000006 (capped: 130.00702500000006)","timestamp":"2025-10-07T18:43:26.408Z"}
+{"level":"info","message":"  Energy after workout: 102.00728888888901 (spent: 28)","timestamp":"2025-10-07T18:43:26.544Z"}
+{"level":"info","message":"Workout energy calculation for Dumbbell Curls:","timestamp":"2025-10-07T18:43:34.484Z"}
+{"level":"info","message":"  Base energy cost: 20","timestamp":"2025-10-07T18:43:34.485Z"}
+{"level":"info","message":"  Current energy: 102","timestamp":"2025-10-07T18:43:34.485Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:43:34.485Z"}
+{"level":"info","message":"  Energy before workout: 102.0185125000001 (capped: 102.0185125000001)","timestamp":"2025-10-07T18:43:34.485Z"}
+{"level":"info","message":"  Energy after workout: 82.01877916666676 (spent: 20)","timestamp":"2025-10-07T18:43:34.627Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:43:38.252Z"}
+{"level":"info","message":"  Previous energy: 82.01877916666676","timestamp":"2025-10-07T18:43:38.252Z"}
+{"level":"info","message":"  Current energy: 82.02408055555566","timestamp":"2025-10-07T18:43:38.252Z"}
+{"level":"info","message":"  Capped energy: 82.02408055555566","timestamp":"2025-10-07T18:43:38.252Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:43:34 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:43:38.253Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:43:38 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:43:38.253Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:43:38.604Z"}
+{"level":"info","message":"  Previous energy: 82.01877916666676","timestamp":"2025-10-07T18:43:38.605Z"}
+{"level":"info","message":"  Current energy: 82.02456944444454","timestamp":"2025-10-07T18:43:38.605Z"}
+{"level":"info","message":"  Capped energy: 82.02456944444454","timestamp":"2025-10-07T18:43:38.605Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:43:34 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:43:38.605Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:43:38 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:43:38.605Z"}
+{"level":"info","message":"simulateNewDay function called","timestamp":"2025-10-07T18:44:00.624Z"}
+{"level":"info","message":"simulateNewDay called for user cmgeckr700001uxxlmffov3d9","timestamp":"2025-10-07T18:44:00.625Z"}
+{"level":"info","message":"Current dailyAdventureAttempts before reset: 0","timestamp":"2025-10-07T18:44:00.799Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:44:01.904Z"}
+{"level":"info","message":"  Previous energy: 150","timestamp":"2025-10-07T18:44:01.904Z"}
+{"level":"info","message":"  Current energy: 150.00090694444444","timestamp":"2025-10-07T18:44:01.905Z"}
+{"level":"info","message":"  Capped energy: 150","timestamp":"2025-10-07T18:44:01.905Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:44:01 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:44:01.905Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:44:01 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:44:01.905Z"}
+{"level":"info","message":"Workout energy calculation for Ab Crunches:","timestamp":"2025-10-07T18:44:05.415Z"}
+{"level":"info","message":"  Base energy cost: 15","timestamp":"2025-10-07T18:44:05.416Z"}
+{"level":"info","message":"  Current energy: 150","timestamp":"2025-10-07T18:44:05.416Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:44:05.416Z"}
+{"level":"info","message":"  Energy before workout: 150.00571944444445 (capped: 150)","timestamp":"2025-10-07T18:44:05.416Z"}
+{"level":"info","message":"  Energy after workout: 135.0059736111112 (spent: 15)","timestamp":"2025-10-07T18:44:05.552Z"}
+{"level":"info","message":"Workout energy calculation for Bench Press:","timestamp":"2025-10-07T18:44:07.515Z"}
+{"level":"info","message":"  Base energy cost: 30","timestamp":"2025-10-07T18:44:07.515Z"}
+{"level":"info","message":"  Current energy: 135","timestamp":"2025-10-07T18:44:07.515Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:44:07.515Z"}
+{"level":"info","message":"  Energy before workout: 135.00887916666673 (capped: 135.00887916666673)","timestamp":"2025-10-07T18:44:07.516Z"}
+{"level":"info","message":"  Energy after workout: 105.00915277777781 (spent: 30)","timestamp":"2025-10-07T18:44:07.659Z"}
+{"level":"info","message":"Workout energy calculation for Dumbbell Curls:","timestamp":"2025-10-07T18:44:09.261Z"}
+{"level":"info","message":"  Base energy cost: 20","timestamp":"2025-10-07T18:44:09.262Z"}
+{"level":"info","message":"  Current energy: 105","timestamp":"2025-10-07T18:44:09.262Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:44:09.262Z"}
+{"level":"info","message":"  Energy before workout: 105.01158888888891 (capped: 105.01158888888891)","timestamp":"2025-10-07T18:44:09.262Z"}
+{"level":"info","message":"  Energy after workout: 85.01184027777778 (spent: 20)","timestamp":"2025-10-07T18:44:09.396Z"}
+{"level":"info","message":"Workout energy calculation for Pull-Ups:","timestamp":"2025-10-07T18:44:11.052Z"}
+{"level":"info","message":"  Base energy cost: 35","timestamp":"2025-10-07T18:44:11.053Z"}
+{"level":"info","message":"  Current energy: 85","timestamp":"2025-10-07T18:44:11.053Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:44:11.053Z"}
+{"level":"info","message":"  Energy before workout: 85.01432777777778 (capped: 85.01432777777778)","timestamp":"2025-10-07T18:44:11.053Z"}
+{"level":"info","message":"  Energy after workout: 50.014581944444444 (spent: 35)","timestamp":"2025-10-07T18:44:11.189Z"}
+{"level":"info","message":"Workout energy calculation for Shoulder Press:","timestamp":"2025-10-07T18:44:13.259Z"}
+{"level":"info","message":"  Base energy cost: 28","timestamp":"2025-10-07T18:44:13.260Z"}
+{"level":"info","message":"  Current energy: 50","timestamp":"2025-10-07T18:44:13.260Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:44:13.260Z"}
+{"level":"info","message":"  Energy before workout: 50.017647222222216 (capped: 50.017647222222216)","timestamp":"2025-10-07T18:44:13.260Z"}
+{"level":"info","message":"  Energy after workout: 22.01790833333333 (spent: 28)","timestamp":"2025-10-07T18:44:13.402Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:45:27.216Z"}
+{"level":"info","message":"  Previous energy: 22.01790833333333","timestamp":"2025-10-07T18:45:27.216Z"}
+{"level":"info","message":"  Current energy: 22.120690277777776","timestamp":"2025-10-07T18:45:27.216Z"}
+{"level":"info","message":"  Capped energy: 22.120690277777776","timestamp":"2025-10-07T18:45:27.216Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:44:13 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:45:27.216Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:45:27 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:45:27.216Z"}
+{"level":"info","message":"  Energy updated in database to: 22.120690277777776","timestamp":"2025-10-07T18:45:27.262Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:45:54.886Z"}
+{"level":"info","message":"  Previous energy: 22.12069027777778","timestamp":"2025-10-07T18:45:54.886Z"}
+{"level":"info","message":"  Current energy: 22.159120833333336","timestamp":"2025-10-07T18:45:54.886Z"}
+{"level":"info","message":"  Capped energy: 22.159120833333336","timestamp":"2025-10-07T18:45:54.886Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:45:27 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:45:54.886Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:45:54 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:45:54.886Z"}
+{"level":"info","message":"  Energy updated in database to: 22.159120833333336","timestamp":"2025-10-07T18:45:54.938Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:46:15.901Z"}
+{"level":"info","message":"  Previous energy: 22.15912083333334","timestamp":"2025-10-07T18:46:15.902Z"}
+{"level":"info","message":"  Current energy: 22.18830833333334","timestamp":"2025-10-07T18:46:15.902Z"}
+{"level":"info","message":"  Capped energy: 22.18830833333334","timestamp":"2025-10-07T18:46:15.902Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:45:54 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:46:15.902Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:46:15 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:46:15.902Z"}
+{"level":"info","message":"  Energy updated in database to: 22.18830833333334","timestamp":"2025-10-07T18:46:15.960Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:47:17.271Z"}
+{"level":"info","message":"  Previous energy: 22.18830833333334","timestamp":"2025-10-07T18:47:17.271Z"}
+{"level":"info","message":"  Current energy: 22.27354444444445","timestamp":"2025-10-07T18:47:17.271Z"}
+{"level":"info","message":"  Capped energy: 22.27354444444445","timestamp":"2025-10-07T18:47:17.271Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:46:15 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:17.271Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:47:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:17.271Z"}
+{"level":"info","message":"  Energy updated in database to: 22.27354444444445","timestamp":"2025-10-07T18:47:17.314Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:47:17.698Z"}
+{"level":"info","message":"  Previous energy: 22.27354444444445","timestamp":"2025-10-07T18:47:17.699Z"}
+{"level":"info","message":"  Current energy: 22.274137500000005","timestamp":"2025-10-07T18:47:17.699Z"}
+{"level":"info","message":"  Capped energy: 22.274137500000005","timestamp":"2025-10-07T18:47:17.699Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:47:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:17.699Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:47:17 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:17.699Z"}
+{"level":"info","message":"Workout energy calculation for Jump Rope:","timestamp":"2025-10-07T18:47:21.640Z"}
+{"level":"info","message":"  Base energy cost: 20","timestamp":"2025-10-07T18:47:21.640Z"}
+{"level":"info","message":"  Current energy: 22","timestamp":"2025-10-07T18:47:21.640Z"}
+{"level":"info","message":"  Max energy: 150","timestamp":"2025-10-07T18:47:21.640Z"}
+{"level":"info","message":"  Energy before workout: 22.279541666666674 (capped: 22.279541666666674)","timestamp":"2025-10-07T18:47:21.641Z"}
+{"level":"info","message":"  Energy after workout: 2.279800000000005 (spent: 20)","timestamp":"2025-10-07T18:47:21.775Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:47:35.979Z"}
+{"level":"info","message":"  Previous energy: 2.279800000000005","timestamp":"2025-10-07T18:47:35.980Z"}
+{"level":"info","message":"  Current energy: 2.2997861111111164","timestamp":"2025-10-07T18:47:35.980Z"}
+{"level":"info","message":"  Capped energy: 2.2997861111111164","timestamp":"2025-10-07T18:47:35.980Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:47:21 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:35.980Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:47:35 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:35.980Z"}
+{"level":"info","message":"  Energy updated in database to: 2.2997861111111164","timestamp":"2025-10-07T18:47:36.022Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:47:44.919Z"}
+{"level":"info","message":"  Previous energy: 2.299786111111116","timestamp":"2025-10-07T18:47:44.919Z"}
+{"level":"info","message":"  Current energy: 2.3122027777777827","timestamp":"2025-10-07T18:47:44.919Z"}
+{"level":"info","message":"  Capped energy: 2.3122027777777827","timestamp":"2025-10-07T18:47:44.919Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:47:35 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:44.919Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:47:44 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:44.919Z"}
+{"level":"info","message":"  Energy updated in database to: 2.3122027777777827","timestamp":"2025-10-07T18:47:44.961Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:47:58.091Z"}
+{"level":"info","message":"  Previous energy: 2.312202777777783","timestamp":"2025-10-07T18:47:58.092Z"}
+{"level":"info","message":"  Current energy: 2.3304958333333388","timestamp":"2025-10-07T18:47:58.092Z"}
+{"level":"info","message":"  Capped energy: 2.3304958333333388","timestamp":"2025-10-07T18:47:58.092Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:47:44 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:58.093Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:47:58 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:58.093Z"}
+{"level":"info","message":"  Energy updated in database to: 2.3304958333333388","timestamp":"2025-10-07T18:47:58.198Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:47:58.673Z"}
+{"level":"info","message":"  Previous energy: 2.330495833333339","timestamp":"2025-10-07T18:47:58.673Z"}
+{"level":"info","message":"  Current energy: 2.3313055555555615","timestamp":"2025-10-07T18:47:58.673Z"}
+{"level":"info","message":"  Capped energy: 2.3313055555555615","timestamp":"2025-10-07T18:47:58.674Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:47:58 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:58.674Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:47:58 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:47:58.674Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:48:01.271Z"}
+{"level":"info","message":"  Previous energy: 2.330495833333339","timestamp":"2025-10-07T18:48:01.271Z"}
+{"level":"info","message":"  Current energy: 2.3349138888888947","timestamp":"2025-10-07T18:48:01.271Z"}
+{"level":"info","message":"  Capped energy: 2.3349138888888947","timestamp":"2025-10-07T18:48:01.271Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:47:58 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:48:01.271Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:48:01 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:48:01.271Z"}
+{"level":"info","message":"Energy calculation for user cmgeckr700001uxxlmffov3d9:","timestamp":"2025-10-07T18:48:01.622Z"}
+{"level":"info","message":"  Previous energy: 2.330495833333339","timestamp":"2025-10-07T18:48:01.622Z"}
+{"level":"info","message":"  Current energy: 2.335401388888895","timestamp":"2025-10-07T18:48:01.622Z"}
+{"level":"info","message":"  Capped energy: 2.335401388888895","timestamp":"2025-10-07T18:48:01.622Z"}
+{"level":"info","message":"  Last update: Tue Oct 07 2025 14:47:58 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:48:01.622Z"}
+{"level":"info","message":"  Current time: Tue Oct 07 2025 14:48:01 GMT-0400 (Eastern Daylight Time)","timestamp":"2025-10-07T18:48:01.622Z"}

@@ -258,12 +258,14 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
         break;
       case 'daily_reset':
         // Reset daily stat gain limits for all exercises
+        const newResetCount = (save.dailyResetCount || 0) + 1;
         await prisma.exerciseProficiency.updateMany({
           where: { userId },
           data: {
             dailyStatGains: 0,
             dailyEnergy: 0,
-            lastDailyReset: new Date() // Today's date
+            lastDailyReset: new Date(),
+            dailyResetCount: newResetCount
           }
         });
         break;
@@ -372,19 +374,19 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
     const maxEnergy = save.maxEnergy || 150;
     
     // Reset daily stat gains for all exercises
+    const newResetCount = (save.dailyResetCount || 0) + 1;
     await prisma.exerciseProficiency.updateMany({
       where: { userId },
       data: {
         dailyStatGains: 0,
         dailyEnergy: 0,
-        lastDailyReset: new Date()
+        lastDailyReset: new Date(),
+        dailyResetCount: newResetCount
       }
     });
 
-    // Clear daily purchases (special items become available again)
-    await prisma.dailyPurchase.deleteMany({
-      where: { userId }
-    });
+    // Daily purchases are now handled by reset counter system
+    // No need to delete records - they become invalid when reset count increments
 
     // Auto-claim any unclaimed adventures from the previous day
     const unclaimedAdventures = await prisma.adventureAttempt.findMany({
@@ -502,20 +504,26 @@ export const simulateDate = async (req: AuthenticatedRequest, res: Response) => 
     // Actually perform the daily reset (not just set the date)
     const now = new Date();
     
+    // Get current save data
+    const save = await prisma.save.findUnique({ where: { userId } });
+    if (!save) {
+      return res.status(404).json({ error: 'Save not found' });
+    }
+    
     // Reset daily stat gains for all exercises
+    const newResetCount = (save.dailyResetCount || 0) + 1;
     await prisma.exerciseProficiency.updateMany({
       where: { userId },
       data: {
         dailyStatGains: 0,
         dailyEnergy: 0,
-        lastDailyReset: now
+        lastDailyReset: now,
+        dailyResetCount: newResetCount
       }
     });
 
-    // Clear daily purchases (shop items become available again)
-    await prisma.dailyPurchase.deleteMany({
-      where: { userId }
-    });
+    // Daily purchases are now handled by reset counter system
+    // No need to delete records - they become invalid when reset count increments
 
     // Generate new rotation seeds for shop and adventures
     const newShopRotationSeed = Math.floor(Math.random() * 1000000);

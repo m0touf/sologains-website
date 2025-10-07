@@ -16,16 +16,22 @@ export default function ResearchScreen({ onBack }: ResearchScreenProps) {
   } = useGameStore();
   const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [isLoadingResearch, setIsLoadingResearch] = useState(true);
   
   // Load available research on component mount
   useEffect(() => {
     if (isInitialized) {
-      loadAvailableResearch();
+      const loadResearch = async () => {
+        setIsLoadingResearch(true);
+        await loadAvailableResearch();
+        setIsLoadingResearch(false);
+      };
+      loadResearch();
     }
   }, [isInitialized, loadAvailableResearch]);
   
-  // Show loading if not initialized
-  if (!isInitialized) {
+  // Show loading if not initialized or research is still loading
+  if (!isInitialized || isLoadingResearch) {
     return <LoadingScreen />;
   }
   

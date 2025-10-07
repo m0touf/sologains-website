@@ -12,7 +12,6 @@ async function main() {
   const exercises = [
     // Strength exercises
     {
-      id: 'dumbbell_curls',
       name: 'Dumbbell Curls',
       category: 'strength',
       baseReps: 20,
@@ -23,7 +22,6 @@ async function main() {
       imagePath: '/src/assets/exercises/strength/Dumbellcurls_Gym_Button.png',
     },
     {
-      id: 'bench_press',
       name: 'Bench Press',
       category: 'strength',
       baseReps: 15,
@@ -34,7 +32,6 @@ async function main() {
       imagePath: '/src/assets/exercises/strength/Benchpress_Gym_Button.png',
     },
     {
-      id: 'pull_ups',
       name: 'Pull-Ups',
       category: 'strength',
       baseReps: 12,
@@ -45,7 +42,6 @@ async function main() {
       imagePath: '/src/assets/exercises/strength/Pullups_Gym_Button.png',
     },
     {
-      id: 'squats',
       name: 'Squats',
       category: 'strength',
       baseReps: 25,
@@ -56,7 +52,6 @@ async function main() {
       imagePath: '/src/assets/exercises/strength/Squats_Gym_Button.png',
     },
     {
-      id: 'ab_crunches',
       name: 'Ab Crunches',
       category: 'strength',
       baseReps: 30,
@@ -67,7 +62,6 @@ async function main() {
       imagePath: '/src/assets/exercises/strength/Abcrunches_Gym_Button.png',
     },
     {
-      id: 'shoulder_press',
       name: 'Shoulder Press',
       category: 'strength',
       baseReps: 18,
@@ -79,7 +73,6 @@ async function main() {
     },
     // Endurance exercises
     {
-      id: 'running',
       name: 'Running',
       category: 'endurance',
       baseReps: 30,
@@ -90,7 +83,6 @@ async function main() {
       imagePath: '/src/assets/exercises/endurance/Running_Gym_Button.png',
     },
     {
-      id: 'cycling',
       name: 'Cycling',
       category: 'endurance',
       baseReps: 25,
@@ -101,7 +93,6 @@ async function main() {
       imagePath: '/src/assets/exercises/endurance/Cycling_Gym_Button.png',
     },
     {
-      id: 'swimming',
       name: 'Swimming',
       category: 'endurance',
       baseReps: 20,
@@ -112,7 +103,6 @@ async function main() {
       imagePath: '/src/assets/exercises/endurance/Swimming_Gym_Button.png',
     },
     {
-      id: 'jumprope',
       name: 'Jump Rope',
       category: 'endurance',
       baseReps: 40,
@@ -123,7 +113,6 @@ async function main() {
       imagePath: '/src/assets/exercises/endurance/Jumprope_Gym_Button.png',
     },
     {
-      id: 'boxing',
       name: 'Boxing',
       category: 'endurance',
       baseReps: 35,
@@ -134,7 +123,6 @@ async function main() {
       imagePath: '/src/assets/exercises/endurance/Boxing_Gym_Button.png',
     },
     {
-      id: 'basketball',
       name: 'Basketball',
       category: 'endurance',
       baseReps: 28,
@@ -146,7 +134,6 @@ async function main() {
     },
     // Mobility exercises
     {
-      id: 'hip_flexor',
       name: 'Hip Flexor Stretch',
       category: 'mobility',
       baseReps: 30,
@@ -157,7 +144,6 @@ async function main() {
       imagePath: '/src/assets/exercises/mobility/Hipflexorstretch_Gym_Button.png',
     },
     {
-      id: 'shoulder_roll',
       name: 'Shoulder Roll Stretch',
       category: 'mobility',
       baseReps: 20,
@@ -168,7 +154,6 @@ async function main() {
       imagePath: '/src/assets/exercises/mobility/Shoulderrollstretch_Gym_Button.png',
     },
     {
-      id: 'cat_cow',
       name: 'Cat-Cow Stretch',
       category: 'mobility',
       baseReps: 15,
@@ -179,7 +164,6 @@ async function main() {
       imagePath: '/src/assets/exercises/mobility/Catcowstretch_Gym_Button.png',
     },
     {
-      id: 'pigeon_pose',
       name: 'Pigeon Pose',
       category: 'mobility',
       baseReps: 25,
@@ -190,7 +174,6 @@ async function main() {
       imagePath: '/src/assets/exercises/mobility/Pigeonpose_Gym_Button.png',
     },
     {
-      id: 'downward_dog',
       name: 'Downward Dog',
       category: 'mobility',
       baseReps: 20,
@@ -201,7 +184,6 @@ async function main() {
       imagePath: '/src/assets/exercises/mobility/Downwardsdog_Gym_Button.png',
     },
     {
-      id: 'spinal_twist',
       name: 'Spinal Twist',
       category: 'mobility',
       baseReps: 18,
@@ -215,10 +197,8 @@ async function main() {
 
   // Create exercises in database
   for (const exercise of exercises) {
-    await prisma.exercise.upsert({
-      where: { id: exercise.id },
-      update: exercise,
-      create: exercise,
+    await prisma.exercise.create({
+      data: exercise,
     });
   }
 

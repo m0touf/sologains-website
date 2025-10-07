@@ -84,6 +84,7 @@ model ExerciseProficiency {
   dailyEnergy Int      @default(0) // energy spent today on this exercise
   dailyStatGains Int   @default(0) // number of stat gains today (max 5)
   lastDailyReset DateTime @default(now()) // when daily energy was last reset
+  dailyResetCount Int  @default(0) // the daily reset count when this exercise was last reset
   totalReps   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

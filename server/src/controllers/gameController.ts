@@ -138,19 +138,19 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
         logger.warn(`Daily reset already performed today for user ${userId}, skipping`);
       } else {
         // Reset daily stat gains for all exercises
+        const newResetCount = (save.dailyResetCount || 0) + 1;
         await prisma.exerciseProficiency.updateMany({
           where: { userId },
           data: {
             dailyStatGains: 0,
             dailyEnergy: 0,
-            lastDailyReset: now
+            lastDailyReset: now,
+            dailyResetCount: newResetCount
           }
         });
 
-        // Clear daily purchases (shop items become available again)
-        await prisma.dailyPurchase.deleteMany({
-          where: { userId }
-        });
+        // Daily purchases are now handled by reset counter system
+        // No need to delete records - they become invalid when reset count increments
 
         // Auto-claim any unclaimed adventures from the previous day
         const unclaimedAdventures = await prisma.adventureAttempt.findMany({
@@ -409,9 +409,13 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     const currentProficiency = existingProficiency?.proficiency || 0;
     const currentDailyEnergy = existingProficiency?.dailyEnergy || 0;
     const currentDailyStatGains = existingProficiency?.dailyStatGains || 0;
+    const exerciseResetCount = existingProficiency?.dailyResetCount || 0;
+    const currentResetCount = save.dailyResetCount || 0;
     
-    // Daily reset is now handled centrally in getSave function
-    // No need for exercise-specific reset logic here
+    // If exercise proficiency is from a previous reset cycle, treat as fresh start
+    const isFromCurrentCycle = exerciseResetCount === currentResetCount;
+    const effectiveDailyStatGains = isFromCurrentCycle ? currentDailyStatGains : 0;
+    const effectiveDailyEnergy = isFromCurrentCycle ? currentDailyEnergy : 0;
     
     // Check if user has exceeded daily stat gain limit (5 per exercise)
     const maxDailyStatGains = 5;
@@ -419,7 +423,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     // Calculate stat gains using centralized function
     let statGains = { strength: 0, stamina: 0, mobility: 0 };
     
-    if (currentDailyStatGains < maxDailyStatGains) {
+    if (effectiveDailyStatGains < maxDailyStatGains) {
       // Use exercise's stat gain amount instead of calculating from reps
       let statGainAmount = exercise.statGainAmount;
       
@@ -542,6 +546,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             dailyEnergy: proficiencyResult.newDailyEnergy,
             dailyStatGains: newDailyStatGains,
             lastDailyReset: existingProficiency.lastDailyReset, // Keep existing reset date
+            dailyResetCount: currentResetCount, // Update to current reset count
             totalReps: existingProficiency.totalReps + reps,
           }
         });
@@ -554,6 +559,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
             dailyEnergy: energySpent,
             dailyStatGains: statGains.strength + statGains.stamina + statGains.mobility > 0 ? 1 : 0,
             lastDailyReset: now,
+            dailyResetCount: currentResetCount,
             totalReps: reps,
           }
         });

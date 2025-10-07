@@ -22,8 +22,8 @@ export default function GymScreen({ onBack, onWorkout }: GymScreenProps) {
     return <LoadingScreen />;
   }
   
-  // Ensure we have proficiency data loaded
-  if (ExerciseProficiencies.length === 0 && exercises.length > 0) {
+  // Show loading if exercises haven't loaded yet
+  if (exercises.length === 0) {
     return <LoadingScreen />;
   }
   

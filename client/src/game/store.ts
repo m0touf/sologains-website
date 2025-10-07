@@ -151,17 +151,41 @@ export const useGameStore = create<GameState>((set, get) => ({
   addProficiencyPoints: (pp) => set((s) => ({ proficiencyPoints: s.proficiencyPoints + pp })),
   setFromServer: (partial) => set((s) => ({ ...s, ...partial })),
   setExercises: (exercises) => set({ exercises }),
-  updateExerciseProficiency: (exerciseId, proficiencyGained, dailyStatGainsUsed) => set((s) => ({
-    ExerciseProficiencies: s.ExerciseProficiencies.map(p => 
-      p.exerciseId === exerciseId 
-        ? { 
-            ...p, 
-            proficiency: Math.min(1000, p.proficiency + proficiencyGained),
-            dailyStatGains: dailyStatGainsUsed
-          }
-        : p
-    )
-  })),
+  updateExerciseProficiency: (exerciseId, proficiencyGained, dailyStatGainsUsed) => set((s) => {
+    const existingProficiency = s.ExerciseProficiencies.find(p => p.exerciseId === exerciseId);
+    
+    if (existingProficiency) {
+      // Update existing proficiency
+      return {
+        ExerciseProficiencies: s.ExerciseProficiencies.map(p => 
+          p.exerciseId === exerciseId 
+            ? { 
+                ...p, 
+                proficiency: Math.min(1000, p.proficiency + proficiencyGained),
+                dailyStatGains: dailyStatGainsUsed
+              }
+            : p
+        )
+      };
+    } else {
+      // Create new proficiency
+      const exercise = s.exercises.find(e => e.id === exerciseId);
+      const newProficiency = {
+        id: `temp-${exerciseId}-${Date.now()}`, // Temporary ID
+        exerciseId,
+        proficiency: proficiencyGained,
+        dailyStatGains: dailyStatGainsUsed,
+        dailyEnergy: 0,
+        lastDailyReset: new Date().toISOString(),
+        totalReps: 0,
+        Exercise: exercise || { id: exerciseId, name: 'Unknown', category: 'unknown', baseReps: 0, baseEnergy: 0, baseXp: 0, statType: 'strength', statGainAmount: 1, imagePath: '', isActive: true }
+      };
+      
+      return {
+        ExerciseProficiencies: [...s.ExerciseProficiencies, newProficiency]
+      };
+    }
+  }),
   getProficiency: (exerciseId) => {
     const state = get();
     const proficiency = state.ExerciseProficiencies.find(p => p.exerciseId === exerciseId);
