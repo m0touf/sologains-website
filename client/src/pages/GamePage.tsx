@@ -44,6 +44,7 @@ export default function GamePage() {
 
         // Set all data at once to prevent flashing
         setFromServer({
+          userId: save.userId,
           energy: save.energy,
           xp: save.xp,
           level: save.level,
@@ -60,11 +61,22 @@ export default function GamePage() {
           maxEnergy: save.maxEnergy,
           luckBoostPercent: save.luckBoostPercent || 0,
           permanentXpGain: save.permanentXpGain || 0,
+          dailyAdventureLimit: save.dailyAdventureLimit || 2,
           lastEnergyUpdate: save.lastEnergyUpdate,
+          lastDailyReset: save.lastDailyReset,
+          shopRotationSeed: save.shopRotationSeed,
+          lastShopRotation: save.lastShopRotation,
+          adventureRotationSeed: save.adventureRotationSeed,
+          lastAdventureRotation: save.lastAdventureRotation,
+          lastAdventureReset: save.lastAdventureReset,
+          dailyResetCount: save.dailyResetCount || 0,
+          xpBoostRemaining: save.xpBoostRemaining || 0,
+          proficiencyBoostRemaining: save.proficiencyBoostRemaining || 0,
           fractionalEnergy: save.fractionalEnergy,
           dailyAdventureAttempts: save.dailyAdventureAttempts || 0,
           ExerciseProficiencies: save.ExerciseProficiencies || [],
-          ResearchUpgrades: save.ResearchUpgrades || []
+          ResearchUpgrades: save.ResearchUpgrades || [],
+          AdventureAttempts: save.AdventureAttempts || []
         });
 
         setExercises(exercises);

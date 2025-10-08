@@ -14,6 +14,20 @@ import {
   calculateAllStatGains,
   getResearchBenefits
 } from '../config';
+import { getResearchKey } from '../config/researchMappings';
+import { 
+  DEFAULT_MAX_ENERGY, 
+  STARTING_CASH, 
+  STARTING_ENERGY, 
+  STARTING_PROFICIENCY_POINTS,
+  STARTING_LEVEL,
+  STARTING_XP,
+  STARTING_STRENGTH,
+  STARTING_STAMINA,
+  STARTING_MOBILITY,
+  DEFAULT_PERMANENT_XP_GAIN,
+  DEFAULT_DAILY_ADVENTURE_LIMIT
+} from '../config/constants';
 
 const prisma = new PrismaClient();
 
@@ -52,18 +66,18 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       const newSave = await prisma.save.create({
         data: {
           userId: userId,
-          level: 1,
-          xp: 0,
-          energy: 150.0,
+          level: STARTING_LEVEL,
+          xp: STARTING_XP,
+          energy: STARTING_ENERGY,
           lastEnergyUpdate: new Date(),
-          strength: 1,
-          stamina: 1,
-          mobility: 1,
-          proficiencyPoints: 0,
-          cash: 500,
-          maxEnergy: 150.0,
-          permanentXpGain: 0,
-          dailyAdventureLimit: 2,
+          strength: STARTING_STRENGTH,
+          stamina: STARTING_STAMINA,
+          mobility: STARTING_MOBILITY,
+          proficiencyPoints: STARTING_PROFICIENCY_POINTS,
+          cash: STARTING_CASH,
+          maxEnergy: DEFAULT_MAX_ENERGY,
+          permanentXpGain: DEFAULT_PERMANENT_XP_GAIN,
+          dailyAdventureLimit: DEFAULT_DAILY_ADVENTURE_LIMIT,
         },
         include: {
           ExerciseProficiencies: {
@@ -253,7 +267,7 @@ export const getSave = async (req: AuthenticatedRequest, res: Response) => {
       ...updatedSave,
       energy: Math.floor(cappedEnergy),
       fractionalEnergy: cappedEnergy, // Use capped energy for regeneration
-      maxEnergy: updatedSave?.maxEnergy || 150
+      maxEnergy: updatedSave?.maxEnergy || DEFAULT_MAX_ENERGY
     });
   } catch (error) {
     logger.error('Get save error:', error);
@@ -323,7 +337,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     logger.info(`Workout energy calculation for ${exercise.name}:`);
     logger.info(`  Base energy cost: ${exercise.baseEnergy}`);
     logger.info(`  Current energy: ${energy}`);
-    logger.info(`  Max energy: ${save.maxEnergy || (150 + (save.permanentEnergy || 0))}`);
+    logger.info(`  Max energy: ${save.maxEnergy || (DEFAULT_MAX_ENERGY + (save.permanentEnergy || 0))}`);
     logger.info(`  Energy before workout: ${currentEnergy} (capped: ${cappedEnergy})`);
 
     // Apply research tier effects
@@ -332,18 +346,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
     
     if (researchUpgrade) {
       // Get research benefits for this exercise and tier
-      let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-      
-      // Handle special cases where research benefits use different keys
-        const specialMappings: Record<string, string> = {
-          'jump_rope': 'jumprope',
-          'pullups': 'pull_ups',
-          'hip_flexor_stretch': 'hip_flexor',
-          'shoulder_roll_stretch': 'shoulder_roll',
-          'catcow_stretch': 'cat_cow',
-        };
-      
-      nameKey = specialMappings[nameKey] || nameKey;
+      const nameKey = getResearchKey(exercise.name);
       const benefits = getResearchBenefits(nameKey, researchUpgrade.tier);
       
       logger.info(`  Research benefits for ${exercise.name} (tier ${researchUpgrade.tier}):`, benefits);
@@ -450,18 +453,7 @@ export const doWorkout = async (req: AuthenticatedRequest, res: Response) => {
       
       // Apply research benefits for stat gains
       if (researchUpgrade) {
-        let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-        
-        // Handle special cases where research benefits use different keys
-        const specialMappings: Record<string, string> = {
-          'jump_rope': 'jumprope',
-          'pullups': 'pull_ups',
-          'hip_flexor_stretch': 'hip_flexor',
-          'shoulder_roll_stretch': 'shoulder_roll',
-          'catcow_stretch': 'cat_cow',
-        };
-        
-        nameKey = specialMappings[nameKey] || nameKey;
+        const nameKey = getResearchKey(exercise.name);
         const benefits = getResearchBenefits(nameKey, researchUpgrade.tier);
         for (const benefit of benefits) {
           if (benefit.type === 'stat') {
@@ -649,7 +641,7 @@ export const resetEnergy = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     // Reset energy to max (with overcap buffer for level-ups)
-    const maxEnergy = (save.maxEnergy || 150) + (save.permanentEnergy || 0);
+    const maxEnergy = (save.maxEnergy || DEFAULT_MAX_ENERGY) + (save.permanentEnergy || 0);
     const resetEnergy = getEnergyWithOvercap(maxEnergy); // Use config function for consistency
 
     const updatedSave = await prisma.save.update({

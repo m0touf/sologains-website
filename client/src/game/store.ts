@@ -79,6 +79,7 @@ type Adventure = {
 };
 
 type Save = {
+  userId: string;
   energy: number; 
   xp: number;
   level: number;
@@ -91,10 +92,20 @@ type Save = {
   permanentXpGain: number;
   dailyAdventureLimit: number;
   lastEnergyUpdate?: string;
+  lastDailyReset?: string;
+  shopRotationSeed?: number;
+  lastShopRotation?: string;
+  adventureRotationSeed?: number;
+  lastAdventureRotation?: string;
+  lastAdventureReset?: string;
+  dailyResetCount: number;
+  xpBoostRemaining: number;
+  proficiencyBoostRemaining: number;
   fractionalEnergy?: number; // Store the actual fractional energy from server
   dailyAdventureAttempts?: number; // Track daily adventure attempts
   ExerciseProficiencies: ExerciseProficiency[];
   ResearchUpgrades: ResearchUpgrade[];
+  AdventureAttempts: any[]; // Adventure attempts (type can be defined later)
 };
 
 type GameState = Save & {
@@ -125,6 +136,7 @@ type GameState = Save & {
 };
 
 export const useGameStore = create<GameState>((set, get) => ({
+  userId: '',
   energy: 0, 
   xp: 0, 
   level: 1,
@@ -135,9 +147,13 @@ export const useGameStore = create<GameState>((set, get) => ({
   luckBoostPercent: 0,
   permanentXpGain: 0,
   dailyAdventureLimit: 2,
+  dailyResetCount: 0,
+  xpBoostRemaining: 0,
+  proficiencyBoostRemaining: 0,
   dailyAdventureAttempts: 0,
   ExerciseProficiencies: [],
   ResearchUpgrades: [],
+  AdventureAttempts: [],
   exercises: [],
   adventures: [],
   availableResearch: [],

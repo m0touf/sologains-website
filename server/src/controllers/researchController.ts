@@ -9,6 +9,7 @@ import {
   canUnlockTier,
   getTierCost
 } from '../config';
+import { getResearchKey } from '../config/researchMappings';
 
 const prisma = new PrismaClient();
 
@@ -50,18 +51,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
     }
 
     // Convert exercise name to research benefits key
-    let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-    
-    // Handle special cases where research benefits use different keys
-    const specialMappings: Record<string, string> = {
-      'jump_rope': 'jumprope',
-      'pullups': 'pull_ups',
-      'hip_flexor_stretch': 'hip_flexor',
-      'shoulder_roll_stretch': 'shoulder_roll',
-      'cat_cow_stretch': 'cat_cow',
-    };
-    
-    nameKey = specialMappings[nameKey] || nameKey;
+    const nameKey = getResearchKey(exercise.name);
 
     // Check if user has enough proficiency points
     const tierCost = getTierCost(nameKey, tier);
@@ -120,15 +110,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       let totalPermanentXpGain = 0;
       for (const upgrade of allResearchUpgrades) {
         if (upgrade.Exercise) {
-          let nameKey = upgrade.Exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-          const specialMappings: Record<string, string> = {
-            'jump_rope': 'jumprope',
-            'pullups': 'pull_ups',
-            'hip_flexor_stretch': 'hip_flexor',
-            'shoulder_roll_stretch': 'shoulder_roll',
-            'catcow_stretch': 'cat_cow',
-          };
-          nameKey = specialMappings[nameKey] || nameKey;
+          const nameKey = getResearchKey(upgrade.Exercise.name);
           
           const benefits = getAllResearchBenefits(nameKey);
           const tierBenefits = benefits.find(t => t.tier === upgrade.tier);
@@ -149,15 +131,7 @@ export const upgradeExercise = async (req: AuthenticatedRequest, res: Response) 
       let totalDailyAdventureLimit = 2; // Base limit
       for (const upgrade of allResearchUpgrades) {
         if (upgrade.Exercise) {
-          let nameKey = upgrade.Exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-          const specialMappings: Record<string, string> = {
-            'jump_rope': 'jumprope',
-            'pullups': 'pull_ups',
-            'hip_flexor_stretch': 'hip_flexor',
-            'shoulder_roll_stretch': 'shoulder_roll',
-            'catcow_stretch': 'cat_cow',
-          };
-          nameKey = specialMappings[nameKey] || nameKey;
+          const nameKey = getResearchKey(upgrade.Exercise.name);
           
           const benefits = getAllResearchBenefits(nameKey);
           const tierBenefits = benefits.find(t => t.tier === upgrade.tier);
@@ -249,18 +223,7 @@ export const getAvailableResearch = async (req: AuthenticatedRequest, res: Respo
       const proficiency = exercise.ExerciseProficiencies[0];
       const currentTier = upgradeMap.get(exercise.id) || 0;
       // Use exercise name for research benefits lookup
-      let nameKey = exercise.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-      
-      // Handle special cases where research benefits use different keys
-      const specialMappings: Record<string, string> = {
-        'jump_rope': 'jumprope',
-        'pullups': 'pull_ups',
-        'hip_flexor_stretch': 'hip_flexor',
-        'shoulder_roll_stretch': 'shoulder_roll',
-        'catcow_stretch': 'cat_cow',
-      };
-      
-      nameKey = specialMappings[nameKey] || nameKey;
+      const nameKey = getResearchKey(exercise.name);
       const allBenefits = getAllResearchBenefits(nameKey);
 
       // Debug logging

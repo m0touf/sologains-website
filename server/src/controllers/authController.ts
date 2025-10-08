@@ -1,5 +1,16 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { 
+  DEFAULT_MAX_ENERGY, 
+  STARTING_CASH, 
+  STARTING_ENERGY, 
+  STARTING_PROFICIENCY_POINTS,
+  STARTING_LEVEL,
+  STARTING_XP,
+  STARTING_STRENGTH,
+  STARTING_STAMINA,
+  STARTING_MOBILITY
+} from '../config/constants';
 import { z } from 'zod';
 import { hashPassword, verifyPassword, generateToken } from '../utils/auth';
 import { AuthenticatedRequest } from '../middleware/auth';
@@ -79,16 +90,16 @@ export const signup = async (req: Request, res: Response) => {
       await tx.save.create({
         data: {
           userId: newUser.id,
-          level: 1,
-          xp: 0,
-          energy: 150.0,
+          level: STARTING_LEVEL,
+          xp: STARTING_XP,
+          energy: STARTING_ENERGY,
           lastEnergyUpdate: new Date(),
-          strength: 1,
-          stamina: 1,
-          mobility: 1,
-          proficiencyPoints: 0,
-          cash: 500,
-          maxEnergy: 150.0,
+          strength: STARTING_STRENGTH,
+          stamina: STARTING_STAMINA,
+          mobility: STARTING_MOBILITY,
+          proficiencyPoints: STARTING_PROFICIENCY_POINTS,
+          cash: STARTING_CASH,
+          maxEnergy: DEFAULT_MAX_ENERGY,
         },
       });
 

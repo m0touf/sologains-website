@@ -2,40 +2,14 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { computeEnergyFloat, getCappedEnergy } from '../config/energy';
+import { xpToNext, totalXpTo, levelFromXp } from '../config/xp';
+import { DEFAULT_MAX_ENERGY } from '../config/constants';
 import { AuthenticatedRequest } from '../middleware/auth';
 import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
 
-// XP Curve System (same as gameController)
-const LMAX = 100;
-const BASE_REQ = 80;
-const GROWTH = 1.032;
-
-function xpToNext(n: number) {
-  return Math.round(BASE_REQ * Math.pow(GROWTH, n - 1));
-}
-
-function totalXpTo(L: number) {
-  const r = GROWTH, A = BASE_REQ;
-  return Math.round(A * (Math.pow(r, L) - 1) / (r - 1));
-}
-
-function levelFromXp(totalXp: number) {
-  let level = 1;
-  let cumulativeXp = 0;
-  
-  while (level <= LMAX) {
-    const xpNeeded = xpToNext(level);
-    if (cumulativeXp + xpNeeded > totalXp) {
-      break;
-    }
-    cumulativeXp += xpNeeded;
-    level++;
-  }
-  
-  return level;
-}
+// XP curve functions now imported from config/xp.ts
 
 // Schema for purchasing items
 const purchaseSchema = z.object({
@@ -219,7 +193,7 @@ export const purchaseItem = async (req: AuthenticatedRequest, res: Response) => 
     let newStrength = save.strength;
     let newStamina = save.stamina;
     let newMobility = save.mobility;
-    let newMaxEnergy = save.maxEnergy || 150;
+    let newMaxEnergy = save.maxEnergy || DEFAULT_MAX_ENERGY;
     let newXp = save.xp;
     let newXpBoostRemaining = save.xpBoostRemaining || 0;
     let newProficiencyBoostRemaining = save.proficiencyBoostRemaining || 0;
@@ -371,7 +345,7 @@ export const simulateNewDay = async (req: AuthenticatedRequest, res: Response) =
     logger.info(`Current dailyAdventureAttempts before reset: ${save.dailyAdventureAttempts}`);
 
     // Reset energy to max
-    const maxEnergy = save.maxEnergy || 150;
+    const maxEnergy = save.maxEnergy || DEFAULT_MAX_ENERGY;
     
     // Reset daily stat gains for all exercises
     const newResetCount = (save.dailyResetCount || 0) + 1;
